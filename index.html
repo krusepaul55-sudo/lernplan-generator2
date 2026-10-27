@@ -1,0 +1,546 @@
+
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lernplan-Generator</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #f3f6fc;
+      color: #172033;
+    }
+
+    header {
+      background: #243b80;
+      color: white;
+      padding: 28px 20px;
+      text-align: center;
+    }
+
+    header h1 {
+      margin: 0 0 10px;
+      font-size: 30px;
+    }
+
+    header p {
+      margin: 0;
+      color: #dce5ff;
+    }
+
+    main {
+      width: min(650px, 92%);
+      margin: 30px auto;
+    }
+
+    .card {
+      background: white;
+      padding: 25px;
+      border-radius: 16px;
+      box-shadow: 0 5px 25px #17203312;
+    }
+
+    h2 {
+      margin-top: 0;
+    }
+
+    label {
+      display: block;
+      font-weight: bold;
+      margin: 18px 0 8px;
+    }
+
+    input, select, textarea {
+      width: 100%;
+      padding: 12px;
+      border: 1px solid #ccd4e2;
+      border-radius: 8px;
+      font-size: 16px;
+      background: white;
+    }
+
+    textarea {
+      min-height: 100px;
+      resize: vertical;
+    }
+
+    input:focus, select:focus, textarea:focus {
+      outline: 2px solid #7898ff;
+      border-color: #4568d4;
+    }
+
+    button {
+      width: 100%;
+      margin-top: 24px;
+      padding: 14px;
+      border: none;
+      border-radius: 9px;
+      background: #3157c8;
+      color: white;
+      font-size: 16px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background: #2445a8;
+    }
+#pdfButton {
+  background: #16804a;
+  margin-top: 16px;
+}
+
+#pdfButton:hover {
+  background: #11683b;
+}
+
+@media print {
+  header {
+    background: white;
+    color: black;
+  }
+
+  header p {
+    color: black;
+  }
+
+  body {
+    background: white;
+  }
+
+  main {
+    width: 100%;
+    margin: 0;
+  }
+
+  .card {
+    box-shadow: none;
+    padding: 0;
+  }
+
+  #lernformular,
+  footer,
+  #pdfButton,
+  .aufgabe-check {
+    display: none !important;
+  }
+
+  .lerntag {
+    break-inside: avoid;
+    border: 1px solid #ccc;
+    background: white !important;
+    color: black;
+  }
+
+  .fortschritt-box {
+    background: white;
+  }
+}
+    #ergebnis {
+      margin-top: 24px;
+    }
+
+    .fortschritt-box {
+      margin: 20px 0;
+      padding: 16px;
+      background: #f7f9ff;
+      border: 1px solid #e0e7f8;
+      border-radius: 12px;
+    }
+
+    .fortschritt-text {
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+      font-size: 14px;
+      margin-bottom: 10px;
+    }
+
+    .fortschritt-balken {
+      height: 10px;
+      background: #dfe5f2;
+      border-radius: 20px;
+      overflow: hidden;
+    }
+
+    .fortschritt-fuellung {
+      height: 100%;
+      width: 0%;
+      background: #3157c8;
+      border-radius: 20px;
+      transition: width 0.25s;
+    }
+
+    .lerntag {
+      margin-top: 12px;
+      padding: 16px;
+      border-radius: 9px;
+      background: #eef3ff;
+      border-left: 4px solid #3157c8;
+      transition: background 0.2s;
+    }
+
+    .lerntag p {
+      margin-bottom: 0;
+      line-height: 1.5;
+    }
+
+    .aufgabe-check {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin: 12px 0 0;
+      font-weight: normal;
+      cursor: pointer;
+    }
+
+    .aufgabe-check input[type="checkbox"] {
+      width: 20px;
+      height: 20px;
+      margin: 0;
+      flex-shrink: 0;
+      accent-color: #3157c8;
+      cursor: pointer;
+    }
+
+    .lerntag.erledigt {
+      background: #e7f8ee;
+      border-left-color: #219653;
+    }
+
+    .lerntag.erledigt .aufgabe-text {
+      color: #32734d;
+      text-decoration: line-through;
+    }
+
+    .hinweis {
+      color: #536078;
+      font-size: 14px;
+      line-height: 1.5;
+    }
+
+    .leer {
+      padding: 14px;
+      border-radius: 9px;
+      background: #fff3e8;
+      color: #814b13;
+    }
+
+    footer {
+      text-align: center;
+      color: #68738a;
+      font-size: 13px;
+      padding: 20px;
+    }
+  </style>
+</head>
+
+<body>
+  <header>
+    <h1>📚 Lernplan-Generator</h1>
+    <p>Plane dein Lernen. Erreiche deine Ziele.</p>
+  </header>
+
+  <main>
+    <section class="card">
+      <h2>Erstelle deinen Lernplan</h2>
+
+      <p class="hinweis">
+        Gib deine Prüfung und deine Lernthemen ein.
+        Dein persönlicher Plan wird automatisch erstellt.
+      </p>
+
+      <form id="lernformular">
+        <label for="fach">Schulfach</label>
+        <input
+          id="fach"
+          type="text"
+          placeholder="z. B. Biologie"
+          required
+        >
+
+        <label for="datum">Prüfungsdatum</label>
+        <input id="datum" type="date" required>
+
+        <label for="lernzeit">Tägliche Lernzeit</label>
+        <select id="lernzeit" required>
+          <option value="30">30 Minuten</option>
+          <option value="60" selected>1 Stunde</option>
+          <option value="90">1,5 Stunden</option>
+          <option value="120">2 Stunden</option>
+          <option value="180">3 Stunden</option>
+        </select>
+
+        <label for="themen">Was musst du lernen?</label>
+        <textarea
+          id="themen"
+          placeholder="Zellatmung&#10;Fotosynthese&#10;Genetik"
+          required
+        ></textarea>
+
+        <p class="hinweis">
+          Schreibe jedes Thema in eine neue Zeile.
+        </p>
+
+        <button type="submit">Meinen Lernplan erstellen</button>
+      </form>
+
+      <div id="ergebnis" aria-live="polite"></div>
+    </section>
+  </main>
+<button type="button" id="pdfButton" hidden>
+  📄 Lernplan als PDF speichern
+</button>
+  <footer>
+    Dein kostenloser Helfer für bessere Prüfungsvorbereitung.
+  </footer>
+
+  <script>
+    const datumFeld = document.getElementById("datum");
+    const ergebnis = document.getElementById("ergebnis");
+
+    const heute = new Date();
+    const lokalesDatum = new Date(
+      heute.getTime() - heute.getTimezoneOffset() * 60000
+    ).toISOString().split("T")[0];
+
+    datumFeld.min = lokalesDatum;
+    datumFeld.value = lokalesDatum;
+
+    let aktuellerSpeicherSchluessel = "";
+
+    document
+      .getElementById("lernformular")
+      .addEventListener("submit", function (event) {
+        event.preventDefault();
+
+        const fach = document.getElementById("fach").value.trim();
+        const datum = datumFeld.value;
+        const lernzeit = Number(
+          document.getElementById("lernzeit").value
+        );
+
+        const themen = document
+          .getElementById("themen")
+          .value
+          .split("\n")
+          .map(t => t.trim())
+          .filter(t => t.length > 0);
+
+        if (!fach || !datum || themen.length === 0) {
+          ergebnis.textContent =
+            "Bitte fülle alle Felder aus und gib mindestens ein Thema ein.";
+          return;
+        }
+
+        const pruefung = new Date(datum + "T12:00:00");
+        const jetzt = new Date();
+        jetzt.setHours(0, 0, 0, 0);
+
+        const tage = Math.round(
+          (pruefung - jetzt) / (1000 * 60 * 60 * 24)
+        );
+
+        if (tage < 0) {
+          ergebnis.textContent =
+            "Das Prüfungsdatum darf nicht in der Vergangenheit liegen.";
+          return;
+        }
+
+        const anzahlLerntage = Math.max(1, tage);
+        const datumAnzeige = pruefung.toLocaleDateString("de-DE");
+
+        // Fortschritt für genau diesen Lernplan speichern
+        aktuellerSpeicherSchluessel =
+          "lernplanFortschritt:" +
+          JSON.stringify({ fach, datum, lernzeit, themen });
+
+        let erledigteTage = [];
+
+        try {
+          erledigteTage = JSON.parse(
+            localStorage.getItem(aktuellerSpeicherSchluessel) || "[]"
+          );
+
+          if (!Array.isArray(erledigteTage)) {
+            erledigteTage = [];
+          }
+        } catch (fehler) {
+          erledigteTage = [];
+        }
+
+        let html = `
+          <h2>Dein Lernplan: ${escapeHTML(fach)}</h2>
+          <p>Prüfung am ${datumAnzeige}</p>
+          <p>${anzahlLerntage} Lerntag(e) bis zur Prüfung ·
+          ${lernzeit} Minuten täglich</p>
+
+          <div class="fortschritt-box">
+            <div class="fortschritt-text">
+              <strong>Dein Fortschritt</strong>
+              <span id="fortschritt-zahl">0 von ${anzahlLerntage}</span>
+            </div>
+            <div
+              class="fortschritt-balken"
+              role="progressbar"
+              aria-label="Erledigte Lerntage"
+              aria-valuemin="0"
+              aria-valuemax="${anzahlLerntage}"
+              aria-valuenow="0"
+              id="fortschritt-anzeige"
+            >
+              <div
+                class="fortschritt-fuellung"
+                id="fortschritt-fuellung"
+              ></div>
+            </div>
+          </div>
+        `;
+
+        for (let tag = 0; tag < anzahlLerntage; tag++) {
+          const tagDatum = new Date(jetzt);
+          tagDatum.setDate(jetzt.getDate() + tag);
+
+          const datumText = tagDatum.toLocaleDateString("de-DE");
+
+          let aufgabe;
+
+          if (tag === anzahlLerntage - 1 && tage > 0) {
+            aufgabe =
+              "Wiederhole die wichtigsten Inhalte und gehe früh schlafen.";
+          } else if (tag % 4 === 3) {
+            aufgabe =
+              "Wiederhole bereits gelernte Themen und teste dein Wissen.";
+          } else {
+            aufgabe = "Lerne und übe: " + themen[tag % themen.length];
+          }
+
+          const istErledigt = erledigteTage.includes(tag);
+          const checked = istErledigt ? "checked" : "";
+          const erledigtKlasse = istErledigt ? "erledigt" : "";
+
+          html += `
+            <div class="lerntag ${erledigtKlasse}" data-tag="${tag}">
+              <strong>${tag + 1}. Tag – ${datumText}</strong>
+
+              <p class="aufgabe-text">${escapeHTML(aufgabe)}</p>
+              <p>⏱️ Lernzeit: ${lernzeit} Minuten</p>
+
+              <label class="aufgabe-check">
+                <input
+                  type="checkbox"
+                  class="lerntag-checkbox"
+                  data-tag="${tag}"
+                  ${checked}
+                >
+                <span>Als erledigt markieren</span>
+              </label>
+            </div>
+          `;
+        }
+
+        ergebnis.innerHTML = html;
+        aktualisiereFortschritt();
+pdfButton.hidden = false;
+        ergebnis.scrollIntoView({
+          behavior: "smooth",
+          block: "start"
+        });
+      });
+
+    // Häkchen speichern und Fortschritt aktualisieren
+    ergebnis.addEventListener("change", function (event) {
+      if (!event.target.matches(".lerntag-checkbox")) {
+        return;
+      }
+
+      const tag = Number(event.target.dataset.tag);
+      const lerntag = event.target.closest(".lerntag");
+
+      lerntag.classList.toggle("erledigt", event.target.checked);
+
+      let erledigteTage = [];
+
+      try {
+        erledigteTage = JSON.parse(
+          localStorage.getItem(aktuellerSpeicherSchluessel) || "[]"
+        );
+
+        if (!Array.isArray(erledigteTage)) {
+          erledigteTage = [];
+        }
+      } catch (fehler) {
+        erledigteTage = [];
+      }
+
+      if (event.target.checked) {
+        if (!erledigteTage.includes(tag)) {
+          erledigteTage.push(tag);
+        }
+      } else {
+        erledigteTage = erledigteTage.filter(t => t !== tag);
+      }
+
+      try {
+        localStorage.setItem(
+          aktuellerSpeicherSchluessel,
+          JSON.stringify(erledigteTage)
+        );
+      } catch (fehler) {
+        console.warn("Der Fortschritt konnte nicht gespeichert werden.");
+      }
+
+      aktualisiereFortschritt();
+    });
+
+    function aktualisiereFortschritt() {
+      const checkboxen = ergebnis.querySelectorAll(".lerntag-checkbox");
+
+      if (checkboxen.length === 0) {
+        return;
+      }
+
+      const erledigt = ergebnis.querySelectorAll(
+        ".lerntag-checkbox:checked"
+      ).length;
+
+      const gesamt = checkboxen.length;
+      const prozent = Math.round((erledigt / gesamt) * 100);
+
+      document.getElementById("fortschritt-zahl").textContent =
+        `${erledigt} von ${gesamt} erledigt · ${prozent}%`;
+
+      document.getElementById("fortschritt-fuellung").style.width =
+        prozent + "%";
+
+      const anzeige = document.getElementById("fortschritt-anzeige");
+      anzeige.setAttribute("aria-valuenow", erledigt);
+    }
+
+    function escapeHTML(text) {
+      return text.replace(/[&<>"']/g, function (zeichen) {
+        const ersatz = {
+          "&": "&amp;",
+          "<": "&lt;",
+          ">": "&gt;",
+          '"': "&quot;",
+          "'": "&#39;"
+        };
+
+        return ersatz[zeichen];
+      });
+    }const pdfButton = document.getElementById("pdfButton");
+
+pdfButton.addEventListener("click", function () {
+  window.print();
+});
+  </script>
+</body>
+</html>
