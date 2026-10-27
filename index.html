@@ -4,309 +4,866 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Lernplan-Generator</title>
+  <meta name="theme-color" content="#f5f7ff">
+  <meta name="description" content="Erstelle kostenlos deinen persönlichen Lernplan und behalte deinen Lernfortschritt im Blick.">
+  <title>Lernplan – Dein persönlicher Lernassistent</title>
 
   <style>
+    :root {
+      --primary: #4f46e5;
+      --primary-dark: #3730a3;
+      --primary-light: #eef2ff;
+      --text: #172033;
+      --muted: #667085;
+      --border: #e4e8f0;
+      --surface: #ffffff;
+      --background: #f5f7ff;
+      --green: #168451;
+    }
+
     * {
       box-sizing: border-box;
     }
 
+    html {
+      scroll-behavior: smooth;
+    }
+
     body {
       margin: 0;
-      font-family: Arial, sans-serif;
-      background: #f3f6fc;
-      color: #172033;
+      font-family: Inter, -apple-system, BlinkMacSystemFont,
+        "Segoe UI", Arial, sans-serif;
+      color: var(--text);
+      background:
+        radial-gradient(ellipse at top left, #e8edff 0, transparent 38%),
+        var(--background);
+      min-height: 100vh;
     }
 
-    header {
-      background: #243b80;
+    button, input, select, textarea {
+      font: inherit;
+    }
+
+    button {
+      cursor: pointer;
+    }
+
+    .topbar {
+      background: rgba(255, 255, 255, 0.88);
+      border-bottom: 1px solid var(--border);
+      padding: 16px 5%;
+      position: sticky;
+      top: 0;
+      z-index: 5;
+      backdrop-filter: blur(12px);
+    }
+
+    .topbar-inner {
+      max-width: 1100px;
+      margin: auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 15px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 11px;
+      font-weight: 800;
+      font-size: 19px;
+      letter-spacing: -0.5px;
+    }
+
+    .brand-icon {
+      display: grid;
+      place-items: center;
+      width: 42px;
+      height: 42px;
+      border-radius: 13px;
       color: white;
-      padding: 28px 20px;
-      text-align: center;
+      background: linear-gradient(135deg, #6366f1, #4338ca);
+      box-shadow: 0 5px 12px #4f46e533;
+      font-size: 22px;
     }
 
-    header h1 {
-      margin: 0 0 10px;
-      font-size: 30px;
-    }
-
-    header p {
-      margin: 0;
-      color: #dce5ff;
+    .free-badge {
+      padding: 8px 12px;
+      border: 1px solid #c7d2fe;
+      border-radius: 30px;
+      background: #eef2ff;
+      color: #4338ca;
+      font-size: 12px;
+      font-weight: 750;
+      white-space: nowrap;
     }
 
     main {
-      width: min(650px, 92%);
-      margin: 30px auto;
+      width: min(1000px, 92%);
+      margin: 0 auto;
+      padding: 42px 0 60px;
+    }
+
+    .hero {
+      text-align: center;
+      margin-bottom: 32px;
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      padding: 7px 12px;
+      background: #e9eaff;
+      color: #4338ca;
+      border-radius: 30px;
+      font-size: 12px;
+      font-weight: 800;
+      letter-spacing: 0.4px;
+      text-transform: uppercase;
+    }
+
+    .hero h1 {
+      max-width: 720px;
+      margin: 18px auto 12px;
+      font-size: clamp(32px, 5vw, 48px);
+      line-height: 1.12;
+      letter-spacing: -1.8px;
+    }
+
+    .gradient-text {
+      color: var(--primary);
+    }
+
+    .hero p {
+      max-width: 560px;
+      margin: 0 auto;
+      color: var(--muted);
+      font-size: 16px;
+      line-height: 1.7;
+    }
+
+    .feature-row {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 20px;
+    }
+
+    .feature {
+      color: #475467;
+      background: #ffffffb8;
+      border: 1px solid var(--border);
+      border-radius: 30px;
+      padding: 8px 12px;
+      font-size: 12px;
+      font-weight: 650;
+    }
+
+    .layout {
+      display: grid;
+      grid-template-columns: minmax(0, 0.85fr) minmax(0, 1.15fr);
+      align-items: start;
+      gap: 22px;
     }
 
     .card {
-      background: white;
+      background: var(--surface);
+      border: 1px solid #e7eaf2;
+      border-radius: 20px;
       padding: 25px;
-      border-radius: 16px;
-      box-shadow: 0 5px 25px #17203312;
+      box-shadow: 0 12px 35px #26356b0b;
+      min-width: 0;
+    }
+
+    .card-heading {
+      display: flex;
+      align-items: flex-start;
+      gap: 13px;
+      margin-bottom: 8px;
+    }
+
+    .heading-icon {
+      width: 43px;
+      height: 43px;
+      flex-shrink: 0;
+      display: grid;
+      place-items: center;
+      border-radius: 13px;
+      background: var(--primary-light);
+      font-size: 21px;
     }
 
     h2 {
-      margin-top: 0;
+      font-size: 20px;
+      letter-spacing: -0.5px;
+      margin: 2px 0 6px;
     }
 
-    label {
+    .subheading {
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.6;
+      margin: 0 0 23px;
+    }
+
+    label.field-label {
       display: block;
-      font-weight: bold;
+      font-size: 13px;
+      font-weight: 750;
       margin: 18px 0 8px;
     }
 
-    input, select, textarea {
+    input[type="text"],
+    input[type="date"],
+    select,
+    textarea {
+      display: block;
       width: 100%;
-      padding: 12px;
-      border: 1px solid #ccd4e2;
-      border-radius: 8px;
-      font-size: 16px;
+      padding: 12px 13px;
+      border: 1px solid #dce1eb;
+      border-radius: 10px;
+      background: #fcfcfe;
+      color: var(--text);
+      font-size: 14px;
+      outline: none;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+
+    input[type="text"]:focus,
+    input[type="date"]:focus,
+    select:focus,
+    textarea:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px #4f46e51a;
       background: white;
     }
 
     textarea {
-      min-height: 100px;
+      min-height: 120px;
       resize: vertical;
+      line-height: 1.7;
     }
 
-    input:focus, select:focus, textarea:focus {
-      outline: 2px solid #7898ff;
-      border-color: #4568d4;
+    .field-hint {
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.6;
+      margin: 8px 0 0;
     }
 
-    button {
-      width: 100%;
-      margin-top: 24px;
-      padding: 14px;
-      border: none;
-      border-radius: 9px;
-      background: #3157c8;
-      color: white;
-      font-size: 16px;
-      font-weight: bold;
-      cursor: pointer;
-    }
-
-    button:hover {
-      background: #2445a8;
-    }
-#pdfButton {
-  background: #16804a;
-  margin-top: 16px;
-}
-
-#pdfButton:hover {
-  background: #11683b;
-}
-
-@media print {
-  header {
-    background: white;
-    color: black;
-  }
-
-  header p {
-    color: black;
-  }
-
-  body {
-    background: white;
-  }
-
-  main {
-    width: 100%;
-    margin: 0;
-  }
-
-  .card {
-    box-shadow: none;
-    padding: 0;
-  }
-
-  #lernformular,
-  footer,
-  #pdfButton,
-  .aufgabe-check {
-    display: none !important;
-  }
-
-  .lerntag {
-    break-inside: avoid;
-    border: 1px solid #ccc;
-    background: white !important;
-    color: black;
-  }
-
-  .fortschritt-box {
-    background: white;
-  }
-}
-    #ergebnis {
-      margin-top: 24px;
-    }
-
-    .fortschritt-box {
-      margin: 20px 0;
-      padding: 16px;
-      background: #f7f9ff;
-      border: 1px solid #e0e7f8;
-      border-radius: 12px;
-    }
-
-    .fortschritt-text {
+    .primary-button {
       display: flex;
-      justify-content: space-between;
-      gap: 10px;
+      justify-content: center;
+      align-items: center;
+      gap: 9px;
+      width: 100%;
+      padding: 14px 16px;
+      margin-top: 24px;
+      border: 0;
+      border-radius: 11px;
+      background: linear-gradient(135deg, #6366f1, #4338ca);
+      color: white;
       font-size: 14px;
-      margin-bottom: 10px;
+      font-weight: 750;
+      box-shadow: 0 6px 14px #4f46e529;
+      transition: transform 0.2s, box-shadow 0.2s;
     }
 
-    .fortschritt-balken {
-      height: 10px;
-      background: #dfe5f2;
-      border-radius: 20px;
-      overflow: hidden;
+    .primary-button:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 9px 20px #4f46e536;
     }
 
-    .fortschritt-fuellung {
-      height: 100%;
-      width: 0%;
-      background: #3157c8;
-      border-radius: 20px;
-      transition: width 0.25s;
+    .result-card {
+      min-height: 360px;
     }
 
-    .lerntag {
-      margin-top: 12px;
-      padding: 16px;
-      border-radius: 9px;
-      background: #eef3ff;
-      border-left: 4px solid #3157c8;
-      transition: background 0.2s;
+    .empty-state {
+      min-height: 260px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 24px 10px;
     }
 
-    .lerntag p {
-      margin-bottom: 0;
+    .empty-icon {
+      width: 76px;
+      height: 76px;
+      display: grid;
+      place-items: center;
+      border-radius: 24px;
+      background: #eef2ff;
+      font-size: 36px;
+      margin-bottom: 18px;
+    }
+
+    .empty-state h3 {
+      margin: 0 0 8px;
+      font-size: 17px;
+    }
+
+    .empty-state p {
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.7;
+      max-width: 270px;
+      margin: 0;
+    }
+
+    .result-title {
+      font-size: 23px;
+      overflow-wrap: anywhere;
+    }
+
+    .result-meta {
+      font-size: 13px;
+      color: var(--muted);
+      line-height: 1.7;
+      margin-bottom: 20px;
+    }
+
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
+      margin: 18px 0;
+    }
+
+    .stat {
+      padding: 14px;
+      border: 1px solid var(--border);
+      border-radius: 13px;
+      background: #fafbff;
+      min-width: 0;
+    }
+
+    .stat-icon {
+      font-size: 18px;
+    }
+
+    .stat-number {
+      display: block;
+      margin-top: 9px;
+      font-size: 21px;
+      font-weight: 800;
+      letter-spacing: -0.5px;
+      overflow-wrap: anywhere;
+    }
+
+    .stat-label {
+      display: block;
+      margin-top: 4px;
+      color: var(--muted);
+      font-size: 11px;
       line-height: 1.5;
     }
 
-    .aufgabe-check {
+    .progress-box {
+      padding: 17px;
+      border: 1px solid #e0e7ff;
+      border-radius: 14px;
+      background: linear-gradient(135deg, #f7f8ff, #eef2ff);
+      margin: 20px 0;
+    }
+
+    .progress-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 12px;
+      font-size: 12px;
+    }
+
+    .progress-percent {
+      color: var(--primary);
+      font-weight: 800;
+    }
+
+    .progress-track {
+      height: 9px;
+      overflow: hidden;
+      border-radius: 20px;
+      background: #dfe4f4;
+    }
+
+    .progress-fill {
+      height: 100%;
+      width: 0;
+      border-radius: inherit;
+      background: linear-gradient(90deg, #818cf8, #4f46e5);
+      transition: width 0.3s ease;
+    }
+
+    .progress-note {
+      margin: 10px 0 0;
+      font-size: 11px;
+      color: var(--muted);
+      line-height: 1.5;
+    }
+
+    .schedule-heading {
       display: flex;
       align-items: center;
-      gap: 10px;
-      margin: 12px 0 0;
-      font-weight: normal;
+      justify-content: space-between;
+      gap: 12px;
+      margin: 26px 0 12px;
+    }
+
+    .schedule-heading h3 {
+      font-size: 15px;
+      margin: 0;
+    }
+
+    .schedule-count {
+      padding: 5px 9px;
+      border-radius: 30px;
+      background: #f0f2f8;
+      color: #475467;
+      font-size: 11px;
+      font-weight: 750;
+    }
+
+    .lerntag {
+      padding: 16px;
+      border: 1px solid #e6eaf3;
+      border-left: 4px solid #818cf8;
+      border-radius: 13px;
+      background: #fff;
+      margin-top: 11px;
+      transition: background 0.2s, border-color 0.2s;
+    }
+
+    .day-header {
+      display: flex;
+      align-items: flex-start;
+      gap: 11px;
+    }
+
+    .day-number {
+      width: 34px;
+      height: 34px;
+      flex-shrink: 0;
+      display: grid;
+      place-items: center;
+      border-radius: 10px;
+      background: var(--primary-light);
+      color: var(--primary-dark);
+      font-size: 12px;
+      font-weight: 800;
+    }
+
+    .day-info {
+      min-width: 0;
+      flex: 1;
+    }
+
+    .day-date {
+      display: block;
+      font-size: 13px;
+      font-weight: 800;
+      line-height: 1.5;
+    }
+
+    .day-time {
+      color: var(--muted);
+      font-size: 11px;
+      margin-top: 3px;
+    }
+
+    .task-text {
+      font-size: 13px;
+      line-height: 1.7;
+      margin: 13px 0 0;
+      overflow-wrap: anywhere;
+    }
+
+    .task-check {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      margin-top: 15px;
+      padding-top: 12px;
+      border-top: 1px solid #edf0f5;
+      color: #475467;
+      font-size: 12px;
       cursor: pointer;
     }
 
-    .aufgabe-check input[type="checkbox"] {
-      width: 20px;
-      height: 20px;
+    .task-check input {
+      width: 18px;
+      height: 18px;
       margin: 0;
+      accent-color: var(--green);
       flex-shrink: 0;
-      accent-color: #3157c8;
       cursor: pointer;
     }
 
     .lerntag.erledigt {
-      background: #e7f8ee;
-      border-left-color: #219653;
+      border-color: #ccebd8;
+      border-left-color: var(--green);
+      background: #f2fbf5;
     }
 
-    .lerntag.erledigt .aufgabe-text {
-      color: #32734d;
+    .lerntag.erledigt .day-number {
+      background: #d9f5e4;
+      color: #146c43;
+    }
+
+    .lerntag.erledigt .task-text {
+      color: #46745b;
       text-decoration: line-through;
     }
 
-    .hinweis {
-      color: #536078;
-      font-size: 14px;
-      line-height: 1.5;
+    .lerntag.erledigt .task-check {
+      color: #168451;
     }
 
-    .leer {
-      padding: 14px;
-      border-radius: 9px;
-      background: #fff3e8;
-      color: #814b13;
+    .pdf-button {
+      width: 100%;
+      padding: 13px;
+      margin-top: 17px;
+      border: 1px solid #cdd4ff;
+      border-radius: 11px;
+      background: #f4f5ff;
+      color: #4338ca;
+      font-size: 13px;
+      font-weight: 750;
+      transition: background 0.2s;
+    }
+
+    .pdf-button:hover {
+      background: #e7eaff;
+    }
+
+    .message {
+      margin-top: 18px;
+      padding: 13px;
+      border: 1px solid #fed7aa;
+      border-radius: 11px;
+      background: #fff7ed;
+      color: #9a3412;
+      font-size: 13px;
+      line-height: 1.6;
+    }
+
+    .tip {
+      display: flex;
+      gap: 12px;
+      margin-top: 22px;
+      padding: 16px;
+      border: 1px solid #e3e8ff;
+      border-radius: 13px;
+      background: #f7f8ff;
+    }
+
+    .tip-icon {
+      font-size: 21px;
+    }
+
+    .tip strong {
+      display: block;
+      font-size: 12px;
+      margin-bottom: 5px;
+    }
+
+    .tip p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.7;
     }
 
     footer {
+      padding: 25px 16px;
+      border-top: 1px solid var(--border);
       text-align: center;
-      color: #68738a;
-      font-size: 13px;
-      padding: 20px;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.8;
+    }
+
+    footer strong {
+      color: #475467;
+    }
+
+    [hidden] {
+      display: none !important;
+    }
+
+    @media (max-width: 760px) {
+      .topbar {
+        padding: 12px 4%;
+      }
+
+      .brand {
+        font-size: 16px;
+      }
+
+      .brand-icon {
+        width: 38px;
+        height: 38px;
+      }
+
+      main {
+        width: 92%;
+        padding-top: 30px;
+      }
+
+      .hero {
+        margin-bottom: 25px;
+      }
+
+      .hero h1 {
+        letter-spacing: -1px;
+      }
+
+      .layout {
+        grid-template-columns: 1fr;
+        gap: 17px;
+      }
+
+      .card {
+        padding: 20px;
+        border-radius: 17px;
+      }
+
+      .result-card {
+        min-height: 0;
+      }
+    }
+
+    @media (max-width: 400px) {
+      .free-badge {
+        padding: 7px 9px;
+        font-size: 10px;
+      }
+
+      .brand {
+        gap: 8px;
+        font-size: 14px;
+      }
+
+      .card {
+        padding: 16px;
+      }
+
+      .feature-row {
+        gap: 7px;
+      }
+
+      .feature {
+        font-size: 11px;
+      }
+    }
+
+    @media print {
+      @page {
+        size: auto;
+        margin: 15mm;
+      }
+
+      body {
+        background: white !important;
+        color: black;
+        font-size: 11pt;
+      }
+
+      .topbar {
+        position: static;
+        padding: 0 0 15px;
+        border-bottom: 1px solid #ccc;
+        background: white;
+      }
+
+      .brand-icon,
+      .free-badge,
+      .hero,
+      #formular-card,
+      footer,
+      .pdf-button,
+      .task-check,
+      .tip {
+        display: none !important;
+      }
+
+      main {
+        width: 100%;
+        padding: 15px 0;
+        margin: 0;
+      }
+
+      .layout {
+        display: block;
+      }
+
+      .card {
+        padding: 0;
+        border: none;
+        box-shadow: none;
+      }
+
+      .result-card {
+        min-height: 0;
+      }
+
+      .lerntag {
+        break-inside: avoid;
+        background: white !important;
+        border: 1px solid #ccc;
+        margin-top: 8px;
+      }
+
+      .progress-box,
+      .stat {
+        background: white !important;
+        border-color: #ccc;
+      }
+
+      .progress-fill {
+        print-color-adjust: exact;
+        -webkit-print-color-adjust: exact;
+      }
     }
   </style>
 </head>
 
 <body>
-  <header>
-    <h1>📚 Lernplan-Generator</h1>
-    <p>Plane dein Lernen. Erreiche deine Ziele.</p>
-  </header>
+  <nav class="topbar">
+    <div class="topbar-inner">
+      <div class="brand">
+        <span class="brand-icon">✦</span>
+        <span>Lernplan</span>
+      </div>
+      <span class="free-badge">✓ Kostenlos nutzbar</span>
+    </div>
+  </nav>
 
   <main>
-    <section class="card">
-      <h2>Erstelle deinen Lernplan</h2>
-
-      <p class="hinweis">
-        Gib deine Prüfung und deine Lernthemen ein.
-        Dein persönlicher Plan wird automatisch erstellt.
+    <section class="hero">
+      <span class="eyebrow">✦ Dein smarter Lernassistent</span>
+      <h1>
+        Weniger Stress.<br>
+        <span class="gradient-text">Besser vorbereitet.</span>
+      </h1>
+      <p>
+        Erstelle deinen persönlichen Lernplan in Sekunden.
+        Organisiere deine Themen, lerne in deinem Tempo und behalte
+        deinen Fortschritt im Blick.
       </p>
 
-      <form id="lernformular">
-        <label for="fach">Schulfach</label>
-        <input
-          id="fach"
-          type="text"
-          placeholder="z. B. Biologie"
-          required
-        >
-
-        <label for="datum">Prüfungsdatum</label>
-        <input id="datum" type="date" required>
-
-        <label for="lernzeit">Tägliche Lernzeit</label>
-        <select id="lernzeit" required>
-          <option value="30">30 Minuten</option>
-          <option value="60" selected>1 Stunde</option>
-          <option value="90">1,5 Stunden</option>
-          <option value="120">2 Stunden</option>
-          <option value="180">3 Stunden</option>
-        </select>
-
-        <label for="themen">Was musst du lernen?</label>
-        <textarea
-          id="themen"
-          placeholder="Zellatmung&#10;Fotosynthese&#10;Genetik"
-          required
-        ></textarea>
-
-        <p class="hinweis">
-          Schreibe jedes Thema in eine neue Zeile.
-        </p>
-
-        <button type="submit">Meinen Lernplan erstellen</button>
-      </form>
-
-      <div id="ergebnis" aria-live="polite"></div>
+      <div class="feature-row">
+        <span class="feature">✓ Persönlicher Lernplan</span>
+        <span class="feature">✓ Fortschritt verfolgen</span>
+        <span class="feature">✓ Als PDF speichern</span>
+      </div>
     </section>
+
+    <div class="layout">
+      <section class="card" id="formular-card">
+        <div class="card-heading">
+          <div class="heading-icon">📝</div>
+          <div>
+            <h2>Dein Lernplan</h2>
+            <p class="subheading">Passe den Plan an deine Prüfung an.</p>
+          </div>
+        </div>
+
+        <form id="lernformular">
+          <label class="field-label" for="fach">Schulfach</label>
+          <input
+            id="fach"
+            type="text"
+            placeholder="z. B. Biologie"
+            maxlength="100"
+            required
+          >
+
+          <label class="field-label" for="datum">Prüfungsdatum</label>
+          <input id="datum" type="date" required>
+
+          <label class="field-label" for="lernzeit">Lernzeit pro Tag</label>
+          <select id="lernzeit" required>
+            <option value="30">30 Minuten</option>
+            <option value="60" selected>1 Stunde</option>
+            <option value="90">1,5 Stunden</option>
+            <option value="120">2 Stunden</option>
+            <option value="180">3 Stunden</option>
+          </select>
+
+          <label class="field-label" for="themen">Deine Lernthemen</label>
+          <textarea
+            id="themen"
+            placeholder="Zellatmung&#10;Fotosynthese&#10;Genetik"
+            maxlength="5000"
+            required
+          ></textarea>
+          <p class="field-hint">
+            💡 Schreibe jedes Thema in eine neue Zeile.
+          </p>
+
+          <button class="primary-button" type="submit">
+            ✨ Meinen Lernplan erstellen
+          </button>
+        </form>
+      </section>
+
+      <section class="card result-card">
+        <div id="leerzustand" class="empty-state">
+          <div class="empty-icon">📅</div>
+          <h3>Dein Plan wartet auf dich</h3>
+          <p>
+            Fülle das Formular aus und erstelle deinen persönlichen
+            Lernplan. Hier erscheinen deine Lerntage und dein Fortschritt.
+          </p>
+        </div>
+
+        <div id="ergebnis" aria-live="polite"></div>
+
+        <button
+          type="button"
+          class="pdf-button"
+          id="pdfButton"
+          hidden
+        >
+          📄 Lernplan drucken oder als PDF speichern
+        </button>
+      </section>
+    </div>
+
+    <div class="tip">
+      <span class="tip-icon">💡</span>
+      <div>
+        <strong>Kleiner Lerntipp</strong>
+        <p>
+          Regelmäßiges Wiederholen hilft dir, Inhalte langfristig zu
+          behalten. Plane Pausen ein und teile große Themen in kleinere
+          Aufgaben auf.
+        </p>
+      </div>
+    </div>
   </main>
-<button type="button" id="pdfButton" hidden>
-  📄 Lernplan als PDF speichern
-</button>
+
   <footer>
-    Dein kostenloser Helfer für bessere Prüfungsvorbereitung.
+    <strong>✦ Lernplan</strong><br>
+    Dein kostenloser Helfer für eine bessere Prüfungsvorbereitung.
+    <br>Deine Fortschritte werden lokal in deinem Browser gespeichert.
   </footer>
 
   <script>
     const datumFeld = document.getElementById("datum");
     const ergebnis = document.getElementById("ergebnis");
+    const pdfButton = document.getElementById("pdfButton");
+    const leerzustand = document.getElementById("leerzustand");
+    const formular = document.getElementById("lernformular");
 
     const heute = new Date();
+
     const lokalesDatum = new Date(
       heute.getTime() - heute.getTimezoneOffset() * 60000
     ).toISOString().split("T")[0];
@@ -316,146 +873,190 @@
 
     let aktuellerSpeicherSchluessel = "";
 
-    document
-      .getElementById("lernformular")
-      .addEventListener("submit", function (event) {
-        event.preventDefault();
+    formular.addEventListener("submit", function (event) {
+      event.preventDefault();
 
-        const fach = document.getElementById("fach").value.trim();
-        const datum = datumFeld.value;
-        const lernzeit = Number(
-          document.getElementById("lernzeit").value
+      const fach = document.getElementById("fach").value.trim();
+      const datum = datumFeld.value;
+      const lernzeit = Number(
+        document.getElementById("lernzeit").value
+      );
+
+      const themen = document
+        .getElementById("themen")
+        .value
+        .split("\n")
+        .map(t => t.trim())
+        .filter(t => t.length > 0);
+
+      if (!fach || !datum || themen.length === 0) {
+        zeigeFehler(
+          "Bitte fülle alle Felder aus und gib mindestens ein Thema ein."
+        );
+        return;
+      }
+
+      const pruefung = new Date(datum + "T12:00:00");
+      const jetzt = new Date();
+      jetzt.setHours(0, 0, 0, 0);
+
+      const tage = Math.round(
+        (pruefung - jetzt) / (1000 * 60 * 60 * 24)
+      );
+
+      if (tage < 0) {
+        zeigeFehler(
+          "Das Prüfungsdatum darf nicht in der Vergangenheit liegen."
+        );
+        return;
+      }
+
+      const anzahlLerntage = Math.max(1, tage);
+      const datumAnzeige = pruefung.toLocaleDateString("de-DE");
+
+      aktuellerSpeicherSchluessel =
+        "lernplanFortschritt:" +
+        JSON.stringify({ fach, datum, lernzeit, themen });
+
+      let erledigteTage = [];
+
+      try {
+        const gespeicherterFortschritt = localStorage.getItem(
+          aktuellerSpeicherSchluessel
         );
 
-        const themen = document
-          .getElementById("themen")
-          .value
-          .split("\n")
-          .map(t => t.trim())
-          .filter(t => t.length > 0);
+        const parsed = JSON.parse(gespeicherterFortschritt || "[]");
 
-        if (!fach || !datum || themen.length === 0) {
-          ergebnis.textContent =
-            "Bitte fülle alle Felder aus und gib mindestens ein Thema ein.";
-          return;
-        }
-
-        const pruefung = new Date(datum + "T12:00:00");
-        const jetzt = new Date();
-        jetzt.setHours(0, 0, 0, 0);
-
-        const tage = Math.round(
-          (pruefung - jetzt) / (1000 * 60 * 60 * 24)
-        );
-
-        if (tage < 0) {
-          ergebnis.textContent =
-            "Das Prüfungsdatum darf nicht in der Vergangenheit liegen.";
-          return;
-        }
-
-        const anzahlLerntage = Math.max(1, tage);
-        const datumAnzeige = pruefung.toLocaleDateString("de-DE");
-
-        // Fortschritt für genau diesen Lernplan speichern
-        aktuellerSpeicherSchluessel =
-          "lernplanFortschritt:" +
-          JSON.stringify({ fach, datum, lernzeit, themen });
-
-        let erledigteTage = [];
-
-        try {
-          erledigteTage = JSON.parse(
-            localStorage.getItem(aktuellerSpeicherSchluessel) || "[]"
+        if (Array.isArray(parsed)) {
+          erledigteTage = parsed.filter(
+            t => Number.isInteger(t) && t >= 0 && t < anzahlLerntage
           );
-
-          if (!Array.isArray(erledigteTage)) {
-            erledigteTage = [];
-          }
-        } catch (fehler) {
-          erledigteTage = [];
         }
+      } catch (fehler) {
+        erledigteTage = [];
+      }
 
-        let html = `
-          <h2>Dein Lernplan: ${escapeHTML(fach)}</h2>
-          <p>Prüfung am ${datumAnzeige}</p>
-          <p>${anzahlLerntage} Lerntag(e) bis zur Prüfung ·
-          ${lernzeit} Minuten täglich</p>
-
-          <div class="fortschritt-box">
-            <div class="fortschritt-text">
-              <strong>Dein Fortschritt</strong>
-              <span id="fortschritt-zahl">0 von ${anzahlLerntage}</span>
-            </div>
-            <div
-              class="fortschritt-balken"
-              role="progressbar"
-              aria-label="Erledigte Lerntage"
-              aria-valuemin="0"
-              aria-valuemax="${anzahlLerntage}"
-              aria-valuenow="0"
-              id="fortschritt-anzeige"
-            >
-              <div
-                class="fortschritt-fuellung"
-                id="fortschritt-fuellung"
-              ></div>
-            </div>
+      let html = `
+        <div class="card-heading">
+          <div class="heading-icon">🎯</div>
+          <div>
+            <h2>Dein Lernplan</h2>
+            <p class="subheading">Deine Prüfung im Blick.</p>
           </div>
-        `;
+        </div>
 
-        for (let tag = 0; tag < anzahlLerntage; tag++) {
-          const tagDatum = new Date(jetzt);
-          tagDatum.setDate(jetzt.getDate() + tag);
+        <h3 class="result-title">${escapeHTML(fach)}</h3>
+        <p class="result-meta">
+          📅 Prüfung am ${datumAnzeige}
+        </p>
 
-          const datumText = tagDatum.toLocaleDateString("de-DE");
+        <div class="stats-grid">
+          <div class="stat">
+            <span class="stat-icon">📚</span>
+            <span class="stat-number">${anzahlLerntage}</span>
+            <span class="stat-label">Geplante Lerntage</span>
+          </div>
+          <div class="stat">
+            <span class="stat-icon">⏱️</span>
+            <span class="stat-number">${lernzeit} Min.</span>
+            <span class="stat-label">Lernzeit pro Tag</span>
+          </div>
+        </div>
 
-          let aufgabe;
+        <div class="progress-box">
+          <div class="progress-header">
+            <strong>Dein Fortschritt</strong>
+            <span class="progress-percent" id="fortschritt-prozent">0%</span>
+          </div>
+          <div
+            class="progress-track"
+            id="fortschritt-anzeige"
+            role="progressbar"
+            aria-label="Erledigte Lerntage"
+            aria-valuemin="0"
+            aria-valuemax="${anzahlLerntage}"
+            aria-valuenow="0"
+          >
+            <div
+              class="progress-fill"
+              id="fortschritt-fuellung"
+            ></div>
+          </div>
+          <p class="progress-note" id="fortschritt-zahl">
+            0 von ${anzahlLerntage} Lerntagen erledigt. Du schaffst das!
+          </p>
+        </div>
 
-          if (tag === anzahlLerntage - 1 && tage > 0) {
-            aufgabe =
-              "Wiederhole die wichtigsten Inhalte und gehe früh schlafen.";
-          } else if (tag % 4 === 3) {
-            aufgabe =
-              "Wiederhole bereits gelernte Themen und teste dein Wissen.";
-          } else {
-            aufgabe = "Lerne und übe: " + themen[tag % themen.length];
-          }
+        <div class="schedule-heading">
+          <h3>📋 Deine Tagesaufgaben</h3>
+          <span class="schedule-count">${anzahlLerntage} Tage</span>
+        </div>
+      `;
 
-          const istErledigt = erledigteTage.includes(tag);
-          const checked = istErledigt ? "checked" : "";
-          const erledigtKlasse = istErledigt ? "erledigt" : "";
+      for (let tag = 0; tag < anzahlLerntage; tag++) {
+        const tagDatum = new Date(jetzt);
+        tagDatum.setDate(jetzt.getDate() + tag);
 
-          html += `
-            <div class="lerntag ${erledigtKlasse}" data-tag="${tag}">
-              <strong>${tag + 1}. Tag – ${datumText}</strong>
+        const datumText = tagDatum.toLocaleDateString("de-DE", {
+          weekday: "short",
+          day: "2-digit",
+          month: "2-digit",
+          year: "numeric"
+        });
 
-              <p class="aufgabe-text">${escapeHTML(aufgabe)}</p>
-              <p>⏱️ Lernzeit: ${lernzeit} Minuten</p>
+        let aufgabe;
 
-              <label class="aufgabe-check">
-                <input
-                  type="checkbox"
-                  class="lerntag-checkbox"
-                  data-tag="${tag}"
-                  ${checked}
-                >
-                <span>Als erledigt markieren</span>
-              </label>
-            </div>
-          `;
+        if (tag === anzahlLerntage - 1 && tage > 0) {
+          aufgabe =
+            "Wiederhole die wichtigsten Inhalte und gehe früh schlafen.";
+        } else if (tag % 4 === 3) {
+          aufgabe =
+            "Wiederhole bereits gelernte Themen und teste dein Wissen.";
+        } else {
+          aufgabe = "Lerne und übe: " + themen[tag % themen.length];
         }
 
-        ergebnis.innerHTML = html;
-        aktualisiereFortschritt();
-pdfButton.hidden = false;
-        ergebnis.scrollIntoView({
-          behavior: "smooth",
-          block: "start"
-        });
-      });
+        const istErledigt = erledigteTage.includes(tag);
+        const checked = istErledigt ? "checked" : "";
+        const erledigtKlasse = istErledigt ? "erledigt" : "";
 
-    // Häkchen speichern und Fortschritt aktualisieren
+        html += `
+          <article class="lerntag ${erledigtKlasse}" data-tag="${tag}">
+            <div class="day-header">
+              <div class="day-number">${tag + 1}</div>
+              <div class="day-info">
+                <span class="day-date">${datumText}</span>
+                <span class="day-time">⏱️ ${lernzeit} Minuten Lernzeit</span>
+              </div>
+            </div>
+
+            <p class="task-text">${escapeHTML(aufgabe)}</p>
+
+            <label class="task-check">
+              <input
+                type="checkbox"
+                class="lerntag-checkbox"
+                data-tag="${tag}"
+                ${checked}
+              >
+              <span>Als erledigt markieren</span>
+            </label>
+          </article>
+        `;
+      }
+
+      leerzustand.hidden = true;
+      ergebnis.innerHTML = html;
+      pdfButton.hidden = false;
+
+      aktualisiereFortschritt();
+
+      ergebnis.scrollIntoView({
+        behavior: "smooth",
+        block: "start"
+      });
+    });
+
     ergebnis.addEventListener("change", function (event) {
       if (!event.target.matches(".lerntag-checkbox")) {
         return;
@@ -469,12 +1070,12 @@ pdfButton.hidden = false;
       let erledigteTage = [];
 
       try {
-        erledigteTage = JSON.parse(
+        const parsed = JSON.parse(
           localStorage.getItem(aktuellerSpeicherSchluessel) || "[]"
         );
 
-        if (!Array.isArray(erledigteTage)) {
-          erledigteTage = [];
+        if (Array.isArray(parsed)) {
+          erledigteTage = parsed.filter(Number.isInteger);
         }
       } catch (fehler) {
         erledigteTage = [];
@@ -514,8 +1115,12 @@ pdfButton.hidden = false;
       const gesamt = checkboxen.length;
       const prozent = Math.round((erledigt / gesamt) * 100);
 
+      document.getElementById("fortschritt-prozent").textContent =
+        prozent + "%";
+
       document.getElementById("fortschritt-zahl").textContent =
-        `${erledigt} von ${gesamt} erledigt · ${prozent}%`;
+        `${erledigt} von ${gesamt} Lerntagen erledigt. ` +
+        (prozent === 100 ? "Geschafft! 🎉" : "Du schaffst das!");
 
       document.getElementById("fortschritt-fuellung").style.width =
         prozent + "%";
@@ -523,6 +1128,32 @@ pdfButton.hidden = false;
       const anzeige = document.getElementById("fortschritt-anzeige");
       anzeige.setAttribute("aria-valuenow", erledigt);
     }
+
+    function zeigeFehler(nachricht) {
+      let meldung = document.getElementById("fehlermeldung");
+
+      if (!meldung) {
+        meldung = document.createElement("p");
+        meldung.id = "fehlermeldung";
+        meldung.className = "message";
+        meldung.setAttribute("role", "alert");
+        formular.appendChild(meldung);
+      }
+
+      meldung.textContent = nachricht;
+    }
+
+    formular.addEventListener("input", function () {
+      const meldung = document.getElementById("fehlermeldung");
+
+      if (meldung) {
+        meldung.remove();
+      }
+    });
+
+    pdfButton.addEventListener("click", function () {
+      window.print();
+    });
 
     function escapeHTML(text) {
       return text.replace(/[&<>"']/g, function (zeichen) {
@@ -536,11 +1167,7 @@ pdfButton.hidden = false;
 
         return ersatz[zeichen];
       });
-    }const pdfButton = document.getElementById("pdfButton");
-
-pdfButton.addEventListener("click", function () {
-  window.print();
-});
+    }
   </script>
 </body>
 </html>
