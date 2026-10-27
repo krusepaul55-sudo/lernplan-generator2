@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="de">
 <head>
@@ -663,6 +662,56 @@
       }
     }
   </style>
+  <style>
+/* Anklickbare Fach-Kacheln */
+.fach-kacheln {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+  margin-top: 12px;
+}
+
+.fach-kachel {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 94px;
+  padding: 12px 6px;
+  border: 1px solid #e4e8f0;
+  border-radius: 13px;
+  background: #fff;
+  color: #172033;
+  font-size: 12px;
+  font-weight: 750;
+  cursor: pointer;
+  transition: 0.2s ease;
+}
+
+.fach-kachel:hover {
+  border-color: #818cf8;
+  background: #f5f6ff;
+  transform: translateY(-2px);
+}
+
+.fach-kachel.ausgewaehlt {
+  border: 2px solid #4f46e5;
+  background: #eef2ff;
+  color: #3730a3;
+  box-shadow: 0 0 0 3px #4f46e51a;
+}
+
+.fach-kachel .fach-symbol {
+  font-size: 27px;
+}
+
+@media (max-width: 400px) {
+  .fach-kacheln {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+</style>
 </head>
 
 <body>
@@ -700,28 +749,86 @@
           </div>
 
           <form id="fachformular">
-            <
+            
 <label class="field-label" for="fach">Schulfach auswählen</label>
-<select id="fach" required>
-  <option value="">-- Fach auswählen --</option>
-  <option value="Deutsch">📖 Deutsch</option>
-  <option value="Mathematik">📐 Mathematik</option>
-  <option value="Englisch">🇬🇧 Englisch</option>
-  <option value="Biologie">🧬 Biologie</option>
-  <option value="Chemie">⚗️ Chemie</option>
-  <option value="Physik">⚛️ Physik</option>
-  <option value="Geschichte">🏛️ Geschichte</option>
-  <option value="Geografie">🌍 Geografie</option>
-  <option value="Informatik">💻 Informatik</option>
-  <option value="Wirtschaft">💶 Wirtschaft</option>
-  <option value="Sozialkunde">👥 Sozialkunde</option>
-  <option value="Französisch">🇫🇷 Französisch</option>
-  <option value="Spanisch">🇪🇸 Spanisch</option>
-  <option value="Kunst">🎨 Kunst</option>
-  <option value="Musik">🎵 Musik</option>
-  <option value="Sport">⚽ Sport</option>
-  <option value="Religion">🕊️ Religion</option>
-  <option value="Ethik">🤝 Ethik</option>
+<<div class="fach-kacheln" id="fachKacheln">
+  <button type="button" class="fach-kachel" data-fach="Deutsch" aria-pressed="false">
+    <span class="fach-symbol">📚</span>
+    Deutsch
+  </button>
+
+  <button type="button" class="fach-kachel" data-fach="Mathematik" aria-pressed="false">
+    <span class="fach-symbol">➗</span>
+    Mathematik
+  </button>
+
+  <button type="button" class="fach-kachel" data-fach="Englisch" aria-pressed="false">
+    <span class="fach-symbol">🇬🇧</span>
+    Englisch
+  </button>
+
+  <button type="button" class="fach-kachel" data-fach="Biologie" aria-pressed="false">
+    <span class="fach-symbol">🧬</span>
+    Biologie
+  </button>
+
+  <button type="button" class="fach-kachel" data-fach="Chemie" aria-pressed="false">
+    <span class="fach-symbol">🧪</span>
+    Chemie
+  </button>
+
+  <button type="button" class="fach-kachel" data-fach="Physik" aria-pressed="false">
+    <span class="fach-symbol">⚛️</span>
+    Physik
+  </button>
+
+  <button type="button" class="fach-kachel" data-fach="Geschichte" aria-pressed="false">
+    <span class="fach-symbol">🏛️</span>
+    Geschichte
+  </button>
+
+  <button type="button" class="fach-kachel" data-fach="Geografie" aria-pressed="false">
+    <span class="fach-symbol">🌍</span>
+    Geografie
+  </button>
+
+  <button type="button" class="fach-kachel" data-fach="Informatik" aria-pressed="false">
+    <span class="fach-symbol">💻</span>
+    Informatik
+  </button>
+
+  <button type="button" class="fach-kachel" data-fach="Wirtschaft" aria-pressed="false">
+    <span class="fach-symbol">📈</span>
+    Wirtschaft
+  </button>
+
+  <button type="button" class="fach-kachel" data-fach="Französisch" aria-pressed="false">
+    <span class="fach-symbol">🇫🇷</span>
+    Französisch
+  </button>
+
+  <button type="button" class="fach-kachel" data-fach="Sport" aria-pressed="false">
+    <span class="fach-symbol">⚽</span>
+    Sport
+  </button>
+</div>
+
+<select id="fach" hidden>
+  <option value="">Fach auswählen</option>
+  <option value="Deutsch">Deutsch</option>
+  <option value="Mathematik">Mathematik</option>
+  <option value="Englisch">Englisch</option>
+  <option value="Biologie">Biologie</option>
+  <option value="Chemie">Chemie</option>
+  <option value="Physik">Physik</option>
+  <option value="Geschichte">Geschichte</option>
+  <option value="Geografie">Geografie</option>
+  <option value="Informatik">Informatik</option>
+  <option value="Wirtschaft">Wirtschaft</option>
+  <option value="Französisch">Französisch</option>
+  <option value="Sport">Sport</option>
+</select>
+  
 </select>
 
 
@@ -1077,7 +1184,40 @@
     formular.addEventListener("submit", function (event) {
       event.preventDefault();
       loescheMeldung();
+const standardThemen = {
+  "Deutsch": "Rechtschreibung, Grammatik, Textanalyse, Erörterung",
+  "Mathematik": "Bruchrechnung, Prozentrechnung, Gleichungen, Geometrie",
+  "Englisch": "Vokabeln, Grammatik, Zeiten, Textverständnis",
+  "Biologie": "Zellaufbau, Fotosynthese, Genetik, Ökologie",
+  "Chemie": "Periodensystem, Atome, Moleküle, chemische Reaktionen",
+  "Physik": "Kräfte, Energie, Elektrizität, Geschwindigkeit",
+  "Geschichte": "Wichtige Ereignisse, Ursachen, Folgen, Jahreszahlen",
+  "Geografie": "Klimazonen, Kontinente, Bevölkerung, Wirtschaft",
+  "Informatik": "Algorithmen, Programmierung, Daten, Netzwerke",
+  "Wirtschaft": "Angebot und Nachfrage, Unternehmen, Geld, Markt",
+  "Französisch": "Vokabeln, Grammatik, Zeiten, Textverständnis",
+  "Sport": "Ausdauer, Kraft, Koordination, Trainingslehre"
+};
 
+const fachKacheln = document.getElementById("fachKacheln");
+const fachFeld = document.getElementById("fach");
+const themenFeld = document.getElementById("themen");
+
+fachKacheln.addEventListener("click", function (event) {
+  const kachel = event.target.closest(".fach-kachel");
+
+  if (!kachel) return;
+
+  fachFeld.value = kachel.dataset.fach;
+
+  document.querySelectorAll(".fach-kachel").forEach(function (button) {
+    const ausgewaehlt = button === kachel;
+    button.classList.toggle("ausgewaehlt", ausgewaehlt);
+    button.setAttribute("aria-pressed", String(ausgewaehlt));
+  });
+
+  themenFeld.value = standardThemen[fachFeld.value] || "";
+});
       const name = fachFeld.value.trim();
       const datum = datumFeld.value;
       const lernzeit = Number(lernzeitFeld.value);
