@@ -3,742 +3,1099 @@
 <html lang="de">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="theme-color" content="#4567e8">
-<meta name="description" content="Kostenloser Lernplan-Generator mit Timer, Karteikarten, Quiz und Prüfungs-Countdown.">
-<title>Lernplan – Dein smarter Lernassistent</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#6366f1">
+<title>LernPlan – Deine Lernplattform</title>
 <style>
-:root{color-scheme:light;--bg:#f5f7fc;--card:#fff;--text:#20283b;--muted:#778198;--line:#e7eaf2;--primary:#4567e8;--primary2:#3451c4;--soft:#eef2ff;--green:#21865a;--red:#b54747;--shadow:0 8px 30px #26345a0a}
-body.dark{color-scheme:dark;--bg:#111522;--card:#1b2131;--text:#edf0fb;--muted:#a1aac0;--line:#30384b;--primary:#8298ff;--primary2:#a4b3ff;--soft:#282f49;--green:#6ed5a0;--red:#ff9292;--shadow:0 8px 30px #0002}
+:root {
+  --bg:#f5f6fb; --card:#fff; --text:#20243a; --muted:#737991;
+  --line:#e6e8f1; --primary:#6366f1; --soft:#eeeeff;
+  --green:#16a34a; --red:#dc2626; --shadow:0 5px 24px #26305a0a;
+}
+body.dark {
+  --bg:#111321; --card:#1b1e30; --text:#f1f2ff; --muted:#a4a9c1;
+  --line:#30344b; --primary:#9294ff; --soft:#29294b; --shadow:none;
+}
 *{box-sizing:border-box}
-body{margin:0;background:var(--bg);color:var(--text);font-family:Inter,system-ui,-apple-system,"Segoe UI",sans-serif;transition:background .2s,color .2s}
+body{margin:0;background:var(--bg);color:var(--text);
+font-family:Inter,system-ui,-apple-system,Arial,sans-serif;line-height:1.5}
 button,input,select,textarea{font:inherit}
 button{cursor:pointer}
-button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible{outline:3px solid #8298ff77;outline-offset:2px}
-.topbar{position:sticky;top:0;z-index:10;background:var(--card);border-bottom:1px solid var(--line)}
-.topinner{max-width:1200px;margin:auto;padding:13px 4%;display:flex;align-items:center;justify-content:space-between;gap:12px}
-.brand{display:flex;align-items:center;gap:10px;font-weight:850;font-size:18px;letter-spacing:-.5px}
-.logo{display:grid;place-items:center;width:38px;height:38px;border-radius:12px;background:var(--primary);color:white;font-size:22px}
-.topactions{display:flex;gap:8px;align-items:center}
-main{width:min(1200px,94%);margin:auto;padding:28px 0 55px}
-.hero{padding:26px 8px 30px;text-align:center}
-.eyebrow{display:inline-block;padding:7px 11px;border-radius:30px;background:var(--soft);color:var(--primary);font-size:11px;font-weight:800;letter-spacing:.7px}
-h1{font-size:clamp(31px,5vw,47px);line-height:1.12;letter-spacing:-1.7px;margin:16px 0 10px}
-.hero p{max-width:600px;margin:auto;color:var(--muted);font-size:14px;line-height:1.8}
-.accent{color:var(--primary)}
-.tabs{display:flex;gap:7px;overflow:auto;padding:5px 0 15px;margin-bottom:12px}
-.tab{flex-shrink:0;border:1px solid var(--line);border-radius:10px;background:var(--card);color:var(--muted);padding:10px 13px;font-size:12px;font-weight:750}
-.tab.active{background:var(--primary);color:white;border-color:var(--primary)}
-.panel{display:none}
-.panel.active{display:block}
-.grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:18px;align-items:start}
-.card{min-width:0;padding:21px;border:1px solid var(--line);border-radius:17px;background:var(--card);box-shadow:var(--shadow)}
-.card+.card{margin-top:16px}
-.heading{display:flex;gap:12px;align-items:center;margin-bottom:18px}
-.headingicon{display:grid;place-items:center;width:42px;height:42px;flex-shrink:0;border-radius:12px;background:var(--soft);font-size:20px}
-h2{margin:0;font-size:17px;letter-spacing:-.4px}
-h3{font-size:14px;margin:0 0 10px}
-.muted{color:var(--muted);font-size:12px;line-height:1.7}
-label.field{display:block;margin:17px 0 7px;font-size:12px;font-weight:750}
-input:not([type=checkbox]):not([type=radio]),select,textarea{width:100%;padding:11px 12px;border:1px solid var(--line);border-radius:10px;background:var(--bg);color:var(--text);outline:none}
-textarea{min-height:105px;resize:vertical;line-height:1.7}
-.row{display:flex;gap:9px;align-items:center}
-.row>*{min-width:0;flex:1}
-.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;padding:10px 12px;border:1px solid var(--line);border-radius:10px;background:var(--card);color:var(--text);font-size:12px;font-weight:750}
-.btn:hover{border-color:var(--primary)}
-.btn.primary{background:var(--primary);color:white;border-color:var(--primary)}
-.btn.primary:hover{background:var(--primary2)}
-.btn.danger{color:var(--red)}
-.btn.full{width:100%;margin-top:12px}
-.btn.small{padding:7px 9px;font-size:11px}
-.fachgrid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:7px;margin-top:10px}
-.fach{min-height:70px;padding:9px 3px;border:1px solid var(--line);border-radius:10px;background:var(--card);color:var(--text);font-size:11px;font-weight:700;overflow-wrap:anywhere}
-.fach span{display:block;font-size:22px;margin-bottom:5px}
-.fach.selected{border-color:var(--primary);background:var(--soft);color:var(--primary)}
-.list{display:grid;gap:9px}
-.item{display:flex;align-items:center;gap:8px;padding:11px;border:1px solid var(--line);border-radius:11px}
-.itembody{flex:1;min-width:0}
-.itemtitle{font-size:12px;font-weight:800;overflow-wrap:anywhere}
-.itemsub{font-size:10px;color:var(--muted);margin-top:4px;line-height:1.5}
-.iconbtn{width:30px;height:30px;flex-shrink:0;border:1px solid var(--line);border-radius:8px;background:var(--bg);color:var(--text)}
-.empty{padding:22px 12px;text-align:center;color:var(--muted);border:1px dashed var(--line);border-radius:12px;font-size:12px;line-height:1.8}
-.stats{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin:16px 0}
-.stat{padding:15px;border:1px solid var(--line);border-radius:12px;background:var(--bg)}
-.stat strong{display:block;font-size:23px;letter-spacing:-.5px;margin:7px 0 3px}
-.stat span{font-size:11px;color:var(--muted)}
-.progress{height:7px;border-radius:20px;background:var(--line);overflow:hidden;margin:9px 0}
+button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible{
+outline:2px solid var(--primary);outline-offset:2px}
+header{position:sticky;top:0;z-index:5;background:var(--card);
+border-bottom:1px solid var(--line);padding:15px 5%;
+display:flex;align-items:center;justify-content:space-between;gap:12px}
+.brand{font-size:22px;font-weight:850;letter-spacing:-1px}
+.brand span{color:var(--primary)}
+.header-actions{display:flex;gap:8px;align-items:center}
+button,.btn{border:0;border-radius:10px;padding:10px 14px;
+background:var(--soft);color:var(--text);font-weight:650}
+button.primary{background:var(--primary);color:white}
+button.danger{color:var(--red)}
+button.small{padding:6px 9px;font-size:12px}
+button:hover{filter:brightness(.97)}
+.layout{display:grid;grid-template-columns:225px minmax(0,1fr);
+max-width:1500px;margin:auto;min-height:calc(100vh - 65px)}
+aside{padding:22px 14px;border-right:1px solid var(--line)}
+.nav-label{font-size:11px;color:var(--muted);font-weight:800;
+text-transform:uppercase;letter-spacing:1.2px;padding:12px 10px 7px}
+nav button{display:flex;align-items:center;gap:11px;width:100%;
+text-align:left;background:transparent;margin:2px 0;padding:11px 12px}
+nav button.active{background:var(--soft);color:var(--primary)}
+main{padding:30px;min-width:0}
+.page{display:none}.page.active{display:block}
+h1{font-size:clamp(25px,3vw,34px);line-height:1.2;margin:0 0 8px;
+letter-spacing:-1px}
+h2{font-size:19px;margin:0 0 13px}
+h3{font-size:15px;margin:0 0 8px}
+p{margin:5px 0}
+.muted{color:var(--muted);font-size:13px}
+.grid{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:16px;margin-top:22px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:17px;
+padding:20px;box-shadow:var(--shadow);min-width:0}
+.span-3{grid-column:span 3}.span-4{grid-column:span 4}
+.span-5{grid-column:span 5}.span-6{grid-column:span 6}
+.span-7{grid-column:span 7}.span-8{grid-column:span 8}
+.span-12{grid-column:span 12}
+.metric{font-size:29px;font-weight:850;letter-spacing:-1px;margin:5px 0}
+.metric-label{color:var(--muted);font-size:13px}
+.row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.between{justify-content:space-between}
+.stack{display:grid;gap:12px}
+.field{display:grid;gap:5px;min-width:0}
+label{font-size:12px;color:var(--muted);font-weight:750}
+input,select,textarea{width:100%;background:var(--bg);color:var(--text);
+border:1px solid var(--line);border-radius:10px;padding:10px 12px;min-width:0}
+textarea{resize:vertical;min-height:90px}
+.form-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.full{grid-column:1/-1}
+.progress{height:8px;border-radius:20px;background:var(--line);overflow:hidden;margin:9px 0}
 .progress div{height:100%;background:var(--primary);border-radius:20px;transition:width .2s}
-.day{padding:14px;margin-top:9px;border:1px solid var(--line);border-radius:12px}
-.day.done{border-color:#7cc99c;background:color-mix(in srgb,var(--green) 7%,var(--card))}
-.dayhead{display:flex;justify-content:space-between;gap:8px;font-size:12px;font-weight:800}
-.day p{white-space:pre-line;font-size:12px;line-height:1.8;color:var(--muted)}
-.check{display:flex;align-items:center;gap:8px;font-size:11px;color:var(--muted)}
-input[type=checkbox]{accent-color:var(--primary);width:17px;height:17px}
-.bigtime{font-size:clamp(44px,10vw,72px);font-weight:850;letter-spacing:-3px;text-align:center;margin:22px 0}
-.center{text-align:center}
-.timer-ring{width:min(240px,70vw);aspect-ratio:1;border:9px solid var(--soft);border-top-color:var(--primary);border-radius:50%;display:grid;place-items:center;margin:18px auto}
-.timer-ring .bigtime{margin:0;font-size:clamp(42px,9vw,60px)}
-.pills{display:flex;flex-wrap:wrap;justify-content:center;gap:7px}
-.pills .btn{border-radius:30px}
-.flashcard{min-height:210px;padding:24px;border:1px solid var(--line);border-radius:16px;background:var(--bg);display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;cursor:pointer}
-.flashcard .question{font-size:12px;color:var(--muted);margin-bottom:15px}
-.flashcard .answer{font-size:20px;font-weight:800;line-height:1.6;overflow-wrap:anywhere}
-.quizoption{display:block;width:100%;margin-top:8px;padding:12px;border:1px solid var(--line);border-radius:10px;background:var(--card);color:var(--text);text-align:left;font-size:12px}
-.quizoption:hover{border-color:var(--primary)}
-.quizoption.correct{border-color:var(--green);background:color-mix(in srgb,var(--green) 12%,var(--card))}
-.quizoption.wrong{border-color:var(--red);background:color-mix(in srgb,var(--red) 10%,var(--card))}
-.notice{margin-top:12px;padding:11px;border-radius:10px;background:var(--soft);color:var(--muted);font-size:11px;line-height:1.7}
-.weekgrid{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:7px}
-.weekday{padding:10px 5px;border:1px solid var(--line);border-radius:10px;min-height:110px;background:var(--bg);overflow-wrap:anywhere}
-.weekday strong{font-size:11px;display:block;margin-bottom:8px}
-.weekday p{font-size:10px;line-height:1.5;color:var(--muted)}
-.message{margin-top:10px;font-size:12px;line-height:1.6;color:var(--green)}
-footer{text-align:center;padding:25px;border-top:1px solid var(--line);background:var(--card);color:var(--muted);font-size:11px;line-height:1.8}
-[hidden]{display:none!important}
-@media(max-width:800px){.grid{grid-template-columns:1fr}.weekgrid{grid-template-columns:repeat(2,minmax(0,1fr))}.card{padding:17px}.fachgrid{grid-template-columns:repeat(3,minmax(0,1fr))}}
-@media(max-width:380px){.fachgrid{grid-template-columns:repeat(2,minmax(0,1fr))}.topactions .btn{padding:8px;font-size:10px}.weekgrid{grid-template-columns:1fr 1fr}}
-@media print{.topbar,.hero,.tabs,#plannerForm,#subjectsCard,#timerControls,.noprint,footer{display:none!important}body{background:white;color:black}.panel{display:none!important}#panel-plan{display:block!important}.grid{display:block}.card{border:0;box-shadow:none}.day{break-inside:avoid}}
+.item{border:1px solid var(--line);padding:13px;border-radius:12px;
+display:flex;align-items:flex-start;justify-content:space-between;gap:10px}
+.item+.item{margin-top:9px}
+.item-title{font-weight:750}
+.tag{display:inline-block;border-radius:7px;background:var(--soft);
+color:var(--primary);padding:3px 8px;font-size:11px;font-weight:750}
+.empty{padding:23px 10px;text-align:center;color:var(--muted);font-size:13px}
+.subject-chip{display:inline-flex;align-items:center;gap:7px;
+background:var(--soft);padding:8px 11px;border-radius:9px;font-size:13px}
+.big-timer{font-size:clamp(44px,8vw,72px);font-weight:850;
+letter-spacing:-3px;text-align:center;margin:18px 0}
+.timer-ring{width:min(250px,70vw);aspect-ratio:1;border:8px solid var(--soft);
+border-top-color:var(--primary);border-radius:50%;display:grid;place-items:center;
+margin:20px auto}
+.timer-ring .big-timer{margin:0}
+.flashcard{min-height:200px;display:grid;place-items:center;text-align:center;
+padding:25px;background:var(--soft);border-radius:15px;font-size:22px;
+font-weight:750;cursor:pointer;white-space:pre-wrap}
+.question{font-size:18px;font-weight:750;margin:12px 0}
+.answer-option{width:100%;text-align:left;margin:5px 0;background:var(--bg);
+border:1px solid var(--line)}
+.answer-option.correct{border-color:var(--green)}
+.answer-option.wrong{border-color:var(--red)}
+.week{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:5px}
+.week-day{border:1px solid var(--line);border-radius:9px;padding:8px 3px;
+min-height:70px;text-align:center;font-size:11px}
+.week-day strong{display:block;font-size:16px;margin-bottom:5px}
+.note{white-space:pre-wrap;overflow-wrap:anywhere}
+hr{border:0;border-top:1px solid var(--line);margin:17px 0}
+footer{text-align:center;padding:25px;color:var(--muted);font-size:12px}
+@media(max-width:900px){
+ .layout{grid-template-columns:1fr}
+ aside{border-right:0;border-bottom:1px solid var(--line);padding:8px 12px}
+ nav{display:flex;overflow-x:auto;gap:5px}
+ nav button{width:auto;white-space:nowrap;flex-shrink:0}
+ .nav-label{display:none}
+ main{padding:20px 14px}
+ .span-3,.span-4{grid-column:span 6}
+ .span-5,.span-7,.span-8{grid-column:span 12}
+}
+@media(max-width:520px){
+ header{padding:12px}.brand{font-size:18px}
+ .grid{gap:10px}.card{padding:15px}
+ .span-3,.span-4,.span-6{grid-column:span 12}
+ .form-grid{grid-template-columns:1fr}
+ .full{grid-column:auto}
+ .week{gap:3px}.week-day{padding:6px 1px}
+}
+@media print{
+ header,aside,.no-print,button{display:none!important}
+ .layout{display:block}main{padding:0}.page{display:none!important}
+ .page.active{display:block!important}
+ body{background:white;color:black}
+ .card{box-shadow:none;break-inside:avoid}
+}
 </style>
 </head>
 <body>
-<header class="topbar">
-  <div class="topinner">
-    <div class="brand"><span class="logo">✦</span> Lernplan</div>
-    <div class="topactions">
-      <button class="btn" id="themeBtn" type="button">🌙 Dark Mode</button>
-      <button class="btn" id="backupBtn" type="button">⬇ Backup</button>
-    </div>
+<header>
+  <div class="brand">✦ Lern<span>Plan</span></div>
+  <div class="header-actions">
+    <span id="headerLevel" class="tag">Level 1</span>
+    <button id="themeBtn" title="Darstellung wechseln">☾</button>
   </div>
 </header>
 
-<main>
-  <section class="hero">
-    <span class="eyebrow">DEIN SMARTER LERNASSISTENT</span>
-    <h1>Lernen mit Plan.<br><span class="accent">Prüfungen im Griff.</span></h1>
-    <p>Organisiere deine Fächer, lerne mit Karteikarten, fokussiere dich mit dem Timer und verfolge deinen Fortschritt.</p>
-  </section>
-
-  <nav class="tabs" aria-label="Hauptnavigation">
-    <button class="tab active" data-tab="dashboard">🏠 Heute</button>
-    <button class="tab" data-tab="plan">📅 Lernplan</button>
-    <button class="tab" data-tab="week">🗓️ Woche</button>
-    <button class="tab" data-tab="timer">⏱️ Timer</button>
-    <button class="tab" data-tab="cards">🃏 Karteikarten</button>
-    <button class="tab" data-tab="quiz">🧠 Quiz</button>
-    <button class="tab" data-tab="stats">📈 Statistik</button>
+<div class="layout">
+<aside>
+  <nav id="navigation">
+    <div class="nav-label">Übersicht</div>
+    <button class="active" data-page="dashboard">⌂ Dashboard</button>
+    <button data-page="planner">▦ Lernplan & Prüfungen</button>
+    <button data-page="timetable">▤ Stundenplan</button>
+    <button data-page="homework">✓ Hausaufgaben</button>
+    <div class="nav-label">Lernen</div>
+    <button data-page="cards">▣ Karteikarten</button>
+    <button data-page="quiz">◇ Quiz & Prüfung</button>
+    <button data-page="helper">✧ Lernhelfer</button>
+    <button data-page="notes">▤ Lernzettel & Notizen</button>
+    <button data-page="focus">◷ Fokus-Modus</button>
+    <div class="nav-label">Motivation</div>
+    <button data-page="stats">↗ Fortschritt & Erfolge</button>
+    <button data-page="settings">⚙ Einstellungen & Backup</button>
   </nav>
+</aside>
 
-  <section class="panel active" id="panel-dashboard">
-    <div class="grid">
-      <div>
-        <section class="card">
-          <div class="heading"><div class="headingicon">☀️</div><div><h2>Dein heutiger Überblick</h2><div class="muted" id="todayDate"></div></div></div>
-          <div class="stats">
-            <div class="stat"><span>Deine Fächer</span><strong id="dashSubjects">0</strong><span>gespeichert</span></div>
-            <div class="stat"><span>Heute erledigt</span><strong id="dashDone">0</strong><span>von deinen Lerntagen</span></div>
-            <div class="stat"><span>Offene Aufgaben</span><strong id="dashOpen">0</strong><span>heute geplant</span></div>
-            <div class="stat"><span>Nächste Prüfung</span><strong id="dashCountdown">–</strong><span id="dashExamName">Keine Prüfung</span></div>
+<main>
+<section class="page active" id="dashboard">
+  <h1>Dein Lernbereich 👋</h1>
+  <p class="muted">Ein guter Lerntag beginnt mit einem kleinen Schritt.</p>
+  <div class="grid">
+    <div class="card span-3"><div class="metric" id="todayTasks">0</div>
+      <div class="metric-label">Aufgaben heute erledigt</div></div>
+    <div class="card span-3"><div class="metric" id="totalMinutes">0</div>
+      <div class="metric-label">Lernminuten insgesamt</div></div>
+    <div class="card span-3"><div class="metric" id="examCount">0</div>
+      <div class="metric-label">Anstehende Prüfungen</div></div>
+    <div class="card span-3"><div class="metric" id="xpValue">0 XP</div>
+      <div class="metric-label">Deine Erfahrungspunkte</div></div>
+
+    <div class="card span-7">
+      <div class="row between"><h2>Dein heutiger Fortschritt</h2>
+        <span class="tag" id="todayPercent">0 %</span></div>
+      <div class="progress"><div id="todayBar" style="width:0%"></div></div>
+      <p class="muted" id="dailyMessage">Starte mit deiner ersten Aufgabe.</p>
+      <hr><h3>Heutige Lernaufgaben</h3>
+      <div id="todayList"></div>
+    </div>
+    <div class="card span-5">
+      <h2>Nächste Prüfung</h2><div id="nextExam"></div>
+      <hr><h3>Wochenziel</h3><div id="weekGoal"></div>
+      <button class="primary" style="width:100%;margin-top:12px" onclick="showPage('planner')">Lernplan öffnen →</button>
+    </div>
+    <div class="card span-6">
+      <h2>Deine Fächer</h2><div id="subjectOverview"></div>
+    </div>
+    <div class="card span-6">
+      <h2>Wochenübersicht</h2><div id="weekView" class="week"></div>
+    </div>
+  </div>
+</section>
+
+<section class="page" id="planner">
+  <h1>Lernplan & Prüfungen</h1>
+  <p class="muted">Plane deine Fächer und bereite dich Schritt für Schritt vor.</p>
+  <div class="grid">
+    <div class="card span-5">
+      <h2 id="subjectFormTitle">Fach hinzufügen</h2>
+      <form id="subjectForm" class="stack">
+        <div class="field"><label for="subjectName">Fach</label>
+          <select id="subjectName" required>
+            <option value="">Fach auswählen</option>
+            <option>Deutsch</option><option>Mathematik</option><option>Englisch</option>
+            <option>Biologie</option><option>Chemie</option><option>Physik</option>
+            <option>Geschichte</option><option>Geografie</option><option>Politik</option>
+            <option>Informatik</option><option>Wirtschaft</option><option>Französisch</option>
+            <option>Spanisch</option><option>Latein</option><option>Musik</option>
+            <option>Kunst</option><option>Sport</option><option>Religion</option>
+            <option>Philosophie</option><option>Sozialkunde</option><option>Technik</option>
+            <option>Hauswirtschaft</option><option>Rechnungswesen</option>
+            <option>Elektrotechnik</option><option>Sonstiges</option>
+          </select>
+        </div>
+        <div class="form-grid">
+          <div class="field"><label for="examDate">Prüfungstermin</label>
+            <input type="date" id="examDate"></div>
+          <div class="field"><label for="difficulty">Schwierigkeit</label>
+            <select id="difficulty"><option value="1">Leicht</option>
+              <option value="2" selected>Mittel</option><option value="3">Schwer</option></select>
           </div>
-          <h3>Deine heutigen Aufgaben</h3>
-          <div id="todayTasks" class="list"></div>
-          <button class="btn primary full" data-goto="plan" type="button">＋ Lernplan erstellen</button>
-        </section>
-        <section class="card">
-          <div class="heading"><div class="headingicon">🎯</div><div><h2>Wochenziel</h2><div class="muted">Erledigte Lerntage diese Woche</div></div></div>
-          <div class="progress"><div id="weekProgress" style="width:0%"></div></div>
-          <div class="muted" id="weekProgressText">0 erledigte Lerntage</div>
-        </section>
-      </div>
-      <div>
-        <section class="card">
-          <div class="heading"><div class="headingicon">⏱️</div><div><h2>Fokus-Timer</h2><div class="muted">Starte eine konzentrierte Lerneinheit.</div></div></div>
-          <div class="timer-ring"><div class="bigtime" id="miniTimer">25:00</div></div>
-          <div class="pills">
-            <button class="btn" data-timer="25" type="button">25 Min.</button>
-            <button class="btn" data-timer="45" type="button">45 Min.</button>
-            <button class="btn" data-timer="5" type="button">Pause 5 Min.</button>
+          <div class="field"><label for="minutesPerDay">Minuten pro Tag</label>
+            <input type="number" id="minutesPerDay" min="5" max="600" value="30" required></div>
+          <div class="field"><label for="gradeLevel">Klassenstufe</label>
+            <select id="gradeLevel">
+              <option value="">Nicht festgelegt</option>
+              <option>1</option><option>2</option><option>3</option><option>4</option>
+              <option>5</option><option>6</option><option>7</option><option>8</option>
+              <option>9</option><option>10</option><option>11</option><option>12</option>
+              <option>13</option><option>Berufsschule</option><option>Studium</option>
+            </select>
           </div>
-          <button class="btn primary full" data-goto="timer" type="button">Timer öffnen</button>
-        </section>
-        <section class="card">
-          <div class="heading"><div class="headingicon">💡</div><div><h2>Lerntipp des Tages</h2></div></div>
-          <p class="muted" id="dailyTip">Lerne in kurzen Einheiten und teste dich regelmäßig selbst.</p>
-          <div class="notice">Tipp: Versuche, ein Thema ohne deine Unterlagen in eigenen Worten zu erklären.</div>
-        </section>
+        </div>
+        <div class="field"><label for="topics">Lernthemen (ein Thema pro Zeile)</label>
+          <textarea id="topics" placeholder="Bruchrechnung&#10;Prozentrechnung&#10;Gleichungen"></textarea></div>
+        <div class="row">
+          <button class="primary" type="submit" id="saveSubjectBtn">Lernplan erstellen</button>
+          <button type="button" id="cancelEdit" hidden>Abbrechen</button>
+        </div>
+        <p class="muted">Der Plan verteilt deine Themen auf die verbleibenden Tage. Die Reihenfolge kannst du später ändern.</p>
+      </form>
+    </div>
+    <div class="card span-7">
+      <div class="row between"><h2>Deine Lernfächer</h2><span id="subjectCount" class="tag">0 Fächer</span></div>
+      <div id="subjectList"></div>
+    </div>
+    <div class="card span-12">
+      <div class="row between"><h2>Dein Lernplan</h2>
+        <button onclick="window.print()">Drucken / PDF</button></div>
+      <div id="planList"></div>
+    </div>
+  </div>
+</section>
+
+<section class="page" id="timetable">
+  <h1>Stundenplan</h1><p class="muted">Trage deine Unterrichtsstunden ein.</p>
+  <div class="grid">
+    <div class="card span-4"><h2>Stunde hinzufügen</h2>
+      <form id="lessonForm" class="stack">
+        <div class="field"><label>Wochentag</label><select id="lessonDay">
+          <option value="1">Montag</option><option value="2">Dienstag</option>
+          <option value="3">Mittwoch</option><option value="4">Donnerstag</option>
+          <option value="5">Freitag</option><option value="6">Samstag</option>
+          <option value="0">Sonntag</option></select></div>
+        <div class="field"><label>Fach</label><input id="lessonSubject" required placeholder="Mathematik"></div>
+        <div class="form-grid">
+          <div class="field"><label>Beginn</label><input type="time" id="lessonStart" value="08:00" required></div>
+          <div class="field"><label>Ende</label><input type="time" id="lessonEnd" value="08:45" required></div>
+        </div>
+        <div class="field"><label>Raum (optional)</label><input id="lessonRoom" placeholder="Raum 12"></div>
+        <button class="primary">Stunde speichern</button>
+      </form>
+    </div>
+    <div class="card span-8"><h2>Deine Woche</h2><div id="timetableList"></div></div>
+  </div>
+</section>
+
+<section class="page" id="homework">
+  <h1>Hausaufgaben</h1><p class="muted">Behalte Aufgaben und Abgabetermine im Blick.</p>
+  <div class="grid">
+    <div class="card span-4"><h2>Neue Aufgabe</h2>
+      <form id="homeworkForm" class="stack">
+        <div class="field"><label>Aufgabe</label><input id="hwTitle" required placeholder="Seite 25, Aufgaben 1–4"></div>
+        <div class="field"><label>Fach</label><input id="hwSubject" required placeholder="Deutsch"></div>
+        <div class="field"><label>Abgabe</label><input type="date" id="hwDate"></div>
+        <div class="field"><label>Geschätzte Minuten</label><input type="number" id="hwMinutes" min="1" value="20"></div>
+        <button class="primary">Aufgabe hinzufügen</button>
+      </form>
+    </div>
+    <div class="card span-8"><h2>Aufgabenübersicht</h2><div id="homeworkList"></div></div>
+  </div>
+</section>
+
+<section class="page" id="cards">
+  <h1>Karteikarten</h1><p class="muted">Wiederhole schwierige Karten häufiger.</p>
+  <div class="grid">
+    <div class="card span-4"><h2>Karte erstellen</h2>
+      <form id="cardForm" class="stack">
+        <div class="field"><label>Fach</label><input id="cardSubject" required placeholder="Biologie"></div>
+        <div class="field"><label>Frage / Vorderseite</label><textarea id="cardQuestion" required placeholder="Was ist Fotosynthese?"></textarea></div>
+        <div class="field"><label>Antwort / Rückseite</label><textarea id="cardAnswer" required placeholder="Der Prozess, bei dem ..."></textarea></div>
+        <button class="primary">Karte speichern</button>
+      </form>
+      <hr><h3>Dein Kartensatz</h3><div id="cardCount" class="muted"></div>
+    </div>
+    <div class="card span-8">
+      <div class="row between"><h2>Wiederholung</h2><span id="dueCount" class="tag"></span></div>
+      <div id="flashArea"></div>
+      <hr><h3>Alle Karten</h3><div id="allCards"></div>
+    </div>
+  </div>
+</section>
+
+<section class="page" id="quiz">
+  <h1>Quiz & Prüfungsmodus</h1><p class="muted">Erstelle Fragen und teste dein Wissen.</p>
+  <div class="grid">
+    <div class="card span-5"><h2>Frage erstellen</h2>
+      <form id="quizForm" class="stack">
+        <div class="field"><label>Fach</label><input id="quizSubject" required placeholder="Geschichte"></div>
+        <div class="field"><label>Frage</label><textarea id="quizQuestion" required></textarea></div>
+        <div class="field"><label>Antwort A</label><input id="quizA" required></div>
+        <div class="field"><label>Antwort B</label><input id="quizB" required></div>
+        <div class="field"><label>Antwort C</label><input id="quizC" required></div>
+        <div class="field"><label>Antwort D</label><input id="quizD" required></div>
+        <div class="field"><label>Richtige Antwort</label>
+          <select id="quizCorrect"><option value="0">A</option><option value="1">B</option>
+            <option value="2">C</option><option value="3">D</option></select></div>
+        <div class="field"><label>Erklärung (optional)</label><textarea id="quizExplanation"></textarea></div>
+        <button class="primary">Frage speichern</button>
+      </form>
+    </div>
+    <div class="card span-7"><div class="row between"><h2>Wissenstest</h2>
+      <button id="startQuiz" class="primary">Quiz starten</button></div>
+      <div id="quizArea"><div class="empty">Erstelle eigene Fragen und starte anschließend den Wissenstest.</div></div>
+      <hr><h3>Gespeicherte Fragen</h3><div id="quizList"></div>
+    </div>
+  </div>
+</section>
+
+<section class="page" id="helper">
+  <h1>Dein Lernhelfer ✧</h1>
+  <p class="muted">Lass dir Themen strukturieren und erstelle Übungsfragen.</p>
+  <div class="grid">
+    <div class="card span-5"><h2>Thema eingeben</h2>
+      <form id="helperForm" class="stack">
+        <div class="field"><label>Fach</label><input id="helpSubject" placeholder="Biologie"></div>
+        <div class="field"><label>Thema oder eigene Notizen</label>
+          <textarea id="helpTopic" required placeholder="Beschreibe, was du verstehen möchtest, oder füge deine Notizen ein."></textarea></div>
+        <div class="field"><label>Was brauchst du?</label><select id="helpMode">
+          <option value="explain">Einfach erklären</option>
+          <option value="summary">Lernzettel strukturieren</option>
+          <option value="questions">Übungsfragen erstellen</option>
+          <option value="steps">Schritt-für-Schritt-Lernhilfe</option>
+        </select></div>
+        <button class="primary">Lernhilfe erstellen</button>
+      </form>
+      <p class="muted">Die Ergebnisse beruhen auf lokalen Vorlagen und deinen Eingaben, nicht auf einer echten KI.</p>
+    </div>
+    <div class="card span-7"><div class="row between"><h2>Deine Lernhilfe</h2>
+      <button id="saveHelp">Als Notiz speichern</button></div>
+      <div id="helpResult" class="note">Deine Lernhilfe erscheint hier.</div>
+      <div id="helpActions" class="row" style="margin-top:15px"></div>
+    </div>
+  </div>
+</section>
+
+<section class="page" id="notes">
+  <h1>Lernzettel & Notizen</h1><p class="muted">Sammle Merksätze, Definitionen und Zusammenfassungen.</p>
+  <div class="grid">
+    <div class="card span-5"><h2>Notiz erstellen</h2>
+      <form id="noteForm" class="stack">
+        <div class="field"><label>Titel</label><input id="noteTitle" required placeholder="Fotosynthese"></div>
+        <div class="field"><label>Fach</label><input id="noteSubject" placeholder="Biologie"></div>
+        <div class="field"><label>Inhalt</label><textarea id="noteBody" required style="min-height:180px" placeholder="Definitionen, wichtige Fakten und Beispiele ..."></textarea></div>
+        <button class="primary">Notiz speichern</button>
+      </form>
+    </div>
+    <div class="card span-7"><h2>Gespeicherte Notizen</h2><div id="notesList"></div></div>
+  </div>
+</section>
+
+<section class="page" id="focus">
+  <h1>Fokus-Modus</h1><p class="muted">Eine Aufgabe. Eine Lernphase. Volle Konzentration.</p>
+  <div class="grid">
+    <div class="card span-6">
+      <h2>Pomodoro-Timer</h2>
+      <div class="timer-ring"><div class="big-timer" id="timerDisplay">25:00</div></div>
+      <div class="row" style="justify-content:center">
+        <button data-minutes="25" class="preset">25 Min.</button>
+        <button data-minutes="45" class="preset">45 Min.</button>
+        <button data-minutes="5" class="preset">5 Min.</button>
+        <button data-minutes="15" class="preset">15 Min.</button>
+      </div>
+      <div class="row" style="justify-content:center;margin-top:14px">
+        <button class="primary" id="timerStart">Start</button>
+        <button id="timerReset">Zurücksetzen</button>
+      </div>
+      <p class="muted" id="timerMessage" style="text-align:center;margin-top:10px">Bereit zum Lernen.</p>
+    </div>
+    <div class="card span-6"><h2>Deine Lerneinheit</h2>
+      <form id="sessionForm" class="stack">
+        <div class="field"><label>Fach</label><input id="sessionSubject" placeholder="Mathematik"></div>
+        <div class="field"><label>Lernziel</label><input id="sessionGoal" placeholder="10 Gleichungen lösen"></div>
+        <div class="field"><label>Manuelle Lernzeit (Minuten)</label><input id="sessionMinutes" type="number" min="1" value="25"></div>
+        <button class="primary">Lernzeit speichern</button>
+      </form>
+      <hr><h3>Letzte Lernsessions</h3><div id="sessionsList"></div>
+    </div>
+  </div>
+</section>
+
+<section class="page" id="stats">
+  <h1>Fortschritt & Erfolge</h1><p class="muted">Sieh, was du schon geschafft hast.</p>
+  <div class="grid">
+    <div class="card span-3"><div class="metric" id="statXP">0</div><div class="metric-label">XP gesammelt</div></div>
+    <div class="card span-3"><div class="metric" id="statHours">0 h</div><div class="metric-label">Lernzeit</div></div>
+    <div class="card span-3"><div class="metric" id="statCards">0</div><div class="metric-label">Karteikarten</div></div>
+    <div class="card span-3"><div class="metric" id="statTasks">0</div><div class="metric-label">Erledigte Aufgaben</div></div>
+    <div class="card span-6"><h2>Fortschritt nach Fach</h2><div id="subjectStats"></div></div>
+    <div class="card span-6"><h2>Level & Erfolge</h2><div id="achievements"></div></div>
+    <div class="card span-12"><h2>Deine Wochen-Challenge</h2><div id="challenge"></div></div>
+  </div>
+</section>
+
+<section class="page" id="settings">
+  <h1>Einstellungen & Backup</h1><p class="muted">Passe deinen Lernbereich an und sichere deine Daten.</p>
+  <div class="grid">
+    <div class="card span-6"><h2>Dein Profil</h2>
+      <form id="settingsForm" class="stack">
+        <div class="field"><label>Klassenstufe / Ausbildungsstand</label><input id="settingGrade" placeholder="z. B. Klasse 10"></div>
+        <div class="field"><label>Schulform</label><select id="settingSchool">
+          <option value="">Nicht festgelegt</option><option>Grundschule</option>
+          <option>Mittelschule / Realschule</option><option>Gymnasium</option>
+          <option>Gesamtschule</option><option>Berufsschule</option><option>Studium</option>
+          <option>Sonstiges</option></select></div>
+        <div class="field"><label>Tägliches Lernziel (Minuten)</label><input id="settingGoal" type="number" min="5" max="600" value="60"></div>
+        <button class="primary">Einstellungen speichern</button>
+      </form>
+    </div>
+    <div class="card span-6"><h2>Datensicherung</h2>
+      <p class="muted">Deine Daten liegen in diesem Browser. Sichere sie regelmäßig als JSON-Datei.</p>
+      <div class="stack" style="margin-top:16px">
+        <button class="primary" id="exportBtn">↓ Backup exportieren</button>
+        <label for="importFile">Backup wiederherstellen</label>
+        <input id="importFile" type="file" accept=".json,application/json">
+        <button id="printBtn">Drucken / PDF speichern</button>
+        <button class="danger" id="resetBtn">Alle Daten löschen</button>
       </div>
     </div>
-  </section>
-
-  <section class="panel" id="panel-plan">
-    <div class="grid">
-      <div>
-        <section class="card" id="plannerForm">
-          <div class="heading"><div class="headingicon">📚</div><div><h2 id="formTitle">Fach hinzufügen</h2><div class="muted">Wähle ein Fach und trage deine Themen ein.</div></div></div>
-          <form id="subjectForm">
-            <label class="field">Fach auswählen</label>
-            <div class="fachgrid" id="subjectTiles"></div>
-            <label class="field" for="examDate">Prüfungsdatum</label>
-            <input type="date" id="examDate" required>
-            <label class="field" for="dailyMinutes">Lernzeit pro Tag</label>
-            <select id="dailyMinutes"><option value="30">30 Minuten</option><option value="60" selected>1 Stunde</option><option value="90">1,5 Stunden</option><option value="120">2 Stunden</option><option value="180">3 Stunden</option></select>
-            <label class="field" for="topics">Lernthemen</label>
-            <textarea id="topics" required placeholder="Zellaufbau&#10;Fotosynthese&#10;Genetik"></textarea>
-            <div class="muted">Jedes Thema in eine neue Zeile schreiben. Du kannst die Vorschläge bearbeiten.</div>
-            <button class="btn primary full" type="submit" id="saveSubject">＋ Fach speichern</button>
-            <button class="btn full" type="button" id="cancelEdit" hidden>Bearbeiten abbrechen</button>
-            <div id="formMessage" class="message" aria-live="polite"></div>
-          </form>
-        </section>
-        <section class="card" id="subjectsCard">
-          <div class="heading"><div class="headingicon">🗂️</div><div><h2>Meine Fächer</h2><div class="muted">Auswählen, bearbeiten oder löschen.</div></div></div>
-          <div id="subjectList" class="list"></div>
-          <button class="btn full" id="restoreBtn" type="button">⬆ Backup importieren</button>
-          <input type="file" id="restoreFile" accept=".json,application/json" hidden>
-        </section>
-      </div>
-      <div>
-        <section class="card">
-          <div class="heading"><div class="headingicon">📝</div><div><h2>Dein Lernplan</h2><div class="muted">Tagesaufgaben und Fortschritt</div></div></div>
-          <div id="planResult"><div class="empty">Füge links ein Fach hinzu, um deinen Lernplan zu erstellen.</div></div>
-          <button class="btn full noprint" id="printPlan" type="button" hidden>📄 Drucken / als PDF speichern</button>
-        </section>
-      </div>
+    <div class="card span-12"><h2>Datenschutz</h2>
+      <p class="muted">Diese Version speichert deine Lerndaten lokal im Browser. Es gibt keine Benutzerkonten und keine Cloud-Synchronisierung. Lösche deine Browserdaten nicht, bevor du ein Backup erstellt hast. Importiere nur JSON-Backups, denen du vertraust.</p>
     </div>
-  </section>
+  </div>
+</section>
 
-  <section class="panel" id="panel-week">
-    <section class="card">
-      <div class="heading"><div class="headingicon">🗓️</div><div><h2>Deine Wochenübersicht</h2><div class="muted">Die nächsten sieben Tage deiner gespeicherten Lernpläne.</div></div></div>
-      <div class="weekgrid" id="weekGrid"></div>
-    </section>
-  </section>
-
-  <section class="panel" id="panel-timer">
-    <div class="grid">
-      <section class="card">
-        <div class="heading"><div class="headingicon">⏱️</div><div><h2>Fokus-Timer</h2><div class="muted">Arbeite konzentriert und plane Pausen.</div></div></div>
-        <div class="timer-ring"><div class="bigtime" id="mainTimer">25:00</div></div>
-        <div class="pills" id="timerControls">
-          <button class="btn" data-timer="25" type="button">25 Min. Fokus</button>
-          <button class="btn" data-timer="45" type="button">45 Min. Fokus</button>
-          <button class="btn" data-timer="5" type="button">5 Min. Pause</button>
-          <button class="btn" data-timer="15" type="button">15 Min. Pause</button>
-        </div>
-        <div class="row" style="margin-top:14px">
-          <button class="btn primary" id="startTimer" type="button">▶ Start</button>
-          <button class="btn" id="pauseTimer" type="button">Ⅱ Pause</button>
-          <button class="btn" id="resetTimer" type="button">↺ Reset</button>
-        </div>
-        <div class="notice" id="timerStatus">Bereit? Wähle eine Dauer und starte deinen Timer.</div>
-      </section>
-      <section class="card">
-        <div class="heading"><div class="headingicon">🧠</div><div><h2>So funktioniert Pomodoro</h2></div></div>
-        <p class="muted">1. Wähle eine Fokuszeit.</p><p class="muted">2. Schalte Ablenkungen aus und arbeite an einem Thema.</p><p class="muted">3. Mache danach eine kurze Pause.</p><p class="muted">4. Wiederhole den Ablauf, wenn du noch Energie hast.</p>
-        <div class="notice">Der Timer läuft nur, solange die Seite geöffnet ist. Beim Erreichen von null wird eine Meldung angezeigt.</div>
-      </section>
-    </div>
-  </section>
-
-  <section class="panel" id="panel-cards">
-    <div class="grid">
-      <section class="card">
-        <div class="heading"><div class="headingicon">🃏</div><div><h2>Karteikarten erstellen</h2><div class="muted">Frage und Antwort selbst eintragen.</div></div></div>
-        <form id="cardForm">
-          <label class="field" for="cardSubject">Fach</label><select id="cardSubject"></select>
-          <label class="field" for="cardQuestion">Frage</label><textarea id="cardQuestion" required placeholder="Was ist Fotosynthese?"></textarea>
-          <label class="field" for="cardAnswer">Antwort</label><textarea id="cardAnswer" required placeholder="Der Prozess, bei dem Pflanzen..."></textarea>
-          <button class="btn primary full" type="submit">＋ Karte speichern</button>
-        </form>
-        <div id="cardMessage" class="message"></div>
-        <h3 style="margin-top:22px">Gespeicherte Karten</h3>
-        <div id="cardList" class="list"></div>
-      </section>
-      <section class="card">
-        <div class="heading"><div class="headingicon">🧠</div><div><h2>Lernen</h2><div class="muted">Drehe die Karte um, um die Antwort zu sehen.</div></div></div>
-        <div id="flashStudy" class="flashcard"><div class="muted">Erstelle zuerst eine Karteikarte.</div></div>
-        <div class="row" style="margin-top:12px">
-          <button class="btn" id="prevCard" type="button">← Zurück</button>
-          <button class="btn primary" id="flipCard" type="button">Antwort zeigen</button>
-          <button class="btn" id="nextCard" type="button">Weiter →</button>
-        </div>
-        <div class="muted center" id="cardPosition" style="margin-top:10px"></div>
-      </section>
-    </div>
-  </section>
-
-  <section class="panel" id="panel-quiz">
-    <div class="grid">
-      <section class="card">
-        <div class="heading"><div class="headingicon">❓</div><div><h2>Quiz erstellen</h2><div class="muted">Erstelle eigene Multiple-Choice-Fragen.</div></div></div>
-        <form id="quizForm">
-          <label class="field" for="quizSubject">Fach</label><select id="quizSubject"></select>
-          <label class="field" for="quizQuestion">Frage</label><textarea id="quizQuestion" required placeholder="Was ist 5 × 6?"></textarea>
-          <label class="field" for="quizA">Antwort A</label><input id="quizA" required placeholder="30">
-          <label class="field" for="quizB">Antwort B</label><input id="quizB" required placeholder="11">
-          <label class="field" for="quizC">Antwort C</label><input id="quizC" required placeholder="56">
-          <label class="field" for="quizCorrect">Richtige Antwort</label><select id="quizCorrect"><option value="0">A</option><option value="1">B</option><option value="2">C</option></select>
-          <button class="btn primary full" type="submit">＋ Frage speichern</button>
-        </form>
-        <div id="quizMessage" class="message"></div>
-      </section>
-      <section class="card">
-        <div class="heading"><div class="headingicon">🎯</div><div><h2>Teste dein Wissen</h2><div class="muted">Wähle die richtige Antwort.</div></div></div>
-        <div id="quizPlay"><div class="empty">Erstelle zuerst eigene Quizfragen.</div></div>
-        <div class="row" style="margin-top:12px">
-          <button class="btn" id="prevQuiz" type="button">← Vorherige</button>
-          <button class="btn primary" id="nextQuiz" type="button">Nächste →</button>
-        </div>
-        <div class="muted" id="quizScore" style="margin-top:12px"></div>
-      </section>
-    </div>
-  </section>
-
-  <section class="panel" id="panel-stats">
-    <div class="grid">
-      <section class="card">
-        <div class="heading"><div class="headingicon">📈</div><div><h2>Deine Lernstatistik</h2><div class="muted">Dein Fortschritt auf einen Blick.</div></div></div>
-        <div class="stats">
-          <div class="stat"><span>Fächer</span><strong id="statSubjects">0</strong></div>
-          <div class="stat"><span>Erledigte Lerntage</span><strong id="statDone">0</strong></div>
-          <div class="stat"><span>Geplante Lernminuten</span><strong id="statMinutes">0</strong></div>
-          <div class="stat"><span>Karteikarten</span><strong id="statCards">0</strong></div>
-          <div class="stat"><span>Quizfragen</span><strong id="statQuiz">0</strong></div>
-          <div class="stat"><span>Aktuelle Lernserie</span><strong id="statStreak">0 Tage</strong></div>
-        </div>
-        <h3>Gesamtfortschritt</h3>
-        <div class="progress"><div id="allProgress" style="width:0%"></div></div>
-        <div class="muted" id="allProgressText">Noch keine Lerntage erledigt.</div>
-      </section>
-      <section class="card">
-        <div class="heading"><div class="headingicon">💾</div><div><h2>Deine Daten</h2><div class="muted">Sichern und auf einem anderen Gerät wiederherstellen.</div></div></div>
-        <p class="muted">Deine Fächer, Karteikarten, Quizfragen und Einstellungen werden lokal in deinem Browser gespeichert.</p>
-        <button class="btn primary full" id="statsBackup" type="button">⬇ Vollständiges Backup exportieren</button>
-        <button class="btn full" id="statsRestore" type="button">⬆ Backup importieren</button>
-        <div class="notice">Der Browser-Speicher wird nicht automatisch zwischen Geräten synchronisiert. Lade deine Backup-Datei herunter und bewahre sie auf.</div>
-      </section>
-    </div>
-  </section>
+<footer>✦ LernPlan · Lerne in deinem Tempo.</footer>
 </main>
-
-<footer>✦ Lernplan · Kostenloser Lernassistent<br>Deine Daten bleiben in deinem Browser. Regelmäßige Backups empfohlen.</footer>
+</div>
 
 <script>
 "use strict";
 
-const KEY="lernplan_all_in_one_v1";
-const SUBJECTS=[
-["Deutsch","📚","Rechtschreibung\nGrammatik\nTextanalyse\nErörterung"],
-["Mathematik","➗","Bruchrechnung\nProzentrechnung\nGleichungen\nGeometrie"],
-["Englisch","🇬🇧","Vokabeln\nGrammatik\nZeitformen\nTextverständnis"],
-["Biologie","🧬","Zellaufbau\nFotosynthese\nGenetik\nÖkologie"],
-["Chemie","🧪","Periodensystem\nAtome\nMoleküle\nChemische Reaktionen"],
-["Physik","⚛️","Kräfte\nEnergie\nElektrizität\nGeschwindigkeit"],
-["Geschichte","🏛️","Wichtige Ereignisse\nUrsachen\nFolgen\nJahreszahlen"],
-["Geografie","🌍","Klimazonen\nKontinente\nBevölkerung\nWirtschaft"],
-["Informatik","💻","Algorithmen\nProgrammierung\nDaten\nNetzwerke"],
-["Wirtschaft","📈","Angebot und Nachfrage\nUnternehmen\nGeld\nMarkt"],
-["Französisch","🇫🇷","Vokabeln\nGrammatik\nZeitformen\nTextverständnis"],
-["Sport","⚽","Ausdauer\nKraft\nKoordination\nTrainingslehre"],
-["Religion","⛪","Weltreligionen\nBibel\nEthische Fragen\nGlaubensrichtungen"],
-["Ethik","⚖️","Moral\nWerte\nVerantwortung\nMenschenrechte"],
-["Politik","🏛️","Demokratie\nWahlen\nGrundgesetz\nPolitische Systeme"],
-["Kunst","🎨","Farbenlehre\nPerspektive\nKunstepochen\nBildanalyse"],
-["Musik","🎵","Notenlehre\nInstrumente\nMusikgeschichte\nKomponisten"],
-["Latein","🏺","Vokabeln\nGrammatik\nDeklinationen\nÜbersetzungen"],
-["Spanisch","🇪🇸","Vokabeln\nGrammatik\nZeitformen\nTextverständnis"],
-["Russisch","🇷🇺","Vokabeln\nGrammatik\nKyrillische Schrift\nZeitformen"],
-["Niederländisch","🇳🇱","Vokabeln\nGrammatik\nSatzbau\nTextverständnis"],
-["Türkisch","🇹🇷","Vokabeln\nGrammatik\nSatzbau\nTextverständnis"],
-["Technik","⚙️","Werkstoffe\nTechnische Zeichnungen\nKonstruktion\nWerkzeuge"],
-["Hauswirtschaft","🍳","Ernährung\nHygiene\nHaushaltsplanung\nNachhaltigkeit"],
-["Medienbildung","📱","Datenschutz\nMedienkompetenz\nFake News\nDigitale Sicherheit"],
-["Philosophie","💭","Erkenntnis\nFreiheit\nGerechtigkeit\nPhilosophische Positionen"],
-["Astronomie","🔭","Sonnensystem\nSterne\nGalaxien\nPlaneten"],
-["Darstellendes Spiel","🎭","Schauspiel\nKörpersprache\nImprovisation\nBühnenarbeit"],
-["Arbeit-Wirtschaft-Technik","🛠️","Berufswahl\nWirtschaft\nArbeitswelt\nTechnik"]
-];
-const tips=[
-"Lerne aktiv: Erkläre ein Thema, ohne in deine Unterlagen zu schauen.",
-"Verteile deine Wiederholungen über mehrere Tage statt alles auf einmal zu lernen.",
-"Beginne mit dem Thema, das dir am schwersten fällt.",
-"Nach einer Lerneinheit hilft eine kurze Pause beim Konzentrieren.",
-"Schreibe wichtige Begriffe auf Karteikarten und teste dich selbst.",
-"Bearbeite erst eine Aufgabe allein und kontrolliere danach die Lösung.",
-"Am Ende jeder Einheit: Notiere drei Dinge, die du heute gelernt hast."
-];
-const $=id=>document.getElementById(id);
-const uid=()=>Date.now().toString(36)+Math.random().toString(36).slice(2,8);
-const todayISO=()=>{const d=new Date();d.setMinutes(d.getMinutes()-d.getTimezoneOffset());return d.toISOString().slice(0,10)};
-const dateAtNoon=s=>new Date(s+"T12:00:00");
-const dateLabel=s=>dateAtNoon(s).toLocaleDateString("de-DE",{day:"2-digit",month:"short",year:"numeric"});
-const escapeHTML=s=>String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
-const dayDiff=(a,b)=>Math.round((dateAtNoon(b)-dateAtNoon(a))/86400000);
-const todayIndex=0;
-function emptyData(){return{subjects:[],cards:[],quizzes:[],theme:"light",studyDates:[],timerMinutes:25}}
-function validData(d){return d&&Array.isArray(d.subjects)&&Array.isArray(d.cards)&&Array.isArray(d.quizzes)}
+/* ---------- Daten und Speicherung ---------- */
+const STORAGE_KEY = "lernplan_complete_v4";
+const $ = id => document.getElementById(id);
+const todayISO = () => {
+  const d = new Date();
+  return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`;
+};
+const makeId = () => Date.now().toString(36)+Math.random().toString(36).slice(2,8);
+const esc = value => String(value ?? "").replace(/[&<>"']/g, c =>
+  ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const safeDate = s => s && /^\d{4}-\d{2}-\d{2}$/.test(s) ? new Date(s+"T12:00:00") : null;
+const fmtDate = s => {
+  const d=safeDate(s);
+  return d ? d.toLocaleDateString("de-DE") : "Kein Termin";
+};
+const blankData = () => ({
+  version:4, settings:{grade:"",school:"",goal:60,dark:false},
+  subjects:[], cards:[], quizzes:[], lessons:[], homework:[],
+  notes:[], sessions:[], studyDates:[], completedTasks:[],
+  quizHistory:[], xp:0, challengeWeek:"", challengeDone:0
+});
 function loadData(){
- try{
-  const d=JSON.parse(localStorage.getItem(KEY)||"null");
-  if(validData(d))return {...emptyData(),...d};
- }catch(e){}
- return emptyData();
+  try{
+    const raw=localStorage.getItem(STORAGE_KEY);
+    if(!raw)return blankData();
+    const parsed=JSON.parse(raw);
+    const base=blankData();
+    return {...base,...parsed,settings:{...base.settings,...parsed.settings},
+      subjects:Array.isArray(parsed.subjects)?parsed.subjects:[],
+      cards:Array.isArray(parsed.cards)?parsed.cards:[],
+      quizzes:Array.isArray(parsed.quizzes)?parsed.quizzes:[],
+      lessons:Array.isArray(parsed.lessons)?parsed.lessons:[],
+      homework:Array.isArray(parsed.homework)?parsed.homework:[],
+      notes:Array.isArray(parsed.notes)?parsed.notes:[],
+      sessions:Array.isArray(parsed.sessions)?parsed.sessions:[],
+      studyDates:Array.isArray(parsed.studyDates)?parsed.studyDates:[],
+      completedTasks:Array.isArray(parsed.completedTasks)?parsed.completedTasks:[],
+      quizHistory:Array.isArray(parsed.quizHistory)?parsed.quizHistory:[]};
+  }catch(e){return blankData();}
 }
 let data=loadData();
-let selectedSubject=null,editingSubject=null,flashIndex=0,flashBack=false,quizIndex=0,quizAnswers={},quizScore=0;
-let timerTotal=(Number(data.timerMinutes)||25)*60,timerLeft=timerTotal,timerHandle=null,timerEnd=0;
-const tileBox=$("subjectTiles");
-const subjectForm=$("subjectForm");
-
 function save(){
- try{localStorage.setItem(KEY,JSON.stringify(data));return true}
- catch(e){alert("Speichern fehlgeschlagen. Bitte exportiere ein Backup und prüfe den Browser-Speicher.");return false}
+  try{localStorage.setItem(STORAGE_KEY,JSON.stringify(data));}
+  catch(e){alert("Speichern fehlgeschlagen. Möglicherweise ist der Browserspeicher voll.");}
 }
-function message(id,text){$(id).textContent=text}
-function setTab(name){
- document.querySelectorAll(".tab").forEach(b=>b.classList.toggle("active",b.dataset.tab===name));
- document.querySelectorAll(".panel").forEach(p=>p.classList.toggle("active",p.id==="panel-"+name));
- if(name==="dashboard")renderDashboard();
- if(name==="week")renderWeek();
- if(name==="stats")renderStats();
- if(name==="cards")renderCards();
- if(name==="quiz")renderQuiz();
+function addXP(n, reason){
+  data.xp=Math.max(0,(Number(data.xp)||0)+n);
+  if(reason) toast(reason+" (+"+n+" XP)");
 }
-document.querySelectorAll(".tab").forEach(b=>b.addEventListener("click",()=>setTab(b.dataset.tab)));
-document.querySelectorAll("[data-goto]").forEach(b=>b.addEventListener("click",()=>setTab(b.dataset.goto)));
-
-function initTiles(){
- tileBox.innerHTML=SUBJECTS.map(([name,icon])=>`<button type="button" class="fach" data-subject="${escapeHTML(name)}" aria-pressed="false"><span>${icon}</span>${escapeHTML(name)}</button>`).join("");
+function toast(msg){
+  const el=$("toast");
+  if(el){el.textContent=msg;el.style.display="block";clearTimeout(toast.timeout);
+    toast.timeout=setTimeout(()=>el.style.display="none",2600);}
 }
-function markTile(name){
- tileBox.querySelectorAll(".fach").forEach(b=>{
-  const on=b.dataset.subject===name;b.classList.toggle("selected",on);b.setAttribute("aria-pressed",String(on));
- });
+function dateDiff(date){
+  const d=safeDate(date); if(!d)return null;
+  const now=new Date();now.setHours(0,0,0,0);
+  return Math.ceil((d-now)/86400000);
 }
-function getSubject(name){return SUBJECTS.find(s=>s[0]===name)}
-function chooseSubject(name){
- $("topics").value=getSubject(name)?.[2]||"";
- markTile(name);
+function markStudyDay(){
+  if(!data.studyDates.includes(todayISO()))data.studyDates.push(todayISO());
 }
-tileBox.addEventListener("click",e=>{
- const b=e.target.closest("[data-subject]");if(!b)return;
- if(editingSubject){
-  const existing=data.subjects.find(s=>s.id===editingSubject);
-  if(existing&&existing.name===b.dataset.subject){
-   $("topics").value=existing.topics.join("\n");markTile(existing.name);return;
+function level(){return Math.floor(Math.sqrt(Math.max(0,data.xp)/100))+1;}
+function tasksForSubject(s){
+  const topics=(s.topics||[]).filter(t=>t.trim());
+  if(!topics.length)return ["Grundlagen wiederholen","Übungsaufgaben bearbeiten","Wiederholen und prüfen"];
+  const diff=Math.max(1,Number(s.difficulty)||2);
+  return topics.flatMap((topic,i)=>diff===3 && i%2===0?
+    [topic+" verstehen",topic+" üben"]:[topic]);
+}
+function tasksWithDates(s){
+  const tasks=tasksForSubject(s);
+  const start=new Date();start.setHours(0,0,0,0);
+  const exam=s.examDate?safeDate(s.examDate):null;
+  let days=exam?Math.max(1,Math.ceil((exam-start)/86400000)):Math.max(tasks.length,7);
+  days=Math.min(days,365);
+  const result=[];
+  for(let i=0;i<days;i++){
+    const date=new Date(start);date.setDate(date.getDate()+i);
+    const taskIndex=Math.min(tasks.length-1,Math.floor(i*tasks.length/days));
+    const key=s.id+"|"+date.toISOString().slice(0,10)+"|"+taskIndex;
+    result.push({key,date:date.toISOString().slice(0,10),topic:tasks[taskIndex]||"Wiederholen",
+      subject:s.name,minutes:Number(s.minutes)||30});
   }
- }
- $("subjectForm").dataset.name=b.dataset.subject;
- chooseSubject(b.dataset.subject);
-});
-function subjectNameFromForm(){return subjectForm.dataset.name||""}
-function setFormSubject(name){subjectForm.dataset.name=name;markTile(name)}
-function resetForm(){
- subjectForm.reset();delete subjectForm.dataset.name;editingSubject=null;
- $("formTitle").textContent="Fach hinzufügen";$("saveSubject").textContent="＋ Fach speichern";$("cancelEdit").hidden=true;
- markTile("");$("examDate").min=todayISO();$("examDate").value=todayISO();$("dailyMinutes").value="60";message("formMessage","");
+  return result;
 }
-$("cancelEdit").addEventListener("click",resetForm);
-$("examDate").min=todayISO();$("examDate").value=todayISO();
-tileBox.addEventListener("click",e=>{const b=e.target.closest("[data-subject]");if(b)setFormSubject(b.dataset.subject)});
+function allPlanTasks(){return data.subjects.flatMap(tasksWithDates);}
+function isDone(key){return data.completedTasks.includes(key);}
+function doneCount(){return data.completedTasks.length;}
+function todayPlan(){return allPlanTasks().filter(t=>t.date===todayISO());}
+function addStudyMinutes(minutes,subject,goal){
+  minutes=Math.max(0,Math.round(Number(minutes)||0));if(!minutes)return;
+  data.sessions.push({id:makeId(),date:todayISO(),minutes,
+    subject:(subject||"Allgemein").trim(),goal:(goal||"").trim()});
+  markStudyDay();addXP(Math.max(1,Math.floor(minutes/5)),"Lernzeit gespeichert");
+  data.challengeDone=(data.challengeDone||0)+minutes;
+  save();renderAll();
+}
+function totalMinutes(){return data.sessions.reduce((sum,s)=>sum+(Number(s.minutes)||0),0);}
+function totalCompleted(){return doneCount()+data.homework.filter(h=>h.done).length;}
+function subjectDone(name){
+  return data.completedTasks.filter(k=>k.startsWith(data.subjects.find(s=>s.name===name)?.id+"|")).length;
+}
 
-subjectForm.addEventListener("submit",e=>{
- e.preventDefault();
- const name=subjectNameFromForm(),date=$("examDate").value,minutes=Number($("dailyMinutes").value);
- const topics=$("topics").value.split(/\n|,/).map(s=>s.trim()).filter(Boolean);
- if(!name||!date||!topics.length){message("formMessage","Bitte wähle ein Fach, ein Datum und mindestens ein Thema.");return}
- if(date<todayISO()){message("formMessage","Bitte wähle ein heutiges oder zukünftiges Prüfungsdatum.");return}
- let subject;
- if(editingSubject){
-  subject=data.subjects.find(s=>s.id===editingSubject);
-  if(!subject){resetForm();return}
-  subject.name=name;subject.date=date;subject.minutes=minutes;subject.topics=topics;
-  subject.done=(subject.done||[]).filter(i=>i<Math.max(1,dayDiff(todayISO(),date)));
- }else{
-  subject={id:uid(),name,date,minutes,topics,done:[],created:todayISO()};
-  data.subjects.push(subject);
- }
- selectedSubject=subject.id;
- save();resetForm();renderAll();message("formMessage","Fach gespeichert ✓");
+/* ---------- Navigation ---------- */
+function showPage(name){
+  document.querySelectorAll(".page").forEach(p=>p.classList.toggle("active",p.id===name));
+  document.querySelectorAll("#navigation button[data-page]").forEach(b=>
+    b.classList.toggle("active",b.dataset.page===name));
+  if(name==="focus")updateTimerDisplay();
+  window.scrollTo({top:0,behavior:"smooth"});
+}
+$("navigation").addEventListener("click",e=>{
+  const b=e.target.closest("button[data-page]");
+  if(b)showPage(b.dataset.page);
+});
+$("themeBtn").addEventListener("click",()=>{
+  data.settings.dark=!data.settings.dark;applyTheme();save();
+});
+function applyTheme(){
+  document.body.classList.toggle("dark",!!data.settings.dark);
+  $("themeBtn").textContent=data.settings.dark?"☀":"☾";
+}
+
+/* ---------- Fächer und Prüfungsplan ---------- */
+let editingSubject=null;
+function resetSubjectForm(){
+  editingSubject=null;$("subjectForm").reset();
+  $("difficulty").value="2";$("minutesPerDay").value="30";
+  $("subjectFormTitle").textContent="Fach hinzufügen";
+  $("saveSubjectBtn").textContent="Lernplan erstellen";
+  $("cancelEdit").hidden=true;
+}
+$("cancelEdit").addEventListener("click",resetSubjectForm);
+$("subjectForm").addEventListener("submit",e=>{
+  e.preventDefault();
+  const name=$("subjectName").value.trim();
+  if(!name)return;
+  const obj={id:editingSubject||makeId(),name,
+    examDate:$("examDate").value,
+    difficulty:Number($("difficulty").value),
+    minutes:Number($("minutesPerDay").value)||30,
+    grade:$("gradeLevel").value,
+    topics:$("topics").value.split("\n").map(t=>t.trim()).filter(Boolean)};
+  if(obj.examDate && dateDiff(obj.examDate)<0 &&
+      !confirm("Der Prüfungstermin liegt in der Vergangenheit. Trotzdem speichern?"))return;
+  const idx=data.subjects.findIndex(s=>s.id===obj.id);
+  if(idx>=0){
+    const old=data.subjects[idx];
+    if(old.name!==obj.name || JSON.stringify(old.topics)!==JSON.stringify(obj.topics)){
+      if(!confirm("Du änderst Fach oder Themen. Bereits erledigte Aufgaben bleiben als Verlauf gespeichert. Fortfahren?"))return;
+    }
+    data.subjects[idx]=obj;
+  }else data.subjects.push(obj);
+  save();resetSubjectForm();renderAll();showPage("planner");
 });
 function editSubject(id){
- const s=data.subjects.find(x=>x.id===id);if(!s)return;
- editingSubject=id;selectedSubject=id;
- $("formTitle").textContent="Fach bearbeiten";$("saveSubject").textContent="✓ Änderungen speichern";$("cancelEdit").hidden=false;
- $("examDate").value=s.date;$("dailyMinutes").value=String(s.minutes);$("topics").value=s.topics.join("\n");
- setFormSubject(s.name);setTab("plan");$("plannerForm").scrollIntoView({behavior:"smooth",block:"start"});
+  const s=data.subjects.find(x=>x.id===id);if(!s)return;
+  editingSubject=id;
+  $("subjectName").value=s.name;
+  $("examDate").value=s.examDate||"";
+  $("difficulty").value=s.difficulty||2;
+  $("minutesPerDay").value=s.minutes||30;
+  $("gradeLevel").value=s.grade||"";
+  $("topics").value=(s.topics||[]).join("\n");
+  $("subjectFormTitle").textContent="Fach bearbeiten";
+  $("saveSubjectBtn").textContent="Änderungen speichern";
+  $("cancelEdit").hidden=false;
+  showPage("planner");$("subjectForm").scrollIntoView({behavior:"smooth"});
 }
-function removeSubject(id){
- const s=data.subjects.find(x=>x.id===id);if(!s||!confirm("Fach „"+s.name+"“ und seinen Fortschritt löschen?"))return;
- data.subjects=data.subjects.filter(x=>x.id!==id);
- if(selectedSubject===id)selectedSubject=data.subjects[0]?.id||null;
- if(editingSubject===id)resetForm();
- save();renderAll();
+function deleteSubject(id){
+  if(!confirm("Dieses Fach aus deinem Lernplan entfernen?"))return;
+  data.subjects=data.subjects.filter(s=>s.id!==id);save();renderAll();
 }
 function renderSubjects(){
- const box=$("subjectList");
- if(!data.subjects.length){box.innerHTML='<div class="empty">Noch keine Fächer vorhanden.</div>';return}
- box.innerHTML=data.subjects.map(s=>{
-  const total=Math.max(1,dayDiff(todayISO(),s.date)),done=(s.done||[]).filter(i=>i<total).length,pct=Math.round(done/total*100);
-  return `<div class="item"><div class="itembody"><div class="itemtitle">${escapeHTML(s.name)}</div><div class="itemsub">Prüfung: ${dateLabel(s.date)} · ${done}/${total} Tage erledigt</div><div class="progress"><div style="width:${pct}%"></div></div></div><button class="iconbtn" data-edit="${s.id}" aria-label="Bearbeiten">✎</button><button class="iconbtn" data-select="${s.id}" aria-label="Auswählen">↗</button><button class="iconbtn" data-delete="${s.id}" aria-label="Löschen">×</button></div>`;
- }).join("");
+  $("subjectCount").textContent=data.subjects.length+" Fächer";
+  $("subjectList").innerHTML=data.subjects.length?data.subjects.map(s=>{
+    const d=dateDiff(s.examDate),done=subjectDone(s.name),total=tasksWithDates(s).length;
+    return `<div class="item"><div style="min-width:0">
+      <div class="item-title">${esc(s.name)} <span class="tag">${s.difficulty===3?"Schwer":s.difficulty===1?"Leicht":"Mittel"}</span></div>
+      <p class="muted">${s.examDate?"Prüfung: "+fmtDate(s.examDate):"Kein Prüfungstermin"} · ${s.minutes} Min./Tag</p>
+      <p class="muted">${(s.topics||[]).length} Themen · ${done} erledigte Planaufgaben</p>
+      </div><div class="row">
+      <button class="small" onclick="editSubject('${s.id}')">Bearbeiten</button>
+      <button class="small danger" onclick="deleteSubject('${s.id}')">Löschen</button>
+      </div></div>`;
+  }).join(""):'<div class="empty">Noch keine Fächer. Erstelle links deinen ersten Lernplan.</div>';
+  const tasks=allPlanTasks().sort((a,b)=>a.date.localeCompare(b.date));
+  $("planList").innerHTML=tasks.length?tasks.slice(0,150).map(t=>
+    `<div class="item"><div style="min-width:0">
+      <div class="item-title">${esc(t.subject)} · ${esc(t.topic)}</div>
+      <p class="muted">${fmtDate(t.date)} · ungefähr ${t.minutes} Minuten</p></div>
+      <label style="display:flex;align-items:center;gap:7px">
+      <input type="checkbox" style="width:auto" ${isDone(t.key)?"checked":""}
+      onchange="toggleTask('${t.key.replace(/'/g,"\\'")}',this.checked)">Erledigt</label></div>`
+  ).join(""):'<div class="empty">Erstelle ein Fach mit Themen, um deinen Plan zu sehen.</div>';
 }
-$("subjectList").addEventListener("click",e=>{
- const b=e.target.closest("button");if(!b)return;
- if(b.dataset.edit)editSubject(b.dataset.edit);
- if(b.dataset.select){selectedSubject=b.dataset.select;renderPlan();setTab("plan")}
- if(b.dataset.delete)removeSubject(b.dataset.delete);
-});
-function makeTasks(s){
- const n=Math.max(1,dayDiff(todayISO(),s.date)),topics=s.topics.length?s.topics:["Wichtige Inhalte wiederholen"];
- const review=n>=5?n-2:-1,test=n>=3?n-1:-1;
- const contentDays=Math.max(1,n-(review>=0?1:0)-(test>=0?1:0));
- const groups=Array.from({length:n},()=>[]);
- topics.forEach((topic,i)=>groups[Math.min(contentDays-1,Math.floor(i*contentDays/topics.length))].push(topic));
- return Array.from({length:n},(_,i)=>{
-  if(i===review)return "🔁 Wiederholung\nWiederhole alle Themen: "+topics.join(", ")+". Teste dich zuerst ohne Unterlagen.";
-  if(i===test)return "📝 Probeprüfung\nBearbeite Prüfungsaufgaben ohne Hilfsmittel. Kontrolliere deine Antworten und wiederhole deine Wissenslücken.";
-  let text=groups[i].length?"📚 Neue Themen\n"+groups[i].join(" · ")+"\nLerne aktiv und erkläre die Inhalte in eigenen Worten.":"🧠 Festigen\nWiederhole bereits gelernte Inhalte und bearbeite passende Aufgaben.";
-  if(i>0)text+="\n🔁 Wiederhole kurz den Stoff vom Vortag.";
-  return text;
- });
+function toggleTask(key,checked){
+  const was=isDone(key);
+  if(checked&&!was){data.completedTasks.push(key);addXP(10,"Lernaufgabe erledigt");markStudyDay();}
+  if(!checked&&was){data.completedTasks=data.completedTasks.filter(k=>k!==key);}
+  save();renderAll();
 }
-function renderPlan(){
- const s=data.subjects.find(x=>x.id===selectedSubject)||data.subjects[0];
- if(!s){selectedSubject=null;$("planResult").innerHTML='<div class="empty">Füge links ein Fach hinzu, um deinen Lernplan zu erstellen.</div>';$("printPlan").hidden=true;return}
- selectedSubject=s.id;
- const n=Math.max(1,dayDiff(todayISO(),s.date)),tasks=makeTasks(s),done=s.done||[],pct=Math.round(done.filter(i=>i<n).length/n*100);
- $("printPlan").hidden=false;
- let html=`<h2>${escapeHTML(s.name)}</h2><p class="muted">Prüfung: ${dateLabel(s.date)} · Noch ${Math.max(0,dayDiff(todayISO(),s.date))} Tag(e)</p>
- <div class="stats"><div class="stat"><span>Lerntage</span><strong>${n}</strong></div><div class="stat"><span>Pro Tag</span><strong>${s.minutes} Min.</strong></div></div>
- <div class="progress"><div style="width:${pct}%"></div></div><div class="muted">${done.filter(i=>i<n).length} von ${n} Tagen erledigt (${pct}%)</div>`;
- tasks.forEach((task,i)=>{
-  const d=new Date();d.setHours(12,0,0,0);d.setDate(d.getDate()+i);
-  const date=d.toLocaleDateString("de-DE",{weekday:"short",day:"2-digit",month:"short"});
-  html+=`<article class="day ${done.includes(i)?"done":""}"><div class="dayhead"><span>Tag ${i+1} · ${date}</span><span>${s.minutes} Min.</span></div><p>${escapeHTML(task)}</p><label class="check"><input type="checkbox" data-done="${i}" ${done.includes(i)?"checked":""}> Als erledigt markieren</label></article>`;
- });
- $("planResult").innerHTML=html;
-}
-$("planResult").addEventListener("change",e=>{
- if(!e.target.matches("[data-done]"))return;
- const s=data.subjects.find(x=>x.id===selectedSubject);if(!s)return;
- const i=Number(e.target.dataset.done);s.done=s.done||[];
- s.done=e.target.checked?[...new Set([...s.done,i])]:s.done.filter(x=>x!==i);
- if(e.target.checked&&!data.studyDates.includes(todayISO()))data.studyDates.push(todayISO());
- save();renderAll();
-});
-$("printPlan").addEventListener("click",()=>window.print());
 
-function allTasksToday(){
- const out=[];
- data.subjects.forEach(s=>{
-  const total=Math.max(1,dayDiff(todayISO(),s.date));
-  if(!(s.done||[]).includes(0)&&dayDiff(todayISO(),s.date)>=0){
-   out.push({subject:s,task:makeTasks(s)[0]});
-  }
- });
- return out;
-}
+/* ---------- Dashboard ---------- */
 function renderDashboard(){
- $("todayDate").textContent=new Date().toLocaleDateString("de-DE",{weekday:"long",day:"numeric",month:"long",year:"numeric"});
- $("dashSubjects").textContent=data.subjects.length;
- const done=data.subjects.filter(s=>(s.done||[]).includes(0)).length;
- const tasks=allTasksToday();
- $("dashDone").textContent=done;$("dashOpen").textContent=tasks.length;
- const next=[...data.subjects].filter(s=>s.date>=todayISO()).sort((a,b)=>a.date.localeCompare(b.date))[0];
- $("dashCountdown").textContent=next?Math.max(0,dayDiff(todayISO(),next.date))+" d":"–";
- $("dashExamName").textContent=next?next.name:"Keine Prüfung";
- $("todayTasks").innerHTML=tasks.length?tasks.map(t=>`<div class="item"><div class="itembody"><div class="itemtitle">${escapeHTML(t.subject.name)}</div><div class="itemsub">${escapeHTML(t.task.split("\n")[0])} · Prüfung ${dateLabel(t.subject.date)}</div></div><button class="btn small" data-open-subject="${t.subject.id}">Öffnen</button></div>`).join(""):'<div class="empty">Alles erledigt oder noch keine Lernpläne vorhanden. 🎉</div>';
- const weekDone=data.subjects.reduce((sum,s)=>sum+(s.done||[]).filter(i=>i<7).length,0);
- const goal=10,pct=Math.min(100,Math.round(weekDone/goal*100));
- $("weekProgress").style.width=pct+"%";$("weekProgressText").textContent=weekDone+" erledigte Lerntage · Wochenziel: "+goal;
- $("dailyTip").textContent=tips[new Date().getDay()%tips.length];
+  const tasks=todayPlan(),done=tasks.filter(t=>isDone(t.key)).length;
+  const percent=tasks.length?Math.round(done/tasks.length*100):0;
+  $("todayTasks").textContent=done+"/"+tasks.length;
+  $("totalMinutes").textContent=totalMinutes();
+  $("examCount").textContent=data.subjects.filter(s=>{
+    const d=dateDiff(s.examDate);return d!==null&&d>=0;
+  }).length;
+  $("xpValue").textContent=data.xp+" XP";
+  $("todayPercent").textContent=percent+"%";
+  $("todayBar").style.width=percent+"%";
+  $("dailyMessage").textContent=tasks.length?
+    (percent===100?"Stark! Du hast deinen heutigen Lernplan geschafft.": "Du hast noch "+(tasks.length-done)+" Aufgabe(n) für heute."):
+    "Füge ein Fach hinzu, um deinen Tagesplan zu erstellen.";
+  $("todayList").innerHTML=tasks.length?tasks.map(t=>
+    `<div class="item"><div><div class="item-title">${esc(t.subject)}</div>
+    <p class="muted">${esc(t.topic)} · ${t.minutes} Min.</p></div>
+    <input aria-label="Aufgabe erledigt" type="checkbox" style="width:auto"
+      ${isDone(t.key)?"checked":""} onchange="toggleTask('${t.key}',this.checked)"></div>`
+  ).join(""):'<div class="empty">Keine geplanten Aufgaben für heute.</div>';
+  const exams=data.subjects.filter(s=>s.examDate&&dateDiff(s.examDate)>=0)
+    .sort((a,b)=>a.examDate.localeCompare(b.examDate));
+  $("nextExam").innerHTML=exams.length?exams.slice(0,3).map(s=>{
+    const d=dateDiff(s.examDate);
+    return `<div class="item"><div><div class="item-title">${esc(s.name)}</div>
+    <p class="muted">${fmtDate(s.examDate)}</p></div>
+    <span class="tag">${d===0?"Heute":d+" Tage"}</span></div>`;
+  }).join(""):'<div class="empty">Noch keine Prüfung eingetragen.</div>';
+  $("subjectOverview").innerHTML=data.subjects.length?data.subjects.map(s=>{
+    const ts=tasksWithDates(s),n=ts.filter(t=>isDone(t.key)).length;
+    const p=ts.length?Math.round(n/ts.length*100):0;
+    return `<div style="margin:12px 0"><div class="row between">
+      <span>${esc(s.name)}</span><span class="muted">${p}%</span></div>
+      <div class="progress"><div style="width:${p}%"></div></div></div>`;
+  }).join(""):'<div class="empty">Deine Fächer erscheinen hier.</div>';
+  renderWeek();
+  const goal=Number(data.settings.goal)||60;
+  const minsToday=data.sessions.filter(s=>s.date===todayISO()).reduce((n,s)=>n+Number(s.minutes||0),0);
+  $("weekGoal").innerHTML=`<div class="row between"><span>Heute gelernt</span><b>${minsToday} / ${goal} Min.</b></div>
+    <div class="progress"><div style="width:${Math.min(100,minsToday/goal*100)}%"></div></div>
+    <p class="muted">Tagesziel: ${goal} Minuten</p>`;
 }
-$("todayTasks").addEventListener("click",e=>{
- const b=e.target.closest("[data-open-subject]");if(!b)return;
- selectedSubject=b.dataset.openSubject;renderPlan();setTab("plan");
-});
 function renderWeek(){
- const names=["So","Mo","Di","Mi","Do","Fr","Sa"];
- $("weekGrid").innerHTML=Array.from({length:7},(_,i)=>{
-  const d=new Date();d.setHours(12,0,0,0);d.setDate(d.getDate()+i);
-  const iso=new Date(d.getTime()-d.getTimezoneOffset()*60000).toISOString().slice(0,10);
-  const tasks=data.subjects.filter(s=>s.date>=iso);
-  return `<div class="weekday"><strong>${names[d.getDay()]} ${d.getDate()}.${d.getMonth()+1}.</strong>${tasks.length?tasks.map(s=>`<p>📘 ${escapeHTML(s.name)}<br>${(s.done||[]).includes(i)?"✓ erledigt":"Lernen: "+s.minutes+" Min."}</p>`).join(""):'<p>Keine Aufgaben</p>'}</div>`;
- }).join("");
-}
-function streak(){
- const days=new Set(data.studyDates||[]);
- data.subjects.forEach(s=>(s.done||[]).forEach(i=>{
-  if(i===0)days.add(todayISO());
- }));
- let count=0;const d=new Date();d.setHours(12,0,0,0);
- if(!days.has(todayISO()))d.setDate(d.getDate()-1);
- for(let i=0;i<366;i++){
-  const iso=new Date(d.getTime()-d.getTimezoneOffset()*60000).toISOString().slice(0,10);
-  if(!days.has(iso))break;
-  count++;d.setDate(d.getDate()-1);
- }
- return count;
-}
-function renderStats(){
- const totalDone=data.subjects.reduce((n,s)=>n+(s.done||[]).length,0);
- const totalMinutes=data.subjects.reduce((n,s)=>n+(s.done||[]).length*Number(s.minutes||0),0);
- const totalTasks=data.subjects.reduce((n,s)=>n+Math.max(1,dayDiff(todayISO(),s.date)),0);
- $("statSubjects").textContent=data.subjects.length;$("statDone").textContent=totalDone;
- $("statMinutes").textContent=totalMinutes;$("statCards").textContent=data.cards.length;
- $("statQuiz").textContent=data.quizzes.length;$("statStreak").textContent=streak()+" Tage";
- const pct=totalTasks?Math.min(100,Math.round(totalDone/totalTasks*100)):0;
- $("allProgress").style.width=pct+"%";$("allProgressText").textContent=totalDone+" erledigte Lerntage · "+pct+"% des aktuellen Plans";
-}
-
-function fillSubjectSelects(){
- const options=data.subjects.map(s=>`<option value="${escapeHTML(s.id)}">${escapeHTML(s.name)}</option>`).join("");
- ["cardSubject","quizSubject"].forEach(id=>{
-  const old=$(id).value;$(id).innerHTML=options||'<option value="">Erst ein Fach hinzufügen</option>';
-  if(data.subjects.some(s=>s.id===old))$(id).value=old;
- });
-}
-$("cardForm").addEventListener("submit",e=>{
- e.preventDefault();
- const question=$("cardQuestion").value.trim(),answer=$("cardAnswer").value.trim();
- if(!question||!answer)return;
- data.cards.push({id:uid(),subject:$("cardSubject").value,question,answer});
- save();$("cardQuestion").value="";$("cardAnswer").value="";
- message("cardMessage","Karte gespeichert ✓");renderCards();renderStats();
-});
-function renderCards(){
- fillSubjectSelects();
- const box=$("cardList");
- box.innerHTML=data.cards.length?data.cards.map((c,i)=>`<div class="item"><div class="itembody"><div class="itemtitle">${escapeHTML(c.question)}</div><div class="itemsub">${escapeHTML(data.subjects.find(s=>s.id===c.subject)?.name||"Allgemein")}</div></div><button class="iconbtn" data-remove-card="${c.id}" aria-label="Karte löschen">×</button></div>`).join(""):'<div class="empty">Noch keine Karteikarten erstellt.</div>';
- if(flashIndex>=data.cards.length)flashIndex=Math.max(0,data.cards.length-1);
- showFlash();
-}
-$("cardList").addEventListener("click",e=>{
- const b=e.target.closest("[data-remove-card]");if(!b)return;
- data.cards=data.cards.filter(c=>c.id!==b.dataset.removeCard);flashIndex=Math.min(flashIndex,Math.max(0,data.cards.length-1));flashBack=false;save();renderCards();renderStats();
-});
-function showFlash(){
- const c=data.cards[flashIndex];
- if(!c){$("flashStudy").innerHTML='<div class="muted">Erstelle zuerst eine Karteikarte.</div>';$("cardPosition").textContent="0 Karten";return}
- $("flashStudy").innerHTML=`<div class="question">${flashBack?"ANTWORT":"FRAGE"} · ${escapeHTML(data.subjects.find(s=>s.id===c.subject)?.name||"Allgemein")}</div><div class="answer">${escapeHTML(flashBack?c.answer:c.question)}</div>`;
- $("cardPosition").textContent=`Karte ${flashIndex+1} von ${data.cards.length}`;
-}
-$("flashStudy").addEventListener("click",()=>{flashBack=!flashBack;showFlash()});
-$("flipCard").addEventListener("click",()=>{flashBack=!flashBack;showFlash()});
-$("prevCard").addEventListener("click",()=>{if(!data.cards.length)return;flashIndex=(flashIndex-1+data.cards.length)%data.cards.length;flashBack=false;showFlash()});
-$("nextCard").addEventListener("click",()=>{if(!data.cards.length)return;flashIndex=(flashIndex+1)%data.cards.length;flashBack=false;showFlash()});
-
-$("quizForm").addEventListener("submit",e=>{
- e.preventDefault();
- const question=$("quizQuestion").value.trim(),options=[$("quizA").value.trim(),$("quizB").value.trim(),$("quizC").value.trim()];
- if(!question||options.some(x=>!x))return;
- data.quizzes.push({id:uid(),subject:$("quizSubject").value,question,options,correct:Number($("quizCorrect").value)});
- quizIndex=data.quizzes.length-1;quizAnswers={};save();$("quizForm").reset();message("quizMessage","Frage gespeichert ✓");renderQuiz();renderStats();
-});
-function renderQuiz(){
- fillSubjectSelects();
- const q=data.quizzes[quizIndex];
- if(!q){$("quizPlay").innerHTML='<div class="empty">Erstelle links deine erste Quizfrage.</div>';$("quizScore").textContent="";return}
- const chosen=quizAnswers[q.id];
- let html=`<div class="muted">Frage ${quizIndex+1} von ${data.quizzes.length} · ${escapeHTML(data.subjects.find(s=>s.id===q.subject)?.name||"Allgemein")}</div><h3 style="margin-top:14px;line-height:1.7">${escapeHTML(q.question)}</h3>`;
- html+=q.options.map((op,i)=>{
-  let cls="";
-  if(chosen!==undefined&&i===q.correct)cls="correct";
-  else if(chosen===i&&i!==q.correct)cls="wrong";
-  return `<button class="quizoption ${cls}" data-answer="${i}" ${chosen!==undefined?"disabled":""}>${String.fromCharCode(65+i)}. ${escapeHTML(op)}</button>`;
- }).join("");
- if(chosen!==undefined)html+=`<div class="notice">${chosen===q.correct?"Richtig! Gut gemacht. ✓":"Noch nicht richtig. Die richtige Antwort ist "+String.fromCharCode(65+q.correct)+"."}</div>`;
- html+=`<button class="btn danger small" style="margin-top:12px" data-delete-quiz="${q.id}">Frage löschen</button>`;
- $("quizPlay").innerHTML=html;
- $("quizScore").textContent=Object.keys(quizAnswers).length+" beantwortete Frage(n) in dieser Sitzung.";
-}
-$("quizPlay").addEventListener("click",e=>{
- const ans=e.target.closest("[data-answer]");
- if(ans){
-  const q=data.quizzes[quizIndex];if(!q||quizAnswers[q.id]!==undefined)return;
-  quizAnswers[q.id]=Number(ans.dataset.answer);
-  if(quizAnswers[q.id]===q.correct)quizScore++;
-  renderQuiz();return;
- }
- const del=e.target.closest("[data-delete-quiz]");
- if(del&&confirm("Diese Quizfrage löschen?")){
-  data.quizzes=data.quizzes.filter(q=>q.id!==del.dataset.deleteQuiz);quizIndex=Math.min(quizIndex,Math.max(0,data.quizzes.length-1));save();renderQuiz();renderStats();
- }
-});
-$("prevQuiz").addEventListener("click",()=>{if(data.quizzes.length){quizIndex=(quizIndex-1+data.quizzes.length)%data.quizzes.length;renderQuiz()}});
-$("nextQuiz").addEventListener("click",()=>{if(data.quizzes.length){quizIndex=(quizIndex+1)%data.quizzes.length;renderQuiz()}});
-
-/* Dark Mode */
-function applyTheme(){
- document.body.classList.toggle("dark",data.theme==="dark");
- $("themeBtn").textContent=data.theme==="dark"?"☀️ Helles Design":"🌙 Dark Mode";
-}
-$("themeBtn").addEventListener("click",()=>{data.theme=data.theme==="dark"?"light":"dark";save();applyTheme()});
-
-/* Fokus-Timer */
-function timerDisplay(){
- const mm=String(Math.floor(timerLeft/60)).padStart(2,"0"),ss=String(timerLeft%60).padStart(2,"0");
- $("mainTimer").textContent=mm+":"+ss;$("miniTimer").textContent=mm+":"+ss;
-}
-function stopTimer(){if(timerHandle){clearInterval(timerHandle);timerHandle=null}}
-function selectTimer(minutes){
- stopTimer();timerTotal=minutes*60;timerLeft=timerTotal;data.timerMinutes=minutes;save();timerDisplay();$("timerStatus").textContent="Bereit für "+minutes+" Minuten.";
-}
-document.querySelectorAll("[data-timer]").forEach(b=>b.addEventListener("click",()=>selectTimer(Number(b.dataset.timer))));
-$("startTimer").addEventListener("click",()=>{
- if(timerHandle)return;
- if(timerLeft<=0)timerLeft=timerTotal;
- timerEnd=Date.now()+timerLeft*1000;
- $("timerStatus").textContent="Fokus läuft. Du schaffst das!";
- timerHandle=setInterval(()=>{
-  timerLeft=Math.max(0,Math.ceil((timerEnd-Date.now())/1000));timerDisplay();
-  if(timerLeft<=0){
-   stopTimer();$("timerStatus").textContent="Zeit ist um! Zeit für eine Pause oder die nächste Einheit.";
-   alert("Deine Lernzeit ist vorbei! Mach kurz Pause.");
+  const names=["So","Mo","Di","Mi","Do","Fr","Sa"],now=new Date();
+  let html="";
+  for(let i=0;i<7;i++){
+    const d=new Date(now);d.setDate(now.getDate()+i);
+    const iso=`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`;
+    const n=allPlanTasks().filter(t=>t.date===iso).length;
+    html+=`<div class="week-day"><span>${names[d.getDay()]}</span><strong>${d.getDate()}</strong>${n?`<span class="tag">${n}</span>`:"·"}</div>`;
   }
- },250);
-});
-$("pauseTimer").addEventListener("click",()=>{
- if(timerHandle){timerLeft=Math.max(0,Math.ceil((timerEnd-Date.now())/1000));stopTimer();timerDisplay();$("timerStatus").textContent="Timer pausiert."}
-});
-$("resetTimer").addEventListener("click",()=>selectTimer(Number(data.timerMinutes)||25));
-
-/* Vollständiges JSON-Backup */
-function exportBackup(){
- const backup={app:"lernplan-generator",version:1,exportedAt:new Date().toISOString(),data};
- const blob=new Blob([JSON.stringify(backup,null,2)],{type:"application/json"});
- const url=URL.createObjectURL(blob),a=document.createElement("a");
- a.href=url;a.download="lernplan-backup-"+todayISO()+".json";a.click();
- setTimeout(()=>URL.revokeObjectURL(url),1000);
+  $("weekView").innerHTML=html;
 }
-function openRestore(){$("restoreFile").click()}
-$("backupBtn").addEventListener("click",exportBackup);
-$("statsBackup").addEventListener("click",exportBackup);
-$("restoreBtn").addEventListener("click",openRestore);
-$("statsRestore").addEventListener("click",openRestore);
-$("restoreFile").addEventListener("change",async()=>{
- const file=$("restoreFile").files[0];if(!file)return;
- try{
-  if(file.size>10*1024*1024)throw new Error("Die Datei ist zu groß (maximal 10 MB).");
-  const parsed=JSON.parse(await file.text());
-  const imported=parsed?.data;
-  if(parsed?.app!=="lernplan-generator"||parsed?.version!==1||!validData(imported))throw new Error("Das Backup ist ungültig oder stammt aus einer anderen Version.");
-  if(!confirm("Backup importieren? Deine aktuellen lokalen Daten werden ersetzt."))return;
-  data={...emptyData(),...imported};
-  if(!Array.isArray(data.studyDates))data.studyDates=[];
-  if(!data.subjects.every(s=>s&&typeof s.id==="string"&&typeof s.name==="string"&&typeof s.date==="string"&&Array.isArray(s.topics)&&Array.isArray(s.done)))throw new Error("Das Backup enthält ungültige Fachdaten.");
-  save();selectedSubject=data.subjects[0]?.id||null;resetForm();applyTheme();renderAll();alert("Backup erfolgreich importiert.");
- }catch(err){alert(err.message||"Backup konnte nicht importiert werden.")}
- finally{$("restoreFile").value=""}
+
+/* ---------- Stundenplan ---------- */
+const dayNames=["Sonntag","Montag","Dienstag","Mittwoch","Donnerstag","Freitag","Samstag"];
+$("lessonForm").addEventListener("submit",e=>{
+  e.preventDefault();
+  if($("lessonEnd").value<=$("lessonStart").value){alert("Die Endzeit muss nach der Startzeit liegen.");return;}
+  data.lessons.push({id:makeId(),day:Number($("lessonDay").value),
+    subject:$("lessonSubject").value.trim(),start:$("lessonStart").value,
+    end:$("lessonEnd").value,room:$("lessonRoom").value.trim()});
+  save();$("lessonForm").reset();$("lessonStart").value="08:00";$("lessonEnd").value="08:45";renderAll();
+});
+function deleteLesson(id){data.lessons=data.lessons.filter(x=>x.id!==id);save();renderAll();}
+function renderTimetable(){
+  $("timetableList").innerHTML=Array.from({length:7},(_,i)=>i===0?6:i-1).map(day=>{
+    const list=data.lessons.filter(l=>l.day===day).sort((a,b)=>a.start.localeCompare(b.start));
+    return `<div style="margin-bottom:17px"><h3>${dayNames[day]}</h3>`+
+      (list.length?list.map(l=>`<div class="item"><div><div class="item-title">${esc(l.subject)}</div>
+      <p class="muted">${l.start}–${l.end}${l.room?" · "+esc(l.room):""}</p></div>
+      <button class="small danger" onclick="deleteLesson('${l.id}')">Entfernen</button></div>`).join("")
+      :'<p class="muted">Keine Stunden eingetragen.</p>')+'</div>';
+  }).join("");
+}
+
+/* ---------- Hausaufgaben ---------- */
+$("homeworkForm").addEventListener("submit",e=>{
+  e.preventDefault();
+  data.homework.push({id:makeId(),title:$("hwTitle").value.trim(),
+    subject:$("hwSubject").value.trim(),date:$("hwDate").value,
+    minutes:Number($("hwMinutes").value)||20,done:false});
+  save();$("homeworkForm").reset();$("hwMinutes").value="20";renderAll();
+});
+function toggleHomework(id,checked){
+  const h=data.homework.find(x=>x.id===id);if(!h)return;
+  if(checked&&!h.done)addXP(5,"Hausaufgabe erledigt");
+  h.done=checked;if(checked)markStudyDay();save();renderAll();
+}
+function deleteHomework(id){data.homework=data.homework.filter(h=>h.id!==id);save();renderAll();}
+function renderHomework(){
+  const list=[...data.homework].sort((a,b)=>(a.done?1:0)-(b.done?1:0));
+  $("homeworkList").innerHTML=list.length?list.map(h=>{
+    const late=h.date&&h.date<todayISO()&&!h.done;
+    return `<div class="item"><div style="min-width:0">
+      <div class="item-title">${esc(h.title)} ${h.done?'<span class="tag">Erledigt</span>':late?'<span class="tag" style="color:var(--red)">Überfällig</span>':""}</div>
+      <p class="muted">${esc(h.subject)} · ${h.date?fmtDate(h.date):"Kein Abgabetermin"} · ${h.minutes} Min.</p></div>
+      <div class="row"><input type="checkbox" aria-label="Hausaufgabe erledigt" style="width:auto"
+        ${h.done?"checked":""} onchange="toggleHomework('${h.id}',this.checked)">
+      <button class="small danger" onclick="deleteHomework('${h.id}')">×</button></div></div>`;
+  }).join(""):'<div class="empty">Keine Hausaufgaben eingetragen.</div>';
+}
+
+/* ---------- Karteikarten mit Wiederholung ---------- */
+$("cardForm").addEventListener("submit",e=>{
+  e.preventDefault();
+  data.cards.push({id:makeId(),subject:$("cardSubject").value.trim(),
+    q:$("cardQuestion").value.trim(),a:$("cardAnswer").value.trim(),
+    due:todayISO(),interval:0,seen:0,known:0});
+  save();$("cardForm").reset();renderAll();renderFlashcard();
+});
+let activeCard=null,showAnswer=false;
+function dueCards(){return data.cards.filter(c=>!c.due||c.due<=todayISO());}
+function renderFlashcard(){
+  const due=dueCards();
+  $("dueCount").textContent=due.length+" fällig";
+  if(!due.length){
+    activeCard=null;
+    $("flashArea").innerHTML='<div class="empty">Alle Karten sind für heute wiederholt. Gut gemacht!</div>';return;
+  }
+  if(!activeCard||!due.some(c=>c.id===activeCard))activeCard=due[0].id;
+  const c=data.cards.find(x=>x.id===activeCard);if(!c)return;
+  $("flashArea").innerHTML=`<div class="muted">${esc(c.subject)} · Karte ${due.findIndex(x=>x.id===c.id)+1} von ${due.length}</div>
+    <div id="flashCard" class="flashcard" role="button" tabindex="0" onclick="flipCard()">
+      ${showAnswer?esc(c.a):esc(c.q)}<div class="muted" style="font-size:12px;margin-top:15px">${showAnswer?"Antwort":"Klicken, um die Antwort zu sehen"}</div>
+    </div>
+    ${showAnswer?`<div class="row" style="justify-content:center;margin-top:12px">
+      <button onclick="rateCard('again')">Kann ich nicht</button>
+      <button onclick="rateCard('hard')">Unsicher</button>
+      <button class="primary" onclick="rateCard('good')">Kann ich</button>
+    </div>`:""}`;
+}
+function flipCard(){showAnswer=!showAnswer;renderFlashcard();}
+function rateCard(rate){
+  const c=data.cards.find(x=>x.id===activeCard);if(!c)return;
+  c.seen=(c.seen||0)+1;
+  if(rate==="again"){c.interval=0;c.due=todayISO();}
+  else if(rate==="hard"){c.interval=Math.max(1,Math.floor((c.interval||1)*1.2));c.due=addDays(todayISO(),c.interval);}
+  else{c.known=(c.known||0)+1;c.interval=c.interval?Math.min(60,c.interval*2):2;c.due=addDays(todayISO(),c.interval);addXP(2,"Karte wiederholt");}
+  const due=dueCards().filter(x=>x.id!==c.id);
+  activeCard=due.length?due[0].id:null;showAnswer=false;
+  markStudyDay();save();renderAll();renderFlashcard();
+}
+function addDays(iso,n){const d=safeDate(iso)||new Date();d.setDate(d.getDate()+n);
+  return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`;}
+function deleteCard(id){data.cards=data.cards.filter(c=>c.id!==id);if(activeCard===id)activeCard=null;save();renderAll();}
+function renderCards(){
+  $("cardCount").textContent=data.cards.length+" Karten · "+dueCards().length+" heute fällig";
+  $("allCards").innerHTML=data.cards.length?data.cards.map(c=>
+    `<div class="item"><div style="min-width:0"><div class="item-title">${esc(c.subject)}</div>
+    <p>${esc(c.q)}</p><p class="muted">Nächste Wiederholung: ${fmtDate(c.due)}</p></div>
+    <button class="small danger" onclick="deleteCard('${c.id}')">×</button></div>`
+  ).join(""):'<div class="empty">Noch keine Karteikarten erstellt.</div>';
+  renderFlashcard();
+}
+
+/* ---------- Quiz ---------- */
+$("quizForm").addEventListener("submit",e=>{
+  e.preventDefault();
+  data.quizzes.push({id:makeId(),subject:$("quizSubject").value.trim(),
+    q:$("quizQuestion").value.trim(),
+    opts:[$("quizA").value,$("quizB").value,$("quizC").value,$("quizD").value],
+    correct:Number($("quizCorrect").value),explanation:$("quizExplanation").value.trim()});
+  save();$("quizForm").reset();renderAll();
+});
+let quizState=null;
+function startQuiz(){
+  if(!data.quizzes.length){alert("Erstelle zuerst mindestens eine Quizfrage.");return;}
+  quizState={ids:data.quizzes.map(q=>q.id).sort(()=>Math.random()-.5),index:0,score:0,answered:false};
+  renderQuizQuestion();
+}
+$("startQuiz").addEventListener("click",startQuiz);
+function renderQuizQuestion(){
+  const area=$("quizArea");
+  if(!quizState){area.innerHTML='<div class="empty">Starte das Quiz, um deine Fragen zu beantworten.</div>';return;}
+  if(quizState.index>=quizState.ids.length){
+    const total=quizState.ids.length,score=quizState.score;
+    data.quizHistory.push({date:todayISO(),score,total});
+    if(score>0)addXP(score*5,"Quiz abgeschlossen");
+    save();quizState=null;
+    area.innerHTML=`<h3>Quiz beendet!</h3><div class="metric">${score} / ${total}</div>
+      <p>${Math.round(score/total*100)} % richtig beantwortet.</p>
+      <button class="primary" onclick="startQuiz()">Noch einmal</button>`;
+    renderAll();return;
+  }
+  const q=data.quizzes.find(x=>x.id===quizState.ids[quizState.index]);
+  if(!q){quizState.index++;renderQuizQuestion();return;}
+  area.innerHTML=`<div class="row between"><span class="tag">${esc(q.subject)}</span>
+    <span class="muted">Frage ${quizState.index+1} / ${quizState.ids.length}</span></div>
+    <div class="question">${esc(q.q)}</div>
+    ${q.opts.map((o,i)=>`<button class="answer-option" onclick="answerQuiz(${i})">${"ABCD"[i]}. ${esc(o)}</button>`).join("")}
+    <div id="quizFeedback" class="muted" style="margin-top:10px"></div>
+    <button id="quizNext" class="primary" style="margin-top:12px" hidden onclick="nextQuiz()">Nächste Frage →</button>`;
+}
+function answerQuiz(i){
+  if(!quizState||quizState.answered)return;
+  const q=data.quizzes.find(x=>x.id===quizState.ids[quizState.index]);if(!q)return;
+  quizState.answered=true;
+  document.querySelectorAll(".answer-option").forEach((b,n)=>{
+    b.disabled=true;
+    if(n===q.correct)b.classList.add("correct");
+    if(n===i&&n!==q.correct)b.classList.add("wrong");
+  });
+  const correct=i===q.correct;if(correct)quizState.score++;
+  $("quizFeedback").textContent=(correct?"Richtig! ":"Nicht ganz. ")+
+    (q.explanation||"Richtige Antwort: "+q.opts[q.correct]);
+  $("quizNext").hidden=false;
+}
+function nextQuiz(){if(!quizState)return;quizState.index++;quizState.answered=false;renderQuizQuestion();}
+function deleteQuiz(id){data.quizzes=data.quizzes.filter(q=>q.id!==id);save();renderAll();}
+function renderQuizList(){
+  $("quizList").innerHTML=data.quizzes.length?data.quizzes.map(q=>
+    `<div class="item"><div><div class="item-title">${esc(q.subject)}</div>
+    <p>${esc(q.q)}</p></div><button class="small danger" onclick="deleteQuiz('${q.id}')">×</button></div>`
+  ).join(""):'<div class="empty">Noch keine Quizfragen.</div>';
+}
+
+/* ---------- Lernhelfer: lokale Vorlagen ---------- */
+let lastHelp="";
+$("helperForm").addEventListener("submit",e=>{
+  e.preventDefault();
+  const subject=$("helpSubject").value.trim()||"Allgemein";
+  const topic=$("helpTopic").value.trim();
+  const mode=$("helpMode").value;
+  let out="";
+  if(mode==="explain"){
+    out=`Lernhilfe: ${subject}\nThema: ${topic}\n\n1. Was ist wichtig?\nLies das Thema aufmerksam und markiere die Schlüsselbegriffe.\n\n2. Erkläre es in eigenen Worten.\nTeile den Inhalt in kleine Abschnitte auf. Schreibe zu jedem Abschnitt einen Satz, der die Hauptidee erklärt.\n\n3. Beispiel suchen\nÜberlege dir ein konkretes Beispiel aus dem Unterricht oder Alltag.\n\n4. Selbsttest\nSchließe deine Notizen und erkläre das Thema laut, als würdest du es jemandem beibringen.\n\nHinweis: Das ist eine Lernvorlage, keine automatisch recherchierte Facherklärung. Prüfe fachliche Aussagen mit deinem Unterrichtsmaterial.`;
+  }else if(mode==="summary"){
+    out=`LERNZETTEL – ${subject}\nThema: ${topic}\n\nDEFINITION\n[Schreibe die wichtigste Definition in einem Satz.]\n\nWICHTIGE FAKTEN\n• [Fakt 1]\n• [Fakt 2]\n• [Fakt 3]\n\nBEISPIEL\n[Ergänze ein Beispiel aus deinen Unterlagen.]\n\nMERKSATZ\n[Was musst du dir unbedingt merken?]\n\nOFFENE FRAGEN\n[Was ist noch unklar?]`;
+  }else if(mode==="questions"){
+    out=`Übungsfragen – ${subject}\nThema: ${topic}\n\n1. Wie würdest du das Thema in eigenen Worten erklären?\n2. Welche drei Schlüsselbegriffe sind am wichtigsten?\n3. Welches Beispiel kannst du dazu nennen?\n4. Welche Ursache und welche Folgen sind relevant?\n5. Was ist der häufigste Fehler bei diesem Thema?\n6. Wie würdest du das Thema einer anderen Person erklären?\n\nSchreibe deine Antworten auf und gleiche sie mit deinen Unterrichtsmaterialien ab.`;
+  }else{
+    out=`Schritt-für-Schritt lernen – ${subject}\nThema: ${topic}\n\nSchritt 1: Verschaffe dir einen Überblick (5 Minuten).\nSchritt 2: Teile das Thema in kleine Teile.\nSchritt 3: Lerne den ersten Teil und schreibe eine Zusammenfassung.\nSchritt 4: Erkläre ihn ohne deine Notizen.\nSchritt 5: Bearbeite eine Übungsaufgabe.\nSchritt 6: Notiere offene Fragen und wiederhole die schwierigen Stellen.\nSchritt 7: Teste dich morgen erneut.`;
+  }
+  lastHelp=out;$("helpResult").textContent=out;
+  $("helpActions").innerHTML=`<button class="primary" onclick="makeCardsFromHelp()">Fragen als Karteikarten anlegen</button>
+    <button onclick="copyHelp()">Text kopieren</button>`;
+});
+function saveHelp(){
+  if(!lastHelp){alert("Erstelle zuerst eine Lernhilfe.");return;}
+  data.notes.push({id:makeId(),title:"Lernhilfe "+new Date().toLocaleDateString("de-DE"),
+    subject:$("helpSubject").value.trim()||"Allgemein",body:lastHelp,date:todayISO()});
+  save();renderAll();alert("Lernhilfe als Notiz gespeichert.");
+}
+$("saveHelp").addEventListener("click",saveHelp);
+function copyHelp(){
+  if(!lastHelp)return;
+  if(navigator.clipboard&&window.isSecureContext){
+    navigator.clipboard.writeText(lastHelp).then(()=>toast("Text kopiert")).catch(()=>alert(lastHelp));
+  }else alert("Kopiere den Text aus dem Ergebnisfeld.");
+}
+function makeCardsFromHelp(){
+  const topic=$("helpTopic").value.trim(),subject=$("helpSubject").value.trim()||"Allgemein";
+  if(!topic)return;
+  data.cards.push({id:makeId(),subject,q:"Erkläre das Thema: "+topic,a:lastHelp,due:todayISO(),interval:0,seen:0,known:0});
+  save();renderAll();showPage("cards");
+}
+
+/* ---------- Notizen ---------- */
+$("noteForm").addEventListener("submit",e=>{
+  e.preventDefault();
+  data.notes.push({id:makeId(),title:$("noteTitle").value.trim(),
+    subject:$("noteSubject").value.trim()||"Allgemein",body:$("noteBody").value.trim(),date:todayISO()});
+  save();$("noteForm").reset();renderAll();
+});
+function deleteNote(id){data.notes=data.notes.filter(n=>n.id!==id);save();renderAll();}
+function renderNotes(){
+  $("notesList").innerHTML=data.notes.length?[...data.notes].reverse().map(n=>
+    `<div class="item"><div style="min-width:0"><div class="item-title">${esc(n.title)}</div>
+    <p class="muted">${esc(n.subject)} · ${fmtDate(n.date)}</p>
+    <details><summary>Notiz ansehen</summary><p class="note">${esc(n.body)}</p></details></div>
+    <button class="small danger" onclick="deleteNote('${n.id}')">×</button></div>`
+  ).join(""):'<div class="empty">Noch keine Notizen gespeichert.</div>';
+}
+
+/* ---------- Fokus-Timer ---------- */
+let timerSeconds=25*60,timerRunning=false,timerEnd=0,timerInterval=null,timerMode="Lernzeit";
+function updateTimerDisplay(){
+  const sec=Math.max(0,timerRunning?Math.ceil((timerEnd-Date.now())/1000):timerSeconds);
+  $("timerDisplay").textContent=String(Math.floor(sec/60)).padStart(2,"0")+":"+
+    String(sec%60).padStart(2,"0");
+}
+function stopTimer(){timerRunning=false;if(timerInterval)clearInterval(timerInterval);timerInterval=null;}
+function setTimer(min,mode){
+  stopTimer();timerSeconds=min*60;timerMode=mode||"Lernzeit";
+  $("timerMessage").textContent=timerMode+" ausgewählt.";updateTimerDisplay();
+}
+document.querySelectorAll(".preset").forEach(b=>b.addEventListener("click",()=>{
+  const min=Number(b.dataset.minutes);
+  setTimer(min,min<=15?"Pause":"Lernzeit");
+}));
+$("timerStart").addEventListener("click",()=>{
+  if(timerRunning){stopTimer();timerSeconds=Math.max(0,Math.ceil((timerEnd-Date.now())/1000));
+    $("timerStart").textContent="Weiter";updateTimerDisplay();return;}
+  if(timerSeconds<=0)timerSeconds=25*60;
+  timerRunning=true;timerEnd=Date.now()+timerSeconds*1000;
+  $("timerStart").textContent="Pause";
+  $("timerMessage").textContent=timerMode+" läuft. Bleib konzentriert!";
+  timerInterval=setInterval(()=>{
+    timerSeconds=Math.max(0,Math.ceil((timerEnd-Date.now())/1000));updateTimerDisplay();
+    if(timerSeconds<=0){
+      stopTimer();$("timerStart").textContent="Start";
+      $("timerMessage").textContent="Zeit ist um!";
+      if(timerMode==="Lernzeit"){
+        addStudyMinutes(Number($("sessionMinutes").value)||25,$("sessionSubject").value,$("sessionGoal").value);
+      }
+      alert("Deine Zeit ist um!");
+    }
+  },250);
+});
+$("timerReset").addEventListener("click",()=>{
+  stopTimer();timerSeconds=25*60;$("timerStart").textContent="Start";
+  $("timerMessage").textContent="Bereit zum Lernen.";updateTimerDisplay();
+});
+$("sessionForm").addEventListener("submit",e=>{
+  e.preventDefault();addStudyMinutes($("sessionMinutes").value,$("sessionSubject").value,$("sessionGoal").value);
+});
+function deleteSession(id){data.sessions=data.sessions.filter(s=>s.id!==id);save();renderAll();}
+function renderSessions(){
+  $("sessionsList").innerHTML=data.sessions.length?[...data.sessions].reverse().slice(0,8).map(s=>
+    `<div class="item"><div><div class="item-title">${esc(s.subject)}</div>
+    <p class="muted">${s.minutes} Min. · ${fmtDate(s.date)}${s.goal?" · "+esc(s.goal):""}</p></div>
+    <button class="small danger" onclick="deleteSession('${s.id}')">×</button></div>`
+  ).join(""):'<div class="empty">Noch keine Lernsessions.</div>';
+}
+
+/* ---------- Statistik und Erfolge ---------- */
+function renderStats(){
+  $("statXP").textContent=data.xp;
+  $("statHours").textContent=(totalMinutes()/60).toFixed(1)+" h";
+  $("statCards").textContent=data.cards.length;
+  $("statTasks").textContent=totalCompleted();
+  const subjects=[...new Set([
+    ...data.subjects.map(s=>s.name),...data.sessions.map(s=>s.subject)
+  ])];
+  $("subjectStats").innerHTML=subjects.length?subjects.map(name=>{
+    const mins=data.sessions.filter(s=>s.subject===name).reduce((n,s)=>n+Number(s.minutes||0),0);
+    const tasks=data.subjects.filter(s=>s.name===name).flatMap(tasksWithDates);
+    const done=tasks.filter(t=>isDone(t.key)).length;
+    const p=tasks.length?Math.round(done/tasks.length*100):0;
+    return `<div style="margin:12px 0"><div class="row between"><b>${esc(name)}</b>
+      <span class="muted">${mins} Min. · ${p}% Planfortschritt</span></div>
+      <div class="progress"><div style="width:${p}%"></div></div></div>`;
+  }).join(""):'<div class="empty">Lerne etwas und deine Statistiken erscheinen hier.</div>';
+  const lvl=level(),next=lvl*lvl*100,prev=(lvl-1)*(lvl-1)*100;
+  $("headerLevel").textContent="Level "+lvl;
+  const achievements=[
+    ["Erster Schritt",doneCount()>=1,"Erledige deine erste Planaufgabe."],
+    ["Karteikarten-Profi",data.cards.some(c=>c.known>=10),"Wiederhole eine Karte zehnmal erfolgreich."],
+    ["Fleißig",totalMinutes()>=60,"Lerne insgesamt mindestens eine Stunde."],
+    ["Quizmaster",data.quizHistory.some(q=>q.total>0&&q.score===q.total),"Schließe ein Quiz fehlerfrei ab."],
+    ["Dranbleiben",data.studyDates.length>=5,"Lerne an fünf verschiedenen Tagen."]
+  ];
+  $("achievements").innerHTML=`<div class="row between"><b>Level ${lvl}</b><span>${data.xp} XP</span></div>
+    <div class="progress"><div style="width:${Math.min(100,(data.xp-prev)/(next-prev)*100)}%"></div></div>
+    <p class="muted">${Math.max(0,next-data.xp)} XP bis Level ${lvl+1}</p><hr>`+
+    achievements.map(a=>`<div class="item"><div><div class="item-title">${a[1]?"🏆":"🔒"} ${a[0]}</div>
+    <p class="muted">${a[2]}</p></div>${a[1]?'<span class="tag">Erreicht</span>':""}</div>`).join("");
+  const wk=weekStart();
+  if(data.challengeWeek!==wk){data.challengeWeek=wk;data.challengeDone=0;save();}
+  const goal=300,done=Math.min(goal,Number(data.challengeDone)||0);
+  $("challenge").innerHTML=`<div class="row between"><b>300 Lernminuten diese Woche</b><span>${done}/${goal} Min.</span></div>
+    <div class="progress"><div style="width:${done/goal*100}%"></div></div>
+    <p class="muted">${done>=goal?"Challenge geschafft!":`Noch ${goal-done} Minuten bis zum Wochenziel.`}</p>`;
+}
+function weekStart(){
+  const d=new Date();d.setHours(0,0,0,0);d.setDate(d.getDate()-((d.getDay()+6)%7));
+  return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`;
+}
+
+/* ---------- Einstellungen und Backup ---------- */
+$("settingsForm").addEventListener("submit",e=>{
+  e.preventDefault();
+  data.settings.grade=$("settingGrade").value.trim();
+  data.settings.school=$("settingSchool").value;
+  data.settings.goal=Math.max(5,Math.min(600,Number($("settingGoal").value)||60));
+  save();renderAll();alert("Einstellungen gespeichert.");
+});
+function fillSettings(){
+  $("settingGrade").value=data.settings.grade||"";
+  $("settingSchool").value=data.settings.school||"";
+  $("settingGoal").value=data.settings.goal||60;
+}
+$("exportBtn").addEventListener("click",()=>{
+  const blob=new Blob([JSON.stringify({app:"lernplan-generator",version:4,data},null,2)],
+    {type:"application/json"});
+  const url=URL.createObjectURL(blob),a=document.createElement("a");
+  a.href=url;a.download="lernplan-backup-"+todayISO()+".json";a.click();
+  URL.revokeObjectURL(url);
+});
+$("importFile").addEventListener("change",async e=>{
+  const file=e.target.files&&e.target.files[0];if(!file)return;
+  try{
+    const obj=JSON.parse(await file.text());
+    const imported=obj.data||obj;
+    const required=["subjects","cards","quizzes","lessons","homework","notes","sessions"];
+    if(!imported||typeof imported!=="object"||!required.every(k=>Array.isArray(imported[k])))
+      throw new Error("Ungültiges Backupformat.");
+    if(!confirm("Import ersetzt deine aktuell gespeicherten Lerndaten. Exportiere zuerst ein Backup. Fortfahren?"))return;
+    const base=blankData();
+    data={...base,...imported,settings:{...base.settings,...(imported.settings||{})}};
+    save();applyTheme();fillSettings();renderAll();
+    alert("Backup importiert.");
+  }catch(err){alert("Import nicht möglich: "+err.message);}
+  finally{e.target.value="";}
+});
+$("printBtn").addEventListener("click",()=>window.print());
+$("resetBtn").addEventListener("click",()=>{
+  if(!confirm("Wirklich ALLE LernPlan-Daten aus diesem Browser löschen? Das kann nicht rückgängig gemacht werden."))return;
+  if(!confirm("Letzte Bestätigung: Hast du ein Backup, falls du deine Daten später benötigst?"))return;
+  stopTimer();data=blankData();save();resetSubjectForm();applyTheme();fillSettings();renderAll();
+  alert("Lokale LernPlan-Daten wurden zurückgesetzt.");
 });
 
+/* ---------- Gesamtes UI aktualisieren ---------- */
 function renderAll(){
- renderSubjects();renderPlan();renderDashboard();renderWeek();renderStats();renderCards();renderQuiz();fillSubjectSelects();timerDisplay();
+  renderSubjects();renderDashboard();renderTimetable();renderHomework();
+  renderCards();renderQuizList();renderNotes();renderSessions();renderStats();
 }
-initTiles();applyTheme();
-selectedSubject=data.subjects[0]?.id||null;
-resetForm();
-renderAll();
+applyTheme();fillSettings();renderAll();updateTimerDisplay();
+
+/* Hinweis: Daten werden nur in diesem Browser gespeichert.
+   Exportiere regelmäßig ein Backup, besonders vor Code-Updates. */
 </script>
+
+<div id="toast" role="status" aria-live="polite"
+ style="display:none;position:fixed;bottom:20px;left:50%;transform:translateX(-50%);
+ background:var(--text);color:var(--card);padding:12px 18px;border-radius:12px;
+ z-index:20;max-width:90%;box-shadow:var(--shadow)"></div>
 </body>
 </html>
