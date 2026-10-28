@@ -1,1364 +1,1200 @@
+
 <!DOCTYPE html>
 <html lang="de">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="theme-color" content="#f5f7ff">
-  <meta name="description" content="Erstelle und verwalte kostenlos Lernpläne für mehrere Schulfächer.">
-  <title>Lernplan – Dein persönlicher Lernassistent</title>
-
-  <style>
-    :root {
-      --primary: #4f46e5;
-      --primary-dark: #3730a3;
-      --primary-light: #eef2ff;
-      --text: #172033;
-      --muted: #667085;
-      --border: #e4e8f0;
-      --green: #168451;
-      --background: #f5f7ff;
-    }
-
-    * { box-sizing: border-box; }
-
-    body {
-      margin: 0;
-      font-family: Inter, -apple-system, BlinkMacSystemFont,
-        "Segoe UI", Arial, sans-serif;
-      color: var(--text);
-      background:
-        radial-gradient(ellipse at top left, #e8edff 0, transparent 38%),
-        var(--background);
-      min-height: 100vh;
-    }
-
-    button, input, select, textarea { font: inherit; }
-    button { cursor: pointer; }
-
-    .topbar {
-      background: #ffffffeb;
-      border-bottom: 1px solid var(--border);
-      padding: 15px 5%;
-      position: sticky;
-      top: 0;
-      z-index: 5;
-      backdrop-filter: blur(12px);
-    }
-
-    .topbar-inner {
-      max-width: 1100px;
-      margin: auto;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 12px;
-    }
-
-    .brand {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      font-weight: 800;
-      font-size: 19px;
-    }
-
-    .brand-icon {
-      display: grid;
-      place-items: center;
-      width: 42px;
-      height: 42px;
-      border-radius: 13px;
-      color: white;
-      background: linear-gradient(135deg, #6366f1, #4338ca);
-      font-size: 22px;
-    }
-
-    .free-badge {
-      padding: 8px 12px;
-      border: 1px solid #c7d2fe;
-      border-radius: 30px;
-      background: #eef2ff;
-      color: #4338ca;
-      font-size: 12px;
-      font-weight: 750;
-    }
-
-    main {
-      width: min(1050px, 92%);
-      margin: auto;
-      padding: 38px 0 55px;
-    }
-
-    .hero {
-      text-align: center;
-      margin-bottom: 30px;
-    }
-
-    .eyebrow {
-      display: inline-block;
-      padding: 7px 12px;
-      background: #e9eaff;
-      color: #4338ca;
-      border-radius: 30px;
-      font-size: 12px;
-      font-weight: 800;
-      text-transform: uppercase;
-    }
-
-    .hero h1 {
-      margin: 17px auto 12px;
-      font-size: clamp(32px, 5vw, 46px);
-      line-height: 1.12;
-      letter-spacing: -1.5px;
-    }
-
-    .gradient-text { color: var(--primary); }
-
-    .hero p {
-      max-width: 560px;
-      margin: auto;
-      color: var(--muted);
-      font-size: 15px;
-      line-height: 1.7;
-    }
-
-    .layout {
-      display: grid;
-      grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
-      align-items: start;
-      gap: 20px;
-    }
-
-    .card {
-      min-width: 0;
-      padding: 23px;
-      background: white;
-      border: 1px solid #e7eaf2;
-      border-radius: 19px;
-      box-shadow: 0 12px 35px #26356b0b;
-    }
-
-    .section-heading {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      margin-bottom: 8px;
-    }
-
-    .heading-icon {
-      display: grid;
-      place-items: center;
-      width: 43px;
-      height: 43px;
-      flex-shrink: 0;
-      border-radius: 13px;
-      background: var(--primary-light);
-      font-size: 21px;
-    }
-
-    h2 {
-      font-size: 19px;
-      letter-spacing: -0.4px;
-      margin: 0 0 5px;
-    }
-
-    h3 { margin-top: 0; }
-
-    .muted {
-      color: var(--muted);
-      font-size: 13px;
-      line-height: 1.65;
-    }
-
-    label.field-label {
-      display: block;
-      font-size: 13px;
-      font-weight: 750;
-      margin: 17px 0 8px;
-    }
-
-    input[type="text"],
-    input[type="date"],
-    select,
-    textarea {
-      display: block;
-      width: 100%;
-      padding: 12px;
-      border: 1px solid #dce1eb;
-      border-radius: 10px;
-      background: #fcfcfe;
-      color: var(--text);
-      font-size: 14px;
-      outline: none;
-    }
-
-    input:focus, select:focus, textarea:focus {
-      border-color: var(--primary);
-      box-shadow: 0 0 0 3px #4f46e51a;
-    }
-
-    textarea {
-      min-height: 105px;
-      resize: vertical;
-      line-height: 1.7;
-    }
-
-    .field-hint {
-      color: var(--muted);
-      font-size: 12px;
-      line-height: 1.6;
-      margin: 7px 0 0;
-    }
-
-    .primary-button,
-    .secondary-button,
-    .pdf-button {
-      width: 100%;
-      padding: 13px 15px;
-      border-radius: 10px;
-      font-size: 13px;
-      font-weight: 750;
-      transition: background 0.2s, transform 0.2s;
-    }
-
-    .primary-button {
-      margin-top: 22px;
-      border: 0;
-      background: linear-gradient(135deg, #6366f1, #4338ca);
-      color: white;
-      box-shadow: 0 6px 14px #4f46e529;
-    }
-
-    .primary-button:hover {
-      transform: translateY(-1px);
-    }
-
-    .secondary-button {
-      margin-top: 10px;
-      border: 1px solid var(--border);
-      background: white;
-      color: #344054;
-    }
-
-    .secondary-button:hover { background: #f8f9ff; }
-
-    .subjects-card {
-      margin-top: 20px;
-    }
-
-    .subject-list {
-      display: grid;
-      gap: 10px;
-      margin-top: 17px;
-    }
-
-    .subject-item {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      padding: 13px;
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      background: #fff;
-    }
-
-    .subject-item.active {
-      border-color: #a5b4fc;
-      background: #f5f6ff;
-      box-shadow: 0 0 0 1px #a5b4fc;
-    }
-
-    .subject-select {
-      display: flex;
-      align-items: center;
-      flex: 1;
-      gap: 11px;
-      min-width: 0;
-      padding: 0;
-      border: 0;
-      background: transparent;
-      color: var(--text);
-      text-align: left;
-    }
-
-    .subject-icon {
-      display: grid;
-      place-items: center;
-      width: 40px;
-      height: 40px;
-      flex-shrink: 0;
-      border-radius: 11px;
-      background: #eef2ff;
-      font-size: 19px;
-    }
-
-    .subject-info { min-width: 0; }
-
-    .subject-name {
-      display: block;
-      font-size: 13px;
-      font-weight: 800;
-      overflow-wrap: anywhere;
-    }
-
-    .subject-meta {
-      display: block;
-      margin-top: 4px;
-      color: var(--muted);
-      font-size: 11px;
-      line-height: 1.5;
-    }
-
-    .subject-progress {
-      height: 5px;
-      margin-top: 7px;
-      border-radius: 20px;
-      background: #e5e7eb;
-      overflow: hidden;
-    }
-
-    .subject-progress-fill {
-      height: 100%;
-      background: #6366f1;
-      border-radius: inherit;
-    }
-
-    .delete-button {
-      width: 35px;
-      height: 35px;
-      flex-shrink: 0;
-      border: 1px solid #fee2e2;
-      border-radius: 9px;
-      background: #fff7f7;
-      color: #b42318;
-      font-size: 17px;
-    }
-
-    .delete-button:hover { background: #fee2e2; }
-
-    .empty-subjects {
-      padding: 18px 12px;
-      border: 1px dashed #d6dbea;
-      border-radius: 12px;
-      text-align: center;
-      color: var(--muted);
-      font-size: 13px;
-      line-height: 1.7;
-    }
-
-    .result-empty {
-      min-height: 300px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      text-align: center;
-      padding: 20px 8px;
-    }
-
-    .empty-icon {
-      display: grid;
-      place-items: center;
-      width: 75px;
-      height: 75px;
-      border-radius: 23px;
-      background: #eef2ff;
-      font-size: 35px;
-      margin-bottom: 17px;
-    }
-
-    .result-empty h3 { margin-bottom: 7px; }
-
-    .result-title {
-      margin: 14px 0 7px;
-      font-size: 24px;
-      overflow-wrap: anywhere;
-    }
-
-    .result-meta {
-      color: var(--muted);
-      font-size: 13px;
-      line-height: 1.7;
-    }
-
-    .stats-grid {
-      display: grid;
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: 10px;
-      margin: 18px 0;
-    }
-
-    .stat {
-      padding: 13px;
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      background: #fafbff;
-      min-width: 0;
-    }
-
-    .stat-number {
-      display: block;
-      margin-top: 8px;
-      font-size: 20px;
-      font-weight: 800;
-      overflow-wrap: anywhere;
-    }
-
-    .stat-label {
-      display: block;
-      margin-top: 4px;
-      color: var(--muted);
-      font-size: 11px;
-      line-height: 1.5;
-    }
-
-    .progress-box {
-      padding: 16px;
-      border: 1px solid #e0e7ff;
-      border-radius: 13px;
-      background: linear-gradient(135deg, #f7f8ff, #eef2ff);
-      margin: 20px 0;
-    }
-
-    .progress-header {
-      display: flex;
-      justify-content: space-between;
-      gap: 10px;
-      font-size: 12px;
-      margin-bottom: 11px;
-    }
-
-    .progress-percent {
-      color: var(--primary);
-      font-weight: 800;
-    }
-
-    .progress-track {
-      height: 9px;
-      overflow: hidden;
-      border-radius: 20px;
-      background: #dfe4f4;
-    }
-
-    .progress-fill {
-      height: 100%;
-      width: 0;
-      border-radius: inherit;
-      background: linear-gradient(90deg, #818cf8, #4f46e5);
-      transition: width 0.3s;
-    }
-
-    .progress-note {
-      margin: 9px 0 0;
-      font-size: 11px;
-      color: var(--muted);
-      line-height: 1.5;
-    }
-
-    .schedule-heading {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 10px;
-      margin: 25px 0 12px;
-    }
-
-    .schedule-heading h3 {
-      font-size: 15px;
-      margin: 0;
-    }
-
-    .schedule-count {
-      padding: 5px 9px;
-      border-radius: 30px;
-      background: #f0f2f8;
-      font-size: 11px;
-      font-weight: 750;
-      white-space: nowrap;
-    }
-
-    .lerntag {
-      padding: 15px;
-      margin-top: 10px;
-      border: 1px solid #e6eaf3;
-      border-left: 4px solid #818cf8;
-      border-radius: 12px;
-      background: white;
-    }
-
-    .day-header {
-      display: flex;
-      align-items: center;
-      gap: 11px;
-    }
-
-    .day-number {
-      display: grid;
-      place-items: center;
-      width: 34px;
-      height: 34px;
-      flex-shrink: 0;
-      border-radius: 10px;
-      background: var(--primary-light);
-      color: var(--primary-dark);
-      font-size: 12px;
-      font-weight: 800;
-    }
-
-    .day-date { font-size: 13px; font-weight: 800; }
-
-    .day-time {
-      display: block;
-      margin-top: 4px;
-      color: var(--muted);
-      font-size: 11px;
-    }
-
-    .task-text {
-      margin: 13px 0 0;
-      font-size: 13px;
-      line-height: 1.7;
-      overflow-wrap: anywhere;
-    }
-
-    .task-check {
-      display: flex;
-      align-items: center;
-      gap: 9px;
-      margin-top: 14px;
-      padding-top: 12px;
-      border-top: 1px solid #edf0f5;
-      color: #475467;
-      font-size: 12px;
-      cursor: pointer;
-    }
-
-    .task-check input {
-      width: 18px;
-      height: 18px;
-      margin: 0;
-      accent-color: var(--green);
-      flex-shrink: 0;
-    }
-
-    .lerntag.erledigt {
-      border-color: #ccebd8;
-      border-left-color: var(--green);
-      background: #f2fbf5;
-    }
-
-    .lerntag.erledigt .day-number {
-      background: #d9f5e4;
-      color: #146c43;
-    }
-
-    .lerntag.erledigt .task-text {
-      color: #46745b;
-      text-decoration: line-through;
-    }
-
-    .pdf-button {
-      margin-top: 16px;
-      border: 1px solid #cdd4ff;
-      background: #f4f5ff;
-      color: #4338ca;
-    }
-
-    .pdf-button:hover { background: #e7eaff; }
-
-    .message {
-      margin-top: 15px;
-      padding: 12px;
-      border-radius: 10px;
-      background: #fff7ed;
-      border: 1px solid #fed7aa;
-      color: #9a3412;
-      font-size: 13px;
-      line-height: 1.6;
-    }
-
-    .tip {
-      margin-top: 20px;
-      padding: 16px;
-      border: 1px solid #e3e8ff;
-      border-radius: 13px;
-      background: #f7f8ff;
-      color: var(--muted);
-      font-size: 12px;
-      line-height: 1.7;
-    }
-
-    footer {
-      padding: 24px 15px;
-      border-top: 1px solid var(--border);
-      text-align: center;
-      color: var(--muted);
-      font-size: 12px;
-      line-height: 1.8;
-    }
-
-    [hidden] { display: none !important; }
-
-    @media (max-width: 760px) {
-      .topbar { padding: 12px 4%; }
-      .brand { font-size: 16px; }
-      .brand-icon { width: 38px; height: 38px; }
-      main { padding-top: 28px; }
-      .layout { grid-template-columns: 1fr; }
-      .card { padding: 18px; }
-      .hero h1 { letter-spacing: -1px; }
-    }
-
-    @media print {
-      @page { margin: 14mm; }
-
-      body {
-        background: white !important;
-        color: black;
-      }
-
-      .topbar {
-        position: static;
-        padding: 0 0 12px;
-        background: white;
-      }
-
-      .brand-icon,
-      .free-badge,
-      .hero,
-      #formular-card,
-      #facher-card,
-      footer,
-      .pdf-button,
-      .task-check,
-      .tip,
-      .delete-button {
-        display: none !important;
-      }
-
-      main {
-        width: 100%;
-        padding: 10px 0;
-        margin: 0;
-      }
-
-      .layout { display: block; }
-
-      .card {
-        padding: 0;
-        border: none;
-        box-shadow: none;
-      }
-
-      .lerntag {
-        break-inside: avoid;
-        background: white !important;
-        border: 1px solid #ccc;
-      }
-
-      .stat, .progress-box {
-        background: white !important;
-        border-color: #ccc;
-      }
-    }
-  </style>
-  <style>
-/* Anklickbare Fach-Kacheln */
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#f5f7ff">
+<meta name="description" content="Erstelle und verwalte kostenlos Lernpläne für mehrere Schulfächer.">
+<title>Lernplan – Dein persönlicher Lernassistent</title>
+<style>
+:root {
+--primary: #4f46e5;
+--primary-dark: #3730a3;
+--primary-light: #eef2ff;
+--text: #172033;
+--muted: #667085;
+--border: #e4e8f0;
+--green: #168451;
+--background: #f5f7ff;
+}
+* { box-sizing: border-box; }
+body {
+margin: 0;
+font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif;
+color: var(--text);
+background: radial-gradient(ellipse at top left, #e8edff 0, transparent 38%), var(--background);
+min-height: 100vh;
+}
+button, input, select, textarea { font: inherit; }
+button { cursor: pointer; }
+.topbar {
+background: #ffffffeb;
+border-bottom: 1px solid var(--border);
+padding: 15px 5%;
+position: sticky;
+top: 0;
+z-index: 5;
+backdrop-filter: blur(12px);
+}
+.topbar-inner {
+max-width: 1100px;
+margin: auto;
+display: flex;
+align-items: center;
+justify-content: space-between;
+gap: 12px;
+}
+.brand {
+display: flex;
+align-items: center;
+gap: 10px;
+font-weight: 800;
+font-size: 19px;
+}
+.brand-icon {
+display: grid;
+place-items: center;
+width: 42px;
+height: 42px;
+border-radius: 13px;
+color: white;
+background: linear-gradient(135deg, #6366f1, #4338ca);
+font-size: 22px;
+}
+.free-badge {
+padding: 8px 12px;
+border: 1px solid #c7d2fe;
+border-radius: 30px;
+background: #eef2ff;
+color: #4338ca;
+font-size: 12px;
+font-weight: 750;
+}
+main {
+width: min(1050px, 92%);
+margin: auto;
+padding: 38px 0 55px;
+}
+.hero {
+text-align: center;
+margin-bottom: 30px;
+}
+.eyebrow {
+display: inline-block;
+padding: 7px 12px;
+background: #e9eaff;
+color: #4338ca;
+border-radius: 30px;
+font-size: 12px;
+font-weight: 800;
+text-transform: uppercase;
+}
+.hero h1 {
+margin: 17px auto 12px;
+font-size: clamp(32px, 5vw, 46px);
+line-height: 1.12;
+letter-spacing: -1.5px;
+}
+.gradient-text { color: var(--primary); }
+.hero p {
+max-width: 560px;
+margin: auto;
+color: var(--muted);
+font-size: 15px;
+line-height: 1.7;
+}
+.layout {
+display: grid;
+grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
+align-items: start;
+gap: 20px;
+}
+.card {
+min-width: 0;
+padding: 23px;
+background: white;
+border: 1px solid #e7eaf2;
+border-radius: 19px;
+box-shadow: 0 12px 35px #26356b0b;
+}
+.section-heading {
+display: flex;
+align-items: center;
+gap: 12px;
+margin-bottom: 8px;
+}
+.heading-icon {
+display: grid;
+place-items: center;
+width: 43px;
+height: 43px;
+flex-shrink: 0;
+border-radius: 13px;
+background: var(--primary-light);
+font-size: 21px;
+}
+h2 {
+font-size: 19px;
+letter-spacing: -0.4px;
+margin: 0 0 5px;
+}
+h3 { margin-top: 0; }
+.muted {
+color: var(--muted);
+font-size: 13px;
+line-height: 1.65;
+}
+label.field-label {
+display: block;
+font-size: 13px;
+font-weight: 750;
+margin: 17px 0 8px;
+}
+input[type="text"],
+input[type="date"],
+select,
+textarea {
+display: block;
+width: 100%;
+padding: 12px;
+border: 1px solid #dce1eb;
+border-radius: 10px;
+background: #fcfcfe;
+color: var(--text);
+font-size: 14px;
+outline: none;
+}
+input:focus, select:focus, textarea:focus {
+border-color: var(--primary);
+box-shadow: 0 0 0 3px #4f46e51a;
+}
+textarea {
+min-height: 105px;
+resize: vertical;
+line-height: 1.7;
+}
+.field-hint {
+color: var(--muted);
+font-size: 12px;
+line-height: 1.6;
+margin: 7px 0 0;
+}
+.primary-button,
+.secondary-button,
+.pdf-button {
+width: 100%;
+padding: 13px 15px;
+border-radius: 10px;
+font-size: 13px;
+font-weight: 750;
+transition: background 0.2s, transform 0.2s;
+}
+.primary-button {
+margin-top: 22px;
+border: 0;
+background: linear-gradient(135deg, #6366f1, #4338ca);
+color: white;
+box-shadow: 0 6px 14px #4f46e529;
+}
+.primary-button:hover { transform: translateY(-1px); }
+.secondary-button {
+margin-top: 10px;
+border: 1px solid var(--border);
+background: white;
+color: #344054;
+}
+.secondary-button:hover { background: #f8f9ff; }
+.subjects-card { margin-top: 20px; }
+.subject-list {
+display: grid;
+gap: 10px;
+margin-top: 17px;
+}
+.subject-item {
+display: flex;
+align-items: center;
+gap: 10px;
+padding: 13px;
+border: 1px solid var(--border);
+border-radius: 12px;
+background: #fff;
+}
+.subject-item.active {
+border-color: #a5b4fc;
+background: #f5f6ff;
+box-shadow: 0 0 0 1px #a5b4fc;
+}
+.subject-select {
+display: flex;
+align-items: center;
+flex: 1;
+gap: 11px;
+min-width: 0;
+padding: 0;
+border: 0;
+background: transparent;
+color: var(--text);
+text-align: left;
+}
+.subject-icon {
+display: grid;
+place-items: center;
+width: 40px;
+height: 40px;
+flex-shrink: 0;
+border-radius: 11px;
+background: #eef2ff;
+font-size: 19px;
+}
+.subject-info { min-width: 0; }
+.subject-name {
+display: block;
+font-size: 13px;
+font-weight: 800;
+overflow-wrap: anywhere;
+}
+.subject-meta {
+display: block;
+margin-top: 4px;
+color: var(--muted);
+font-size: 11px;
+line-height: 1.5;
+}
+.subject-progress {
+height: 5px;
+margin-top: 7px;
+border-radius: 20px;
+background: #e5e7eb;
+overflow: hidden;
+}
+.subject-progress-fill {
+height: 100%;
+background: #6366f1;
+border-radius: inherit;
+}
+.delete-button {
+width: 35px;
+height: 35px;
+flex-shrink: 0;
+border: 1px solid #fee2e2;
+border-radius: 9px;
+background: #fff7f7;
+color: #b42318;
+font-size: 17px;
+}
+.delete-button:hover { background: #fee2e2; }
+.empty-subjects {
+padding: 18px 12px;
+border: 1px dashed #d6dbea;
+border-radius: 12px;
+text-align: center;
+color: var(--muted);
+font-size: 13px;
+line-height: 1.7;
+}
+.result-empty {
+min-height: 300px;
+display: flex;
+flex-direction: column;
+align-items: center;
+justify-content: center;
+text-align: center;
+padding: 20px 8px;
+}
+.empty-icon {
+display: grid;
+place-items: center;
+width: 75px;
+height: 75px;
+border-radius: 23px;
+background: #eef2ff;
+font-size: 35px;
+margin-bottom: 17px;
+}
+.result-empty h3 { margin-bottom: 7px; }
+.result-title {
+margin: 14px 0 7px;
+font-size: 24px;
+overflow-wrap: anywhere;
+}
+.result-meta {
+color: var(--muted);
+font-size: 13px;
+line-height: 1.7;
+}
+.stats-grid {
+display: grid;
+grid-template-columns: repeat(2, minmax(0, 1fr));
+gap: 10px;
+margin: 18px 0;
+}
+.stat {
+padding: 13px;
+border: 1px solid var(--border);
+border-radius: 12px;
+background: #fafbff;
+min-width: 0;
+}
+.stat-number {
+display: block;
+margin-top: 8px;
+font-size: 20px;
+font-weight: 800;
+overflow-wrap: anywhere;
+}
+.stat-label {
+display: block;
+margin-top: 4px;
+color: var(--muted);
+font-size: 11px;
+line-height: 1.5;
+}
+.progress-box {
+padding: 16px;
+border: 1px solid #e0e7ff;
+border-radius: 13px;
+background: linear-gradient(135deg, #f7f8ff, #eef2ff);
+margin: 20px 0;
+}
+.progress-header {
+display: flex;
+justify-content: space-between;
+gap: 10px;
+font-size: 12px;
+margin-bottom: 11px;
+}
+.progress-percent {
+color: var(--primary);
+font-weight: 800;
+}
+.progress-track {
+height: 9px;
+overflow: hidden;
+border-radius: 20px;
+background: #dfe4f4;
+}
+.progress-fill {
+height: 100%;
+width: 0;
+border-radius: inherit;
+background: linear-gradient(90deg, #818cf8, #4f46e5);
+transition: width 0.3s;
+}
+.progress-note {
+margin: 9px 0 0;
+font-size: 11px;
+color: var(--muted);
+line-height: 1.5;
+}
+.schedule-heading {
+display: flex;
+align-items: center;
+justify-content: space-between;
+gap: 10px;
+margin: 25px 0 12px;
+}
+.schedule-heading h3 {
+font-size: 15px;
+margin: 0;
+}
+.schedule-count {
+padding: 5px 9px;
+border-radius: 30px;
+background: #f0f2f8;
+font-size: 11px;
+font-weight: 750;
+white-space: nowrap;
+}
+.lerntag {
+padding: 15px;
+margin-top: 10px;
+border: 1px solid #e6eaf3;
+border-left: 4px solid #818cf8;
+border-radius: 12px;
+background: white;
+}
+.day-header {
+display: flex;
+align-items: center;
+gap: 11px;
+}
+.day-number {
+display: grid;
+place-items: center;
+width: 34px;
+height: 34px;
+flex-shrink: 0;
+border-radius: 10px;
+background: var(--primary-light);
+color: var(--primary-dark);
+font-size: 12px;
+font-weight: 800;
+}
+.day-date { font-size: 13px; font-weight: 800; }
+.day-time {
+display: block;
+margin-top: 4px;
+color: var(--muted);
+font-size: 11px;
+}
+.task-text {
+white-space: pre-line;
+margin: 13px 0 0;
+font-size: 13px;
+line-height: 1.7;
+overflow-wrap: anywhere;
+}
+.task-check {
+display: flex;
+align-items: center;
+gap: 9px;
+margin-top: 14px;
+padding-top: 12px;
+border-top: 1px solid #edf0f5;
+color: #475467;
+font-size: 12px;
+cursor: pointer;
+}
+.task-check input {
+width: 18px;
+height: 18px;
+margin: 0;
+accent-color: var(--green);
+flex-shrink: 0;
+}
+.lerntag.erledigt {
+border-color: #ccebd8;
+border-left-color: var(--green);
+background: #f2fbf5;
+}
+.lerntag.erledigt .day-number {
+background: #d9f5e4;
+color: #146c43;
+}
+.lerntag.erledigt .task-text {
+color: #46745b;
+text-decoration: line-through;
+}
+.pdf-button {
+margin-top: 16px;
+border: 1px solid #cdd4ff;
+background: #f4f5ff;
+color: #4338ca;
+}
+.pdf-button:hover { background: #e7eaff; }
+.message {
+margin-top: 15px;
+padding: 12px;
+border-radius: 10px;
+background: #fff7ed;
+border: 1px solid #fed7aa;
+color: #9a3412;
+font-size: 13px;
+line-height: 1.6;
+}
+.tip {
+margin-top: 20px;
+padding: 16px;
+border: 1px solid #e3e8ff;
+border-radius: 13px;
+background: #f7f8ff;
+color: var(--muted);
+font-size: 12px;
+line-height: 1.7;
+}
+footer {
+padding: 24px 15px;
+border-top: 1px solid var(--border);
+text-align: center;
+color: var(--muted);
+font-size: 12px;
+line-height: 1.8;
+}
+[hidden] { display: none !important; }
+@media (max-width: 760px) {
+.topbar { padding: 12px 4%; }
+.brand { font-size: 16px; }
+.brand-icon { width: 38px; height: 38px; }
+main { padding-top: 28px; }
+.layout { grid-template-columns: 1fr; }
+.card { padding: 18px; }
+.hero h1 { letter-spacing: -1px; }
+}
+@media print {
+@page { margin: 14mm; }
+body { background: white !important; color: black; }
+.topbar {
+position: static;
+padding: 0 0 12px;
+background: white;
+}
+.brand-icon,
+.free-badge,
+.hero,
+#formular-card,
+#facher-card,
+footer,
+.pdf-button,
+.task-check,
+.tip,
+.delete-button { display: none !important; }
+main { width: 100%; padding: 10px 0; margin: 0; }
+.layout { display: block; }
+.card { padding: 0; border: none; box-shadow: none; }
+.lerntag {
+break-inside: avoid;
+background: white !important;
+border: 1px solid #ccc;
+}
+.stat, .progress-box { background: white !important; border-color: #ccc; }
+}
+</style>
+<style>
 .fach-kacheln {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 10px;
-  margin-top: 12px;
+display: grid;
+grid-template-columns: repeat(3, minmax(0, 1fr));
+gap: 10px;
+margin-top: 12px;
 }
-
 .fach-kachel {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  min-height: 94px;
-  padding: 12px 6px;
-  border: 1px solid #e4e8f0;
-  border-radius: 13px;
-  background: #fff;
-  color: #172033;
-  font-size: 12px;
-  font-weight: 750;
-  cursor: pointer;
-  transition: 0.2s ease;
+display: flex;
+flex-direction: column;
+align-items: center;
+justify-content: center;
+gap: 8px;
+min-height: 94px;
+padding: 12px 6px;
+border: 1px solid #e4e8f0;
+border-radius: 13px;
+background: #fff;
+color: #172033;
+font-size: 12px;
+font-weight: 750;
+cursor: pointer;
+transition: 0.2s ease;
 }
-
 .fach-kachel:hover {
-  border-color: #818cf8;
-  background: #f5f6ff;
-  transform: translateY(-2px);
+border-color: #818cf8;
+background: #f5f6ff;
+transform: translateY(-2px);
 }
-
 .fach-kachel.ausgewaehlt {
-  border: 2px solid #4f46e5;
-  background: #eef2ff;
-  color: #3730a3;
-  box-shadow: 0 0 0 3px #4f46e51a;
+border: 2px solid #4f46e5;
+background: #eef2ff;
+color: #3730a3;
+box-shadow: 0 0 0 3px #4f46e51a;
 }
-
-.fach-kachel .fach-symbol {
-  font-size: 27px;
-}
-
+.fach-kachel .fach-symbol { font-size: 27px; }
 @media (max-width: 400px) {
-  .fach-kacheln {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
+.fach-kacheln { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+</style>
+<style>
+.smart-plan-note {
+margin: 8px 0 16px;
+padding: 12px 14px;
+border: 1px solid #dbe3ff;
+border-radius: 12px;
+background: #f6f7ff;
+color: #475467;
+font-size: 12px;
+line-height: 1.6;
+}
+.smart-plan-note strong {
+display: block;
+color: #3730a3;
+margin-bottom: 3px;
 }
 </style>
 </head>
-
 <body>
-  <nav class="topbar">
-    <div class="topbar-inner">
-      <div class="brand">
-        <span class="brand-icon">✦</span>
-        <span>Lernplan</span>
-      </div>
-      <span class="free-badge">✓ Kostenlos nutzbar</span>
-    </div>
-  </nav>
-
-  <main>
-    <section class="hero">
-      <span class="eyebrow">✦ Dein smarter Lernassistent</span>
-      <h1>Alle Fächer im Blick.<br>
-        <span class="gradient-text">Besser vorbereitet.</span>
-      </h1>
-      <p>
-        Verwalte deine Prüfungen, plane deine Lerntage und behalte
-        deinen Fortschritt in jedem Fach im Blick.
-      </p>
-    </section>
-
-    <div class="layout">
-      <div>
-        <section class="card" id="formular-card">
-          <div class="section-heading">
-            <div class="heading-icon">📝</div>
-            <div>
-              <h2>Neues Fach hinzufügen</h2>
-              <div class="muted">Erstelle einen eigenen Lernplan.</div>
-            </div>
-          </div>
-
-          <form id="fachformular">
-            
-<label class="field-label" for="fach">Schulfach auswählen</label>
-<<div class="fach-kacheln" id="fachKacheln">
-  <button type="button" class="fach-kachel" data-fach="Deutsch" aria-pressed="false">
-    <span class="fach-symbol">📚</span>
-    Deutsch
-  </button>
-
-  <button type="button" class="fach-kachel" data-fach="Mathematik" aria-pressed="false">
-    <span class="fach-symbol">➗</span>
-    Mathematik
-  </button>
-
-  <button type="button" class="fach-kachel" data-fach="Englisch" aria-pressed="false">
-    <span class="fach-symbol">🇬🇧</span>
-    Englisch
-  </button>
-
-  <button type="button" class="fach-kachel" data-fach="Biologie" aria-pressed="false">
-    <span class="fach-symbol">🧬</span>
-    Biologie
-  </button>
-
-  <button type="button" class="fach-kachel" data-fach="Chemie" aria-pressed="false">
-    <span class="fach-symbol">🧪</span>
-    Chemie
-  </button>
-
-  <button type="button" class="fach-kachel" data-fach="Physik" aria-pressed="false">
-    <span class="fach-symbol">⚛️</span>
-    Physik
-  </button>
-
-  <button type="button" class="fach-kachel" data-fach="Geschichte" aria-pressed="false">
-    <span class="fach-symbol">🏛️</span>
-    Geschichte
-  </button>
-
-  <button type="button" class="fach-kachel" data-fach="Geografie" aria-pressed="false">
-    <span class="fach-symbol">🌍</span>
-    Geografie
-  </button>
-
-  <button type="button" class="fach-kachel" data-fach="Informatik" aria-pressed="false">
-    <span class="fach-symbol">💻</span>
-    Informatik
-  </button>
-
-  <button type="button" class="fach-kachel" data-fach="Wirtschaft" aria-pressed="false">
-    <span class="fach-symbol">📈</span>
-    Wirtschaft
-  </button>
-
-  <button type="button" class="fach-kachel" data-fach="Französisch" aria-pressed="false">
-    <span class="fach-symbol">🇫🇷</span>
-    Französisch
-  </button>
-
-  <button type="button" class="fach-kachel" data-fach="Sport" aria-pressed="false">
-    <span class="fach-symbol">⚽</span>
-    Sport
-  </button>
+<nav class="topbar">
+<div class="topbar-inner">
+<div class="brand">
+<span class="brand-icon">✦</span>
+<span>Lernplan</span>
 </div>
-
+<span class="free-badge">✓ Kostenlos nutzbar</span>
+</div>
+</nav>
+<main>
+<section class="hero">
+<span class="eyebrow">✦ Dein smarter Lernassistent</span>
+<h1>Alle Fächer im Blick.<br><span class="gradient-text">Besser vorbereitet.</span></h1>
+<p>Verwalte deine Prüfungen, plane deine Lerntage und behalte deinen Fortschritt in jedem Fach im Blick.</p>
+</section>
+<div class="layout">
+<div>
+<section class="card" id="formular-card">
+<div class="section-heading">
+<div class="heading-icon">📝</div>
+<div>
+<h2>Neues Fach hinzufügen</h2>
+<div class="muted">Erstelle einen eigenen Lernplan.</div>
+</div>
+</div>
+<form id="fachformular">
+<label class="field-label" for="fach">Schulfach auswählen</label>
+<div class="fach-kacheln" id="fachKacheln">
+<button type="button" class="fach-kachel" data-fach="Deutsch" aria-pressed="false"><span class="fach-symbol">📚</span>Deutsch</button>
+<button type="button" class="fach-kachel" data-fach="Mathematik" aria-pressed="false"><span class="fach-symbol">➗</span>Mathematik</button>
+<button type="button" class="fach-kachel" data-fach="Englisch" aria-pressed="false"><span class="fach-symbol">🇬🇧</span>Englisch</button>
+<button type="button" class="fach-kachel" data-fach="Biologie" aria-pressed="false"><span class="fach-symbol">🧬</span>Biologie</button>
+<button type="button" class="fach-kachel" data-fach="Chemie" aria-pressed="false"><span class="fach-symbol">🧪</span>Chemie</button>
+<button type="button" class="fach-kachel" data-fach="Physik" aria-pressed="false"><span class="fach-symbol">⚛️</span>Physik</button>
+<button type="button" class="fach-kachel" data-fach="Geschichte" aria-pressed="false"><span class="fach-symbol">🏛️</span>Geschichte</button>
+<button type="button" class="fach-kachel" data-fach="Geografie" aria-pressed="false"><span class="fach-symbol">🌍</span>Geografie</button>
+<button type="button" class="fach-kachel" data-fach="Informatik" aria-pressed="false"><span class="fach-symbol">💻</span>Informatik</button>
+<button type="button" class="fach-kachel" data-fach="Wirtschaft" aria-pressed="false"><span class="fach-symbol">📈</span>Wirtschaft</button>
+<button type="button" class="fach-kachel" data-fach="Französisch" aria-pressed="false"><span class="fach-symbol">🇫🇷</span>Französisch</button>
+<button type="button" class="fach-kachel" data-fach="Sport" aria-pressed="false"><span class="fach-symbol">⚽</span>Sport</button>
+</div>
 <select id="fach" hidden>
-  <option value="">Fach auswählen</option>
-  <option value="Deutsch">Deutsch</option>
-  <option value="Mathematik">Mathematik</option>
-  <option value="Englisch">Englisch</option>
-  <option value="Biologie">Biologie</option>
-  <option value="Chemie">Chemie</option>
-  <option value="Physik">Physik</option>
-  <option value="Geschichte">Geschichte</option>
-  <option value="Geografie">Geografie</option>
-  <option value="Informatik">Informatik</option>
-  <option value="Wirtschaft">Wirtschaft</option>
-  <option value="Französisch">Französisch</option>
-  <option value="Sport">Sport</option>
+<option value="">Fach auswählen</option>
+<option value="Deutsch">Deutsch</option>
+<option value="Mathematik">Mathematik</option>
+<option value="Englisch">Englisch</option>
+<option value="Biologie">Biologie</option>
+<option value="Chemie">Chemie</option>
+<option value="Physik">Physik</option>
+<option value="Geschichte">Geschichte</option>
+<option value="Geografie">Geografie</option>
+<option value="Informatik">Informatik</option>
+<option value="Wirtschaft">Wirtschaft</option>
+<option value="Französisch">Französisch</option>
+<option value="Sport">Sport</option>
 </select>
-  
+<label class="field-label" for="datum">Prüfungsdatum</label>
+<input id="datum" type="date" required>
+<label class="field-label" for="lernzeit">Lernzeit pro Tag</label>
+<select id="lernzeit" required>
+<option value="30">30 Minuten</option>
+<option value="60" selected>1 Stunde</option>
+<option value="90">1,5 Stunden</option>
+<option value="120">2 Stunden</option>
+<option value="180">3 Stunden</option>
 </select>
+<label class="field-label" for="themen">Deine Lernthemen</label>
+<textarea id="themen" maxlength="5000" placeholder="Zellatmung&#10;Fotosynthese&#10;Genetik" required></textarea>
+<p class="field-hint">Schreibe jedes Thema in eine neue Zeile.</p>
+<button class="primary-button" type="submit">＋ Fach speichern</button>
+</form>
+<div id="formularmeldung" aria-live="polite"></div>
+</section>
+<section class="card subjects-card" id="facher-card">
+<div class="section-heading">
+<div class="heading-icon">📚</div>
+<div>
+<h2>Meine Fächer</h2>
+<div class="muted">Wähle einen Lernplan aus.</div>
+</div>
+</div>
+<div id="facherliste" class="subject-list"></div>
+</section>
+</div>
+<section class="card" id="plan-card">
+<div id="leerzustand" class="result-empty">
+<div class="empty-icon">📅</div>
+<h3>Dein Lernbereich</h3>
+<p class="muted">Füge links dein erstes Fach hinzu. Dein Lernplan und dein Fortschritt erscheinen hier.</p>
+</div>
+<div id="ergebnis" aria-live="polite"></div>
+<button id="pdfButton" class="pdf-button" type="button" hidden>📄 Lernplan drucken oder als PDF speichern</button>
+</section>
+</div>
+<div class="tip">💡 Tipp: Kurze, regelmäßige Lerneinheiten und Wiederholungen helfen dir, Inhalte langfristig zu behalten.</div>
+</main>
+<footer>
+<strong>✦ Lernplan</strong><br>
+Kostenloser Helfer für deine Prüfungsvorbereitung.<br>
+Deine Fächer und Fortschritte werden in diesem Browser gespeichert.
+</footer>
+<script>
+const STORAGE_KEY = "lernplanMehrfachFaecherV1";
+const formular = document.getElementById("fachformular");
+const fachFeld = document.getElementById("fach");
+const datumFeld = document.getElementById("datum");
+const lernzeitFeld = document.getElementById("lernzeit");
+const themenFeld = document.getElementById("themen");
+const facherliste = document.getElementById("facherliste");
+const ergebnis = document.getElementById("ergebnis");
+const leerzustand = document.getElementById("leerzustand");
+const pdfButton = document.getElementById("pdfButton");
+const formularmeldung = document.getElementById("formularmeldung");
 
+const heute = new Date();
+const lokalesDatum = new Date(heute.getTime() - heute.getTimezoneOffset() * 60000).toISOString().split("T")[0];
+datumFeld.min = lokalesDatum;
+datumFeld.value = lokalesDatum;
 
-            <label class="field-label" for="datum">Prüfungsdatum</label>
-            <input id="datum" type="date" required>
+let faecher = ladeFaecher();
+let ausgewaehlteId = faecher.length ? faecher[0].id : null;
 
-            <label class="field-label" for="lernzeit">Lernzeit pro Tag</label>
-            <select id="lernzeit" required>
-              <option value="30">30 Minuten</option>
-              <option value="60" selected>1 Stunde</option>
-              <option value="90">1,5 Stunden</option>
-              <option value="120">2 Stunden</option>
-              <option value="180">3 Stunden</option>
-            </select>
+function ladeFaecher() {
+try {
+const daten = JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]");
+if (!Array.isArray(daten)) return [];
+return daten.filter(fach =>
+fach &&
+typeof fach.id === "string" &&
+typeof fach.name === "string" &&
+typeof fach.datum === "string" &&
+Array.isArray(fach.themen) &&
+Array.isArray(fach.erledigteTage)
+);
+} catch (fehler) {
+return [];
+}
+}
 
-            <label class="field-label" for="themen">Deine Lernthemen</label>
-            <textarea id="themen" maxlength="5000"
-              placeholder="Zellatmung&#10;Fotosynthese&#10;Genetik"
-              required></textarea>
-            <p class="field-hint">Schreibe jedes Thema in eine neue Zeile.</p>
+function speichereFaecher() {
+try {
+localStorage.setItem(STORAGE_KEY, JSON.stringify(faecher));
+return true;
+} catch (fehler) {
+zeigeMeldung("Speichern fehlgeschlagen. Der Browser-Speicher könnte voll sein.", true);
+return false;
+}
+}
 
-            <button class="primary-button" type="submit">
-              ＋ Fach speichern
-            </button>
-          </form>
+function escapeHTML(text) {
+return String(text).replace(/[&<>"']/g, function (zeichen) {
+const ersatz = {
+"&": "&amp;",
+"<": "&lt;",
+">": "&gt;",
+'"': "&quot;",
+"'": "&#39;"
+};
+return ersatz[zeichen];
+});
+}
 
-          <div id="formularmeldung" aria-live="polite"></div>
-        </section>
+function tageBis(datum) {
+const ziel = new Date(datum + "T12:00:00");
+const jetzt = new Date();
+jetzt.setHours(0, 0, 0, 0);
+return Math.round((ziel - jetzt) / (1000 * 60 * 60 * 24));
+}
 
-        <section class="card subjects-card" id="facher-card">
-          <div class="section-heading">
-            <div class="heading-icon">📚</div>
-            <div>
-              <h2>Meine Fächer</h2>
-              <div class="muted">Wähle einen Lernplan aus.</div>
-            </div>
-          </div>
+function datumDeutsch(datum, mitWochentag = false) {
+return new Date(datum + "T12:00:00").toLocaleDateString(
+"de-DE",
+mitWochentag
+? { weekday: "short", day: "2-digit", month: "2-digit", year: "numeric" }
+: { day: "2-digit", month: "long", year: "numeric" }
+);
+}
 
-          <div id="facherliste" class="subject-list"></div>
-        </section>
-      </div>
+function anzahlTage(fach) {
+return Math.max(1, tageBis(fach.datum));
+}
 
-      <section class="card" id="plan-card">
-        <div id="leerzustand" class="result-empty">
-          <div class="empty-icon">📅</div>
-          <h3>Dein Lernbereich</h3>
-          <p class="muted">
-            Füge links dein erstes Fach hinzu. Dein Lernplan und
-            dein Fortschritt erscheinen hier.
-          </p>
-        </div>
+function fortschritt(fach) {
+const gesamt = anzahlTage(fach);
+const erledigt = fach.erledigteTage.filter(
+tag => Number.isInteger(tag) && tag >= 0 && tag < gesamt
+).length;
+return {
+gesamt,
+erledigt,
+prozent: Math.round((erledigt / gesamt) * 100)
+};
+}
 
-        <div id="ergebnis" aria-live="polite"></div>
+function zeigeMeldung(text, fehler = false) {
+formularmeldung.className = "message";
+formularmeldung.style.background = fehler ? "#fff7ed" : "#ecfdf3";
+formularmeldung.style.borderColor = fehler ? "#fed7aa" : "#abefc6";
+formularmeldung.style.color = fehler ? "#9a3412" : "#067647";
+formularmeldung.textContent = text;
+}
 
-        <button id="pdfButton" class="pdf-button" type="button" hidden>
-          📄 Lernplan drucken oder als PDF speichern
-        </button>
-      </section>
-    </div>
+function loescheMeldung() {
+formularmeldung.textContent = "";
+formularmeldung.className = "";
+}
 
-    <div class="tip">
-      💡 Tipp: Kurze, regelmäßige Lerneinheiten und Wiederholungen
-      helfen dir, Inhalte langfristig zu behalten.
-    </div>
-  </main>
+function renderFaecher() {
+if (faecher.length === 0) {
+facherliste.innerHTML = `
+<div class="empty-subjects">
+Du hast noch keine Fächer gespeichert.<br>
+Füge oben dein erstes Fach hinzu.
+</div>
+`;
+return;
+}
 
-  <footer>
-    <strong>✦ Lernplan</strong><br>
-    Kostenloser Helfer für deine Prüfungsvorbereitung.<br>
-    Deine Fächer und Fortschritte werden in diesem Browser gespeichert.
-  </footer>
+facherliste.innerHTML = faecher.map(fach => {
+const stats = fortschritt(fach);
+const aktiv = fach.id === ausgewaehlteId ? "active" : "";
+return `
+<div class="subject-item ${aktiv}">
+<button class="subject-select" type="button" data-action="select" data-id="${escapeHTML(fach.id)}">
+<span class="subject-icon">📘</span>
+<span class="subject-info">
+<span class="subject-name">${escapeHTML(fach.name)}</span>
+<span class="subject-meta">
+Prüfung: ${datumDeutsch(fach.datum)}<br>
+${stats.erledigt} von ${stats.gesamt} Tagen erledigt
+</span>
+<span class="subject-progress">
+<span class="subject-progress-fill" style="display:block;width:${stats.prozent}%"></span>
+</span>
+</span>
+</button>
+<button class="delete-button" type="button" data-action="delete" data-id="${escapeHTML(fach.id)}" aria-label="${escapeHTML(fach.name)} löschen" title="Fach löschen">×</button>
+</div>
+`;
+}).join("");
+}
 
-  <script>
-    const STORAGE_KEY = "lernplanMehrfachFaecherV1";
+function erstelleIntelligentenPlan(fach, anzahlTageGesamt) {
+const themen = (Array.isArray(fach.themen) ? fach.themen : [])
+.map(thema => String(thema).trim())
+.filter(Boolean);
+const sichereThemen = themen.length ? themen : ["Wichtige Inhalte wiederholen"];
 
-    const formular = document.getElementById("fachformular");
-    const fachFeld = document.getElementById("fach");
-    const datumFeld = document.getElementById("datum");
-    const lernzeitFeld = document.getElementById("lernzeit");
-    const themenFeld = document.getElementById("themen");
-    const facherliste = document.getElementById("facherliste");
-    const ergebnis = document.getElementById("ergebnis");
-    const leerzustand = document.getElementById("leerzustand");
-    const pdfButton = document.getElementById("pdfButton");
-    const formularmeldung = document.getElementById("formularmeldung");
+// Ab 3 Tagen ist am letzten Tag eine Probeprüfung vorgesehen.
+// Ab 5 Tagen wird zusätzlich ein eigener Wiederholungstag eingeplant.
+const probeTag = anzahlTageGesamt >= 3 ? anzahlTageGesamt - 1 : -1;
+const wiederholungsTag = anzahlTageGesamt >= 5 ? anzahlTageGesamt - 2 : -1;
+const anzahlInhaltstage = Math.max(
+1,
+anzahlTageGesamt - (probeTag >= 0 ? 1 : 0) - (wiederholungsTag >= 0 ? 1 : 0)
+);
 
-    const heute = new Date();
-    const lokalesDatum = new Date(
-      heute.getTime() - heute.getTimezoneOffset() * 60000
-    ).toISOString().split("T")[0];
+const themenProTag = Array.from({ length: anzahlTageGesamt }, () => []);
+sichereThemen.forEach((thema, index) => {
+const tagIndex = Math.min(
+anzahlInhaltstage - 1,
+Math.floor(index * anzahlInhaltstage / sichereThemen.length)
+);
+themenProTag[tagIndex].push(thema);
+});
 
-    datumFeld.min = lokalesDatum;
-    datumFeld.value = lokalesDatum;
+return Array.from({ length: anzahlTageGesamt }, (_, tag) => {
+if (tag === probeTag) {
+return "📝 PROBEPRÜFUNG\nBearbeite typische Prüfungsaufgaben ohne deine Unterlagen.\nKontrolliere danach deine Antworten und notiere, was du noch unsicher kannst.";
+}
 
-    let faecher = ladeFaecher();
-    let ausgewaehlteId = faecher.length ? faecher[0].id : null;
+if (tag === wiederholungsTag) {
+return "🔁 GROẞE WIEDERHOLUNG\nWiederhole alle Themen: " + sichereThemen.join(", ") + ".\nErkläre die Inhalte aus dem Kopf, nutze Karteikarten und markiere letzte Wissenslücken. Keine großen neuen Themen mehr anfangen.";
+}
 
-    function ladeFaecher() {
-      try {
-        const daten = JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]");
+const teile = [];
+const heutigeThemen = themenProTag[tag];
 
-        if (!Array.isArray(daten)) return [];
+if (heutigeThemen.length) {
+teile.push("📚 NEUE THEMEN\n" + heutigeThemen.join(" · ") + "\nLerne aktiv: Erkläre die Inhalte in eigenen Worten und bearbeite passende Aufgaben.");
+} else {
+teile.push("🧠 FESTIGEN\nWiederhole die bereits gelernten Inhalte und übe Aufgaben, ohne direkt in deine Unterlagen zu schauen.");
+}
 
-        return daten.filter(fach =>
-          fach &&
-          typeof fach.id === "string" &&
-          typeof fach.name === "string" &&
-          typeof fach.datum === "string" &&
-          Array.isArray(fach.themen) &&
-          Array.isArray(fach.erledigteTage)
-        );
-      } catch (fehler) {
-        return [];
-      }
-    }
+const wiederholungen = [];
+[1, 3, 7].forEach(abstand => {
+const vorherigerTag = tag - abstand;
+if (vorherigerTag >= 0 && themenProTag[vorherigerTag].length) {
+wiederholungen.push(abstand + (abstand === 1 ? " Tag: " : " Tagen: ") + themenProTag[vorherigerTag].join(" · "));
+}
+});
 
-    function speichereFaecher() {
-      try {
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(faecher));
-        return true;
-      } catch (fehler) {
-        zeigeMeldung(
-          "Speichern fehlgeschlagen. Der Browser-Speicher könnte voll sein.",
-          true
-        );
-        return false;
-      }
-    }
+if (wiederholungen.length) {
+teile.push("🔁 ABSTANDS-WIEDERHOLUNG\n" + wiederholungen.join("\n") + "\nTeste dich zuerst ohne Hilfsmittel.");
+}
 
-    function escapeHTML(text) {
-      return String(text).replace(/[&<>"']/g, function (zeichen) {
-        const ersatz = {
-          "&": "&amp;",
-          "<": "&lt;",
-          ">": "&gt;",
-          '"': "&quot;",
-          "'": "&#39;"
-        };
-        return ersatz[zeichen];
-      });
-    }
+if (tag === anzahlInhaltstage - 1 && probeTag < 0 && wiederholungsTag < 0) {
+teile.push("✅ ABSCHLUSS-CHECK\nNenne die wichtigsten Punkte aus dem Kopf und prüfe, welche Themen noch unsicher sind.");
+}
 
-    function tageBis(datum) {
-      const ziel = new Date(datum + "T12:00:00");
-      const jetzt = new Date();
-      jetzt.setHours(0, 0, 0, 0);
+return teile.join("\n\n");
+});
+}
 
-      return Math.round((ziel - jetzt) / (1000 * 60 * 60 * 24));
-    }
+function renderPlan() {
+const fach = faecher.find(f => f.id === ausgewaehlteId);
 
-    function datumDeutsch(datum, mitWochentag = false) {
-      return new Date(datum + "T12:00:00").toLocaleDateString(
-        "de-DE",
-        mitWochentag
-          ? { weekday: "short", day: "2-digit", month: "2-digit", year: "numeric" }
-          : { day: "2-digit", month: "long", year: "numeric" }
-      );
-    }
+if (!fach) {
+leerzustand.hidden = false;
+ergebnis.innerHTML = "";
+pdfButton.hidden = true;
+return;
+}
 
-    function anzahlTage(fach) {
-      return Math.max(1, tageBis(fach.datum));
-    }
+leerzustand.hidden = true;
+pdfButton.hidden = false;
 
-    function fortschritt(fach) {
-      const gesamt = anzahlTage(fach);
-      const erledigt = fach.erledigteTage.filter(
-        tag => Number.isInteger(tag) && tag >= 0 && tag < gesamt
-      ).length;
+const stats = fortschritt(fach);
+const tage = stats.gesamt;
+const bisPruefung = tageBis(fach.datum);
 
-      return {
-        gesamt,
-        erledigt,
-        prozent: Math.round((erledigt / gesamt) * 100)
-      };
-    }
+let html = `
+<div class="section-heading">
+<div class="heading-icon">🎯</div>
+<div>
+<h2>Dein Lernplan</h2>
+<div class="muted">Ausgewähltes Fach</div>
+</div>
+</div>
+<h3 class="result-title">${escapeHTML(fach.name)}</h3>
+<p class="result-meta">
+📅 Prüfung: ${datumDeutsch(fach.datum)}<br>
+${bisPruefung === 0 ? "Deine Prüfung ist heute." : "Noch " + bisPruefung + " Tag(e) bis zur Prüfung."}
+</p>
+<div class="stats-grid">
+<div class="stat">
+<span>📚</span>
+<span class="stat-number">${tage}</span>
+<span class="stat-label">Geplante Lerntage</span>
+</div>
+<div class="stat">
+<span>⏱️</span>
+<span class="stat-number">${Number(fach.lernzeit)} Min.</span>
+<span class="stat-label">Lernzeit pro Tag</span>
+</div>
+</div>
+<div class="progress-box">
+<div class="progress-header">
+<strong>Dein Fortschritt</strong>
+<span class="progress-percent" id="fortschritt-prozent">${stats.prozent}%</span>
+</div>
+<div class="progress-track" id="fortschritt-anzeige" role="progressbar" aria-label="Erledigte Lerntage" aria-valuemin="0" aria-valuemax="${tage}" aria-valuenow="${stats.erledigt}">
+<div class="progress-fill" id="fortschritt-fuellung" style="width:${stats.prozent}%"></div>
+</div>
+<p class="progress-note" id="fortschritt-zahl">
+${stats.erledigt} von ${tage} Lerntagen erledigt.
+${stats.prozent === 100 ? "Geschafft! 🎉" : "Du schaffst das!"}
+</p>
+</div>
+<div class="schedule-heading">
+<h3>📋 Tagesaufgaben</h3>
+<span class="schedule-count">${tage} Tage</span>
+</div>
+<div class="smart-plan-note">
+<strong>🧠 Dein intelligenter Lernplan</strong>
+Die Themen werden auf deine verfügbaren Tage verteilt. Bereits gelernte Inhalte tauchen nach 1, 3 und 7 Tagen wieder auf. Bei mindestens 5 Tagen ist ein eigener Wiederholungstag eingeplant; der letzte Lerntag wird ab 3 Tagen zur Probeprüfung.
+</div>
+`;
 
-    function zeigeMeldung(text, fehler = false) {
-      formularmeldung.className = "message";
-      formularmeldung.style.background = fehler ? "#fff7ed" : "#ecfdf3";
-      formularmeldung.style.borderColor = fehler ? "#fed7aa" : "#abefc6";
-      formularmeldung.style.color = fehler ? "#9a3412" : "#067647";
-      formularmeldung.textContent = text;
-    }
+const intelligenteAufgaben = erstelleIntelligentenPlan(fach, tage);
 
-    function loescheMeldung() {
-      formularmeldung.textContent = "";
-      formularmeldung.className = "";
-    }
+for (let tag = 0; tag < tage; tag++) {
+const tagDatum = new Date();
+tagDatum.setHours(12, 0, 0, 0);
+tagDatum.setDate(tagDatum.getDate() + tag);
+const datumText = tagDatum.toLocaleDateString("de-DE", {
+weekday: "short",
+day: "2-digit",
+month: "2-digit",
+year: "numeric"
+});
+const aufgabe = intelligenteAufgaben[tag];
+const istErledigt = fach.erledigteTage.includes(tag);
 
-    function renderFaecher() {
-      if (faecher.length === 0) {
-        facherliste.innerHTML = `
-          <div class="empty-subjects">
-            Du hast noch keine Fächer gespeichert.<br>
-            Füge oben dein erstes Fach hinzu.
-          </div>
-        `;
-        return;
-      }
+html += `
+<article class="lerntag ${istErledigt ? "erledigt" : ""}" data-tag="${tag}">
+<div class="day-header">
+<div class="day-number">${tag + 1}</div>
+<div>
+<span class="day-date">${datumText}</span>
+<span class="day-time">⏱️ ${Number(fach.lernzeit)} Minuten</span>
+</div>
+</div>
+<p class="task-text">${escapeHTML(aufgabe)}</p>
+<label class="task-check">
+<input type="checkbox" class="lerntag-checkbox" data-tag="${tag}" ${istErledigt ? "checked" : ""}>
+<span>Als erledigt markieren</span>
+</label>
+</article>
+`;
+}
 
-      facherliste.innerHTML = faecher.map(fach => {
-        const stats = fortschritt(fach);
-        const aktiv = fach.id === ausgewaehlteId ? "active" : "";
+ergebnis.innerHTML = html;
+}
 
-        return `
-          <div class="subject-item ${aktiv}">
-            <button class="subject-select" type="button"
-              data-action="select" data-id="${escapeHTML(fach.id)}">
-              <span class="subject-icon">📘</span>
-              <span class="subject-info">
-                <span class="subject-name">${escapeHTML(fach.name)}</span>
-                <span class="subject-meta">
-                  Prüfung: ${datumDeutsch(fach.datum)}<br>
-                  ${stats.erledigt} von ${stats.gesamt} Tagen erledigt
-                </span>
-                <span class="subject-progress">
-                  <span class="subject-progress-fill"
-                    style="display:block;width:${stats.prozent}%"></span>
-                </span>
-              </span>
-            </button>
-            <button class="delete-button" type="button"
-              data-action="delete" data-id="${escapeHTML(fach.id)}"
-              aria-label="${escapeHTML(fach.name)} löschen"
-              title="Fach löschen">×</button>
-          </div>
-        `;
-      }).join("");
-    }
-
-    function renderPlan() {
-      const fach = faecher.find(f => f.id === ausgewaehlteId);
-
-      if (!fach) {
-        leerzustand.hidden = false;
-        ergebnis.innerHTML = "";
-        pdfButton.hidden = true;
-        return;
-      }
-
-      leerzustand.hidden = true;
-      pdfButton.hidden = false;
-
-      const stats = fortschritt(fach);
-      const tage = stats.gesamt;
-      const bisPruefung = tageBis(fach.datum);
-
-      let html = `
-        <div class="section-heading">
-          <div class="heading-icon">🎯</div>
-          <div>
-            <h2>Dein Lernplan</h2>
-            <div class="muted">Ausgewähltes Fach</div>
-          </div>
-        </div>
-
-        <h3 class="result-title">${escapeHTML(fach.name)}</h3>
-        <p class="result-meta">
-          📅 Prüfung: ${datumDeutsch(fach.datum)}<br>
-          ${bisPruefung === 0
-            ? "Deine Prüfung ist heute."
-            : "Noch " + bisPruefung + " Tag(e) bis zur Prüfung."}
-        </p>
-
-        <div class="stats-grid">
-          <div class="stat">
-            <span>📚</span>
-            <span class="stat-number">${tage}</span>
-            <span class="stat-label">Geplante Lerntage</span>
-          </div>
-          <div class="stat">
-            <span>⏱️</span>
-            <span class="stat-number">${Number(fach.lernzeit)} Min.</span>
-            <span class="stat-label">Lernzeit pro Tag</span>
-          </div>
-        </div>
-
-        <div class="progress-box">
-          <div class="progress-header">
-            <strong>Dein Fortschritt</strong>
-            <span class="progress-percent" id="fortschritt-prozent">
-              ${stats.prozent}%
-            </span>
-          </div>
-          <div class="progress-track" id="fortschritt-anzeige"
-            role="progressbar" aria-label="Erledigte Lerntage"
-            aria-valuemin="0" aria-valuemax="${tage}"
-            aria-valuenow="${stats.erledigt}">
-            <div class="progress-fill" id="fortschritt-fuellung"
-              style="width:${stats.prozent}%"></div>
-          </div>
-          <p class="progress-note" id="fortschritt-zahl">
-            ${stats.erledigt} von ${tage} Lerntagen erledigt.
-            ${stats.prozent === 100 ? "Geschafft! 🎉" : "Du schaffst das!"}
-          </p>
-        </div>
-
-        <div class="schedule-heading">
-          <h3>📋 Tagesaufgaben</h3>
-          <span class="schedule-count">${tage} Tage</span>
-        </div>
-      `;
-
-      for (let tag = 0; tag < tage; tag++) {
-        const tagDatum = new Date();
-        tagDatum.setHours(12, 0, 0, 0);
-        tagDatum.setDate(tagDatum.getDate() + tag);
-
-        const datumText = tagDatum.toLocaleDateString("de-DE", {
-          weekday: "short",
-          day: "2-digit",
-          month: "2-digit",
-          year: "numeric"
-        });
-
-        let aufgabe;
-
-        if (tag === tage - 1 && bisPruefung > 0) {
-          aufgabe =
-            "Wiederhole die wichtigsten Inhalte und gehe früh schlafen.";
-        } else if (tag % 4 === 3) {
-          aufgabe =
-            "Wiederhole bereits gelernte Themen und teste dein Wissen.";
-        } else {
-          aufgabe = "Lerne und übe: " + fach.themen[tag % fach.themen.length];
-        }
-
-        const istErledigt = fach.erledigteTage.includes(tag);
-
-        html += `
-          <article class="lerntag ${istErledigt ? "erledigt" : ""}"
-            data-tag="${tag}">
-            <div class="day-header">
-              <div class="day-number">${tag + 1}</div>
-              <div>
-                <span class="day-date">${datumText}</span>
-                <span class="day-time">⏱️ ${Number(fach.lernzeit)} Minuten</span>
-              </div>
-            </div>
-            <p class="task-text">${escapeHTML(aufgabe)}</p>
-            <label class="task-check">
-              <input type="checkbox" class="lerntag-checkbox"
-                data-tag="${tag}" ${istErledigt ? "checked" : ""}>
-              <span>Als erledigt markieren</span>
-            </label>
-          </article>
-        `;
-      }
-
-      ergebnis.innerHTML = html;
-    }
-
-    formular.addEventListener("submit", function (event) {
-      event.preventDefault();
-      loescheMeldung();
 const standardThemen = {
-  "Deutsch": "Rechtschreibung, Grammatik, Textanalyse, Erörterung",
-  "Mathematik": "Bruchrechnung, Prozentrechnung, Gleichungen, Geometrie",
-  "Englisch": "Vokabeln, Grammatik, Zeiten, Textverständnis",
-  "Biologie": "Zellaufbau, Fotosynthese, Genetik, Ökologie",
-  "Chemie": "Periodensystem, Atome, Moleküle, chemische Reaktionen",
-  "Physik": "Kräfte, Energie, Elektrizität, Geschwindigkeit",
-  "Geschichte": "Wichtige Ereignisse, Ursachen, Folgen, Jahreszahlen",
-  "Geografie": "Klimazonen, Kontinente, Bevölkerung, Wirtschaft",
-  "Informatik": "Algorithmen, Programmierung, Daten, Netzwerke",
-  "Wirtschaft": "Angebot und Nachfrage, Unternehmen, Geld, Markt",
-  "Französisch": "Vokabeln, Grammatik, Zeiten, Textverständnis",
-  "Sport": "Ausdauer, Kraft, Koordination, Trainingslehre"
+"Deutsch": "Rechtschreibung, Grammatik, Textanalyse, Erörterung",
+"Mathematik": "Bruchrechnung, Prozentrechnung, Gleichungen, Geometrie",
+"Englisch": "Vokabeln, Grammatik, Zeiten, Textverständnis",
+"Biologie": "Zellaufbau, Fotosynthese, Genetik, Ökologie",
+"Chemie": "Periodensystem, Atome, Moleküle, chemische Reaktionen",
+"Physik": "Kräfte, Energie, Elektrizität, Geschwindigkeit",
+"Geschichte": "Wichtige Ereignisse, Ursachen, Folgen, Jahreszahlen",
+"Geografie": "Klimazonen, Kontinente, Bevölkerung, Wirtschaft",
+"Informatik": "Algorithmen, Programmierung, Daten, Netzwerke",
+"Wirtschaft": "Angebot und Nachfrage, Unternehmen, Geld, Markt",
+"Französisch": "Vokabeln, Grammatik, Zeiten, Textverständnis",
+"Sport": "Ausdauer, Kraft, Koordination, Trainingslehre"
 };
 
 const fachKacheln = document.getElementById("fachKacheln");
-const fachFeld = document.getElementById("fach");
-const themenFeld = document.getElementById("themen");
 
 fachKacheln.addEventListener("click", function (event) {
-  const kachel = event.target.closest(".fach-kachel");
+const kachel = event.target.closest(".fach-kachel");
+if (!kachel) return;
 
-  if (!kachel) return;
+fachFeld.value = kachel.dataset.fach;
 
-  fachFeld.value = kachel.dataset.fach;
-
-  document.querySelectorAll(".fach-kachel").forEach(function (button) {
-    const ausgewaehlt = button === kachel;
-    button.classList.toggle("ausgewaehlt", ausgewaehlt);
-    button.setAttribute("aria-pressed", String(ausgewaehlt));
-  });
-
-  themenFeld.value = standardThemen[fachFeld.value] || "";
+fachKacheln.querySelectorAll(".fach-kachel").forEach(function (button) {
+const ausgewaehlt = button === kachel;
+button.classList.toggle("ausgewaehlt", ausgewaehlt);
+button.setAttribute("aria-pressed", String(ausgewaehlt));
 });
-      const name = fachFeld.value.trim();
-      const datum = datumFeld.value;
-      const lernzeit = Number(lernzeitFeld.value);
-      const themen = themenFeld.value
-        .split("\n")
-        .map(t => t.trim())
-        .filter(Boolean);
 
-      if (!name || !datum || themen.length === 0) {
-        zeigeMeldung("Bitte fülle alle Felder aus und gib mindestens ein Thema ein.", true);
-        return;
-      }
+themenFeld.value = (standardThemen[fachFeld.value] || "").replace(/, /g, "\n");
+});
 
-      if (tageBis(datum) < 0) {
-        zeigeMeldung("Das Prüfungsdatum darf nicht in der Vergangenheit liegen.", true);
-        return;
-      }
+formular.addEventListener("reset", function () {
+fachKacheln.querySelectorAll(".fach-kachel").forEach(function (button) {
+button.classList.remove("ausgewaehlt");
+button.setAttribute("aria-pressed", "false");
+});
+fachFeld.value = "";
+});
 
-      const neuesFach = {
-        id: "fach-" + Date.now() + "-" + Math.random().toString(36).slice(2, 8),
-        name,
-        datum,
-        lernzeit,
-        themen,
-        erledigteTage: []
-      };
+formular.addEventListener("submit", function (event) {
+event.preventDefault();
+loescheMeldung();
 
-      faecher.push(neuesFach);
-      ausgewaehlteId = neuesFach.id;
+const name = fachFeld.value.trim();
+const datum = datumFeld.value;
+const lernzeit = Number(lernzeitFeld.value);
+const themen = themenFeld.value.split("\n").map(t => t.trim()).filter(Boolean);
 
-      if (!speichereFaecher()) {
-        faecher = faecher.filter(f => f.id !== neuesFach.id);
-        ausgewaehlteId = faecher.length ? faecher[faecher.length - 1].id : null;
-        renderFaecher();
-        renderPlan();
-        return;
-      }
+if (!name || !datum || themen.length === 0) {
+zeigeMeldung("Bitte fülle alle Felder aus und gib mindestens ein Thema ein.", true);
+return;
+}
 
-      renderFaecher();
-      renderPlan();
-      zeigeMeldung("Fach „" + name + "“ wurde gespeichert.");
-      formular.reset();
-      datumFeld.value = lokalesDatum;
-      lernzeitFeld.value = "60";
-    });
+if (tageBis(datum) < 0) {
+zeigeMeldung("Das Prüfungsdatum darf nicht in der Vergangenheit liegen.", true);
+return;
+}
 
-    facherliste.addEventListener("click", function (event) {
-      const button = event.target.closest("button[data-action]");
-      if (!button) return;
+const neuesFach = {
+id: "fach-" + Date.now() + "-" + Math.random().toString(36).slice(2, 8),
+name,
+datum,
+lernzeit,
+themen,
+erledigteTage: []
+};
 
-      const id = button.dataset.id;
-      const aktion = button.dataset.action;
+faecher.push(neuesFach);
+ausgewaehlteId = neuesFach.id;
 
-      if (aktion === "select") {
-        ausgewaehlteId = id;
-        renderFaecher();
-        renderPlan();
-        return;
-      }
+if (!speichereFaecher()) {
+faecher = faecher.filter(f => f.id !== neuesFach.id);
+ausgewaehlteId = faecher.length ? faecher[faecher.length - 1].id : null;
+renderFaecher();
+renderPlan();
+return;
+}
 
-      if (aktion === "delete") {
-        const fach = faecher.find(f => f.id === id);
-        if (!fach) return;
+renderFaecher();
+renderPlan();
+zeigeMeldung("Fach „" + name + "“ wurde gespeichert.");
+formular.reset();
+datumFeld.value = lokalesDatum;
+lernzeitFeld.value = "60";
+});
 
-        if (!confirm("Möchtest du das Fach „" + fach.name +
-          "“ und seinen gespeicherten Lernfortschritt wirklich löschen?")) {
-          return;
-        }
+facherliste.addEventListener("click", function (event) {
+const button = event.target.closest("button[data-action]");
+if (!button) return;
 
-        const alteFaecher = faecher;
-        faecher = faecher.filter(f => f.id !== id);
+const id = button.dataset.id;
+const aktion = button.dataset.action;
 
-        if (ausgewaehlteId === id) {
-          ausgewaehlteId = faecher.length ? faecher[0].id : null;
-        }
+if (aktion === "select") {
+ausgewaehlteId = id;
+renderFaecher();
+renderPlan();
+return;
+}
 
-        if (!speichereFaecher()) {
-          faecher = alteFaecher;
-          renderFaecher();
-          renderPlan();
-          return;
-        }
+if (aktion === "delete") {
+const fach = faecher.find(f => f.id === id);
+if (!fach) return;
 
-        renderFaecher();
-        renderPlan();
-        zeigeMeldung("Fach wurde gelöscht.");
-      }
-    });
+if (!confirm("Möchtest du das Fach „" + fach.name +
+"“ und seinen gespeicherten Lernfortschritt wirklich löschen?")) {
+return;
+}
 
-    ergebnis.addEventListener("change", function (event) {
-      if (!event.target.matches(".lerntag-checkbox")) return;
+const alteFaecher = faecher;
+faecher = faecher.filter(f => f.id !== id);
 
-      const fach = faecher.find(f => f.id === ausgewaehlteId);
-      if (!fach) return;
+if (ausgewaehlteId === id) {
+ausgewaehlteId = faecher.length ? faecher[0].id : null;
+}
 
-      const tag = Number(event.target.dataset.tag);
+if (!speichereFaecher()) {
+faecher = alteFaecher;
+renderFaecher();
+renderPlan();
+return;
+}
 
-      if (event.target.checked) {
-        if (!fach.erledigteTage.includes(tag)) {
-          fach.erledigteTage.push(tag);
-        }
-      } else {
-        fach.erledigteTage = fach.erledigteTage.filter(t => t !== tag);
-      }
+renderFaecher();
+renderPlan();
+zeigeMeldung("Fach wurde gelöscht.");
+}
+});
 
-      if (!speichereFaecher()) {
-        event.target.checked = !event.target.checked;
+ergebnis.addEventListener("change", function (event) {
+if (!event.target.matches(".lerntag-checkbox")) return;
 
-        if (event.target.checked) {
-          fach.erledigteTage = fach.erledigteTage.filter(t => t !== tag);
-        } else if (!fach.erledigteTage.includes(tag)) {
-          fach.erledigteTage.push(tag);
-        }
+const fach = faecher.find(f => f.id === ausgewaehlteId);
+if (!fach) return;
 
-        renderPlan();
-        return;
-      }
+const tag = Number(event.target.dataset.tag);
 
-      renderFaecher();
+if (event.target.checked) {
+if (!fach.erledigteTage.includes(tag)) {
+fach.erledigteTage.push(tag);
+}
+} else {
+fach.erledigteTage = fach.erledigteTage.filter(t => t !== tag);
+}
 
-      const lerntag = event.target.closest(".lerntag");
-      lerntag.classList.toggle("erledigt", event.target.checked);
+if (!speichereFaecher()) {
+event.target.checked = !event.target.checked;
 
-      const stats = fortschritt(fach);
-      document.getElementById("fortschritt-prozent").textContent =
-        stats.prozent + "%";
-      document.getElementById("fortschritt-fuellung").style.width =
-        stats.prozent + "%";
-      document.getElementById("fortschritt-zahl").textContent =
-        `${stats.erledigt} von ${stats.gesamt} Lerntagen erledigt. ` +
-        (stats.prozent === 100 ? "Geschafft! 🎉" : "Du schaffst das!");
-      document.getElementById("fortschritt-anzeige")
-        .setAttribute("aria-valuenow", stats.erledigt);
-    });
+if (event.target.checked) {
+fach.erledigteTage = fach.erledigteTage.filter(t => t !== tag);
+} else if (!fach.erledigteTage.includes(tag)) {
+fach.erledigteTage.push(tag);
+}
 
-    pdfButton.addEventListener("click", function () {
-      window.print();
-    });
+renderPlan();
+return;
+}
 
-    renderFaecher();
-    renderPlan();
-  </script>
+renderFaecher();
+
+const lerntag = event.target.closest(".lerntag");
+lerntag.classList.toggle("erledigt", event.target.checked);
+
+const stats = fortschritt(fach);
+document.getElementById("fortschritt-prozent").textContent = stats.prozent + "%";
+document.getElementById("fortschritt-fuellung").style.width = stats.prozent + "%";
+document.getElementById("fortschritt-zahl").textContent =
+`${stats.erledigt} von ${stats.gesamt} Lerntagen erledigt. ` +
+(stats.prozent === 100 ? "Geschafft! 🎉" : "Du schaffst das!");
+
+document.getElementById("fortschritt-anzeige")
+.setAttribute("aria-valuenow", stats.erledigt);
+});
+
+pdfButton.addEventListener("click", function () {
+window.print();
+});
+
+renderFaecher();
+renderPlan();
+</script>
 </body>
 </html>
