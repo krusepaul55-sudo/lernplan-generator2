@@ -4,134 +4,182 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="theme-color" content="#f5f7ff">
-<meta name="description" content="Kostenloser intelligenter Lernplan-Generator für Schüler.">
+<meta name="theme-color" content="#f7f8fc">
+<meta name="description" content="Erstelle kostenlos deinen persönlichen Lernplan für die Schule und deine Prüfungen.">
 <title>Lernplan – Dein smarter Lernassistent</title>
 
 <style>
 :root {
-  --primary: #4f46e5;
-  --primary-dark: #3730a3;
-  --light: #eef2ff;
-  --text: #172033;
-  --muted: #667085;
-  --border: #e4e8f0;
-  --green: #168451;
-  --background: #f5f7ff;
+  --primary: #4567e8;
+  --primary-dark: #3451c4;
+  --primary-light: #eef2ff;
+  --text: #20283b;
+  --muted: #7b8498;
+  --border: #e9ecf3;
+  --green: #21865a;
+  --background: #f7f8fc;
 }
 * { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
 body {
   margin: 0;
-  font-family: Inter, "Segoe UI", Arial, sans-serif;
-  color: var(--text);
-  background: radial-gradient(ellipse at top left, #e8edff, transparent 38%), var(--background);
   min-height: 100vh;
+  background: var(--background);
+  color: var(--text);
+  font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  -webkit-font-smoothing: antialiased;
 }
 button, input, select, textarea { font: inherit; }
 button { cursor: pointer; }
+
 .topbar {
   position: sticky;
   top: 0;
   z-index: 5;
   padding: 14px 5%;
-  background: #ffffffeb;
+  background: rgba(255,255,255,.94);
   border-bottom: 1px solid var(--border);
   backdrop-filter: blur(12px);
 }
 .topbar-inner {
-  max-width: 1100px;
+  max-width: 1120px;
   margin: auto;
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 12px;
 }
-.brand { display: flex; align-items: center; gap: 10px; font-weight: 800; font-size: 19px; }
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  font-size: 17px;
+  font-weight: 800;
+  letter-spacing: -.5px;
+}
 .brand-icon {
+  display: grid;
+  place-items: center;
+  width: 39px;
+  height: 39px;
+  border-radius: 12px;
+  background: var(--primary);
+  color: white;
+  font-size: 22px;
+  box-shadow: 0 4px 12px #4567e82e;
+}
+.badge {
+  padding: 8px 12px;
+  border: 1px solid #d8ebde;
+  border-radius: 30px;
+  background: #f0f7f2;
+  color: #28764c;
+  font-size: 11px;
+  font-weight: 700;
+}
+main {
+  width: min(1080px, 92%);
+  margin: auto;
+  padding: 46px 0 60px;
+}
+.hero {
+  margin-bottom: 36px;
+  text-align: center;
+}
+.eyebrow {
+  display: inline-block;
+  padding: 7px 11px;
+  border: 1px solid #dce5ff;
+  border-radius: 30px;
+  background: #eaf0ff;
+  color: var(--primary-dark);
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+.hero h1 {
+  margin: 20px auto 13px;
+  font-size: clamp(34px, 5vw, 49px);
+  font-weight: 800;
+  line-height: 1.13;
+  letter-spacing: -2px;
+}
+.gradient, .gradient-text { color: var(--primary); }
+.hero p {
+  max-width: 530px;
+  margin: auto;
+  color: var(--muted);
+  font-size: 14px;
+  line-height: 1.85;
+}
+.layout {
+  display: grid;
+  grid-template-columns: minmax(0,.95fr) minmax(0,1.05fr);
+  align-items: start;
+  gap: 22px;
+}
+.card {
+  min-width: 0;
+  padding: 24px;
+  border: 1px solid var(--border);
+  border-radius: 18px;
+  background: white;
+  box-shadow: 0 5px 24px #20283b09;
+}
+.section-heading {
+  display: flex;
+  align-items: center;
+  gap: 13px;
+  margin-bottom: 20px;
+}
+.heading-icon {
   display: grid;
   place-items: center;
   width: 42px;
   height: 42px;
-  border-radius: 13px;
-  color: white;
-  background: linear-gradient(135deg, #6366f1, #4338ca);
-  font-size: 22px;
-}
-.badge {
-  padding: 8px 12px;
-  border: 1px solid #c7d2fe;
-  border-radius: 30px;
-  background: var(--light);
-  color: var(--primary-dark);
-  font-size: 12px;
-  font-weight: 750;
-}
-main { width: min(1100px, 92%); margin: auto; padding: 36px 0 52px; }
-.hero { text-align: center; margin-bottom: 30px; }
-.eyebrow {
-  display: inline-block;
-  padding: 7px 12px;
-  border-radius: 30px;
-  background: #e9eaff;
-  color: var(--primary-dark);
-  font-size: 12px;
-  font-weight: 800;
-  text-transform: uppercase;
-}
-.hero h1 {
-  margin: 17px auto 12px;
-  font-size: clamp(32px, 5vw, 46px);
-  line-height: 1.12;
-  letter-spacing: -1.5px;
-}
-.gradient { color: var(--primary); }
-.hero p { max-width: 570px; margin: auto; color: var(--muted); font-size: 15px; line-height: 1.7; }
-.layout {
-  display: grid;
-  grid-template-columns: minmax(0, .9fr) minmax(0, 1.1fr);
-  align-items: start;
-  gap: 20px;
-}
-.card {
-  min-width: 0;
-  padding: 22px;
-  background: white;
-  border: 1px solid #e7eaf2;
-  border-radius: 18px;
-  box-shadow: 0 12px 35px #26356b0b;
-}
-.section-heading { display: flex; align-items: center; gap: 12px; margin-bottom: 12px; }
-.heading-icon {
-  display: grid;
-  place-items: center;
-  width: 43px;
-  height: 43px;
   flex-shrink: 0;
   border-radius: 13px;
-  background: var(--light);
-  font-size: 21px;
+  background: #f0f3ff;
+  font-size: 19px;
 }
-h2 { margin: 0 0 5px; font-size: 19px; letter-spacing: -.4px; }
-h3 { margin-top: 0; }
-.muted { color: var(--muted); font-size: 13px; line-height: 1.65; }
-.field-label { display: block; margin: 17px 0 8px; font-size: 13px; font-weight: 750; }
+h2 {
+  margin: 0 0 5px;
+  color: var(--text);
+  font-size: 17px;
+  font-weight: 750;
+  letter-spacing: -.5px;
+}
+h3 { color: var(--text); letter-spacing: -.3px; }
+.muted { color: var(--muted); font-size: 12px; line-height: 1.7; }
+
+.field-label {
+  display: block;
+  margin: 21px 0 8px;
+  color: #3c465c;
+  font-size: 12px;
+  font-weight: 700;
+}
 input[type="date"], select, textarea {
   display: block;
   width: 100%;
-  padding: 12px;
-  border: 1px solid #dce1eb;
+  padding: 12px 13px;
+  border: 1px solid #e1e5ed;
   border-radius: 10px;
-  background: #fcfcfe;
-  color: var(--text);
-  font-size: 14px;
   outline: none;
+  background: #fbfcfe;
+  color: var(--text);
+  font-size: 13px;
+  transition: border-color .2s, box-shadow .2s, background .2s;
 }
-input:focus, select:focus, textarea:focus {
+input[type="date"]:focus, select:focus, textarea:focus {
   border-color: var(--primary);
-  box-shadow: 0 0 0 3px #4f46e51a;
+  background: white;
+  box-shadow: 0 0 0 3px #4567e81a;
 }
-textarea { min-height: 105px; resize: vertical; line-height: 1.7; }
-.hint { margin: 7px 0 0; color: var(--muted); font-size: 12px; line-height: 1.6; }
+textarea { min-height: 120px; resize: vertical; line-height: 1.8; }
+.hint { margin: 7px 0 0; color: var(--muted); font-size: 11px; line-height: 1.7; }
+
 .button {
   display: inline-flex;
   align-items: center;
@@ -141,64 +189,73 @@ textarea { min-height: 105px; resize: vertical; line-height: 1.7; }
   border: 1px solid var(--border);
   border-radius: 10px;
   background: white;
-  color: #344054;
-  font-size: 13px;
-  font-weight: 750;
+  color: #505a70;
+  font-size: 12px;
+  font-weight: 700;
   text-align: center;
-  transition: .2s;
+  transition: transform .18s, background .18s, border-color .18s;
 }
-.button:hover { background: #f7f8ff; }
+.button:hover { background: #f7f8fc; border-color: #cdd5e5; }
 .button-primary {
   width: 100%;
   margin-top: 20px;
+  padding: 14px 16px;
   border: 0;
-  background: linear-gradient(135deg, #6366f1, #4338ca);
+  background: var(--primary);
   color: white;
-  box-shadow: 0 6px 14px #4f46e529;
+  box-shadow: 0 5px 12px #4567e826;
 }
-.button-primary:hover { background: var(--primary-dark); }
+.button-primary:hover {
+  transform: translateY(-1px);
+  background: var(--primary-dark);
+}
 .button-secondary { width: 100%; margin-top: 9px; }
-.button-small { padding: 8px 10px; font-size: 12px; }
-.button-danger { border-color: #fecaca; background: #fff7f7; color: #b42318; }
-.backup-actions {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 8px;
-  margin-top: 17px;
-}
-.backup-actions .button { min-width: 0; }
+.button-small { padding: 8px 10px; font-size: 11px; }
+.button-danger { border-color: #f4e0e0; background: #fffafa; color: #b95b5b; }
+
 .fach-kacheln {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-columns: repeat(3,minmax(0,1fr));
   gap: 9px;
   margin-top: 12px;
 }
 .fach-kachel {
   display: flex;
-  min-height: 90px;
+  min-width: 0;
+  min-height: 88px;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   gap: 8px;
-  padding: 10px 5px;
+  padding: 11px 4px;
   border: 1px solid var(--border);
   border-radius: 12px;
   background: white;
-  color: var(--text);
-  font-size: 12px;
-  font-weight: 750;
-  transition: .2s;
+  color: #505a70;
+  font-size: 11px;
+  font-weight: 700;
+  overflow-wrap: anywhere;
+  transition: transform .18s, border-color .18s, background .18s, box-shadow .18s;
 }
-.fach-kachel:hover { transform: translateY(-2px); border-color: #818cf8; background: #f5f6ff; }
+.fach-symbol { font-size: 25px; }
+.fach-kachel:hover {
+  transform: translateY(-2px);
+  border-color: #cbd5ff;
+  background: #fafbff;
+}
 .fach-kachel.ausgewaehlt {
-  border: 2px solid var(--primary);
-  background: var(--light);
+  border: 1.5px solid var(--primary);
+  background: #f1f4ff;
   color: var(--primary-dark);
-  box-shadow: 0 0 0 3px #4f46e51a;
+  box-shadow: 0 2px 9px #4567e814;
 }
-.fach-symbol { font-size: 26px; }
+.fach-kachel:focus-visible, .button:focus-visible, .icon-button:focus-visible {
+  outline: 3px solid #4567e84d;
+  outline-offset: 3px;
+}
+
 .subjects-card { margin-top: 20px; }
-.subject-list { display: grid; gap: 10px; margin-top: 15px; }
+.subject-list { display: grid; gap: 9px; margin-top: 15px; }
 .subject-item {
   display: flex;
   align-items: center;
@@ -207,8 +264,13 @@ textarea { min-height: 105px; resize: vertical; line-height: 1.7; }
   border: 1px solid var(--border);
   border-radius: 12px;
   background: white;
+  transition: background .18s, border-color .18s;
 }
-.subject-item.active { border-color: #a5b4fc; background: #f5f6ff; }
+.subject-item.active {
+  border-color: #cdd7ff;
+  background: #f8f9ff;
+  box-shadow: inset 3px 0 var(--primary);
+}
 .subject-select {
   display: flex;
   flex: 1;
@@ -228,102 +290,147 @@ textarea { min-height: 105px; resize: vertical; line-height: 1.7; }
   height: 38px;
   flex-shrink: 0;
   border-radius: 10px;
-  background: var(--light);
+  background: var(--primary-light);
 }
 .subject-info { flex: 1; min-width: 0; }
-.subject-name { display: block; font-size: 13px; font-weight: 800; overflow-wrap: anywhere; }
-.subject-meta { display: block; margin-top: 4px; color: var(--muted); font-size: 11px; line-height: 1.5; }
-.subject-progress { display: block; height: 5px; margin-top: 7px; overflow: hidden; border-radius: 20px; background: #e5e7eb; }
-.subject-progress-fill { display: block; height: 100%; border-radius: inherit; background: #6366f1; }
+.subject-name { display: block; font-size: 12px; font-weight: 800; overflow-wrap: anywhere; }
+.subject-meta { display: block; margin-top: 4px; color: var(--muted); font-size: 10px; line-height: 1.5; }
+.subject-progress { display: block; height: 4px; margin-top: 7px; overflow: hidden; border-radius: 20px; background: #edf0f6; }
+.subject-progress-fill { display: block; height: 100%; border-radius: inherit; background: var(--primary); }
 .icon-button {
-  width: 33px;
-  height: 33px;
+  display: grid;
+  place-items: center;
+  width: 32px;
+  height: 32px;
   flex-shrink: 0;
-  border: 1px solid #dbe3ff;
+  border: 1px solid #e6eaff;
   border-radius: 9px;
-  background: #f5f6ff;
+  background: #f7f8ff;
   color: var(--primary-dark);
   font-size: 15px;
 }
-.icon-button.delete { border-color: #fee2e2; background: #fff7f7; color: #b42318; }
+.icon-button:hover { background: #e9edff; }
+.icon-button.delete { border-color: #f4e0e0; background: #fffafa; color: #b95b5b; }
+.icon-button.delete:hover { background: #ffeded; }
+
 .empty-subjects {
   padding: 18px 12px;
-  border: 1px dashed #d6dbea;
+  border: 1px dashed #e1e5ee;
   border-radius: 12px;
-  color: var(--muted);
-  font-size: 13px;
-  line-height: 1.7;
-  text-align: center;
-}
-.result-empty { min-height: 290px; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 20px; text-align: center; }
-.empty-icon { display: grid; place-items: center; width: 75px; height: 75px; margin-bottom: 17px; border-radius: 23px; background: var(--light); font-size: 35px; }
-.result-title { margin: 14px 0 7px; font-size: 24px; overflow-wrap: anywhere; }
-.result-meta { color: var(--muted); font-size: 13px; line-height: 1.7; }
-.stats-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; margin: 18px 0; }
-.stat { min-width: 0; padding: 13px; border: 1px solid var(--border); border-radius: 12px; background: #fafbff; }
-.stat-number { display: block; margin-top: 8px; font-size: 20px; font-weight: 800; overflow-wrap: anywhere; }
-.stat-label { display: block; margin-top: 4px; color: var(--muted); font-size: 11px; line-height: 1.5; }
-.progress-box { margin: 20px 0; padding: 16px; border: 1px solid #e0e7ff; border-radius: 13px; background: #f5f7ff; }
-.progress-header { display: flex; justify-content: space-between; gap: 10px; margin-bottom: 11px; font-size: 12px; }
-.progress-percent { color: var(--primary); font-weight: 800; }
-.progress-track { height: 9px; overflow: hidden; border-radius: 20px; background: #dfe4f4; }
-.progress-fill { height: 100%; border-radius: inherit; background: linear-gradient(90deg, #818cf8, #4f46e5); transition: width .3s; }
-.progress-note { margin: 9px 0 0; color: var(--muted); font-size: 11px; line-height: 1.5; }
-.schedule-heading { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin: 25px 0 12px; }
-.schedule-heading h3 { margin: 0; font-size: 15px; }
-.schedule-count { padding: 5px 9px; border-radius: 30px; background: #f0f2f8; font-size: 11px; font-weight: 750; white-space: nowrap; }
-.smart-plan-note, .tip {
-  margin: 12px 0 16px;
-  padding: 14px;
-  border: 1px solid #e3e8ff;
-  border-radius: 13px;
-  background: #f7f8ff;
+  background: #fafbfe;
   color: var(--muted);
   font-size: 12px;
   line-height: 1.7;
+  text-align: center;
 }
-.smart-plan-note strong { display: block; margin-bottom: 3px; color: var(--primary-dark); }
-.lerntag { margin-top: 10px; padding: 15px; border: 1px solid #e6eaf3; border-left: 4px solid #818cf8; border-radius: 12px; background: white; }
+.backup-actions {
+  display: grid;
+  grid-template-columns: repeat(2,minmax(0,1fr));
+  gap: 9px;
+  margin-top: 17px;
+}
+.backup-actions .button { min-width: 0; padding: 11px 8px; background: #fafbfe; }
+.backup-actions .button:hover { background: #f1f4ff; border-color: #d4dcff; }
+
+.result-empty {
+  display: flex;
+  min-height: 290px;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  text-align: center;
+}
+.empty-icon {
+  display: grid;
+  place-items: center;
+  width: 75px;
+  height: 75px;
+  margin-bottom: 17px;
+  border-radius: 23px;
+  background: #eff2ff;
+  font-size: 35px;
+}
+.result-empty h3 { margin-bottom: 7px; font-size: 17px; }
+.result-title { margin: 18px 0 7px; font-size: 25px; font-weight: 800; letter-spacing: -.8px; overflow-wrap: anywhere; }
+.result-meta { color: var(--muted); font-size: 12px; line-height: 1.9; }
+.stats-grid { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 11px; margin: 20px 0; }
+.stat { min-width: 0; padding: 15px; border: 1px solid var(--border); border-radius: 13px; background: #fafbfe; }
+.stat-number { display: block; margin-top: 8px; font-size: 22px; font-weight: 800; letter-spacing: -.8px; overflow-wrap: anywhere; }
+.stat-label { display: block; margin-top: 4px; color: var(--muted); font-size: 10px; line-height: 1.5; }
+
+.progress-box { margin: 20px 0; padding: 17px; border: 1px solid #e2e8ff; border-radius: 13px; background: #f8f9ff; }
+.progress-header { display: flex; justify-content: space-between; gap: 10px; margin-bottom: 11px; color: #45506a; font-size: 12px; }
+.progress-percent { color: var(--primary); font-weight: 800; }
+.progress-track { height: 7px; overflow: hidden; border-radius: 20px; background: #e5e9f4; }
+.progress-fill { height: 100%; border-radius: inherit; background: linear-gradient(90deg,#7890f6,#4567e8); transition: width .3s; }
+.progress-note { margin: 9px 0 0; color: var(--muted); font-size: 10px; line-height: 1.5; }
+
+.schedule-heading { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin: 25px 0 12px; }
+.schedule-heading h3 { margin: 0; font-size: 14px; }
+.schedule-count { padding: 5px 9px; border-radius: 30px; background: #f0f2f8; color: #657087; font-size: 11px; font-weight: 750; white-space: nowrap; }
+.smart-plan-note {
+  margin: 12px 0 16px;
+  padding: 14px 15px;
+  border: 1px solid #e7eaf3;
+  border-radius: 12px;
+  background: #fafbfe;
+  color: #717b90;
+  font-size: 11px;
+  line-height: 1.7;
+}
+.smart-plan-note strong { display: block; margin-bottom: 3px; color: #3e4a65; font-size: 12px; }
+
+.lerntag { margin-top: 10px; padding: 15px; border: 1px solid var(--border); border-left: 3px solid #b9c6ff; border-radius: 12px; background: white; transition: border-color .2s, background .2s; }
 .day-header { display: flex; align-items: center; gap: 11px; }
-.day-number { display: grid; place-items: center; width: 34px; height: 34px; flex-shrink: 0; border-radius: 10px; background: var(--light); color: var(--primary-dark); font-size: 12px; font-weight: 800; }
-.day-date { font-size: 13px; font-weight: 800; }
-.day-time { display: block; margin-top: 4px; color: var(--muted); font-size: 11px; }
-.task-text { margin: 13px 0 0; font-size: 13px; line-height: 1.7; white-space: pre-line; overflow-wrap: anywhere; }
-.task-check { display: flex; align-items: center; gap: 9px; margin-top: 14px; padding-top: 12px; border-top: 1px solid #edf0f5; color: #475467; font-size: 12px; cursor: pointer; }
-.task-check input { width: 18px; height: 18px; margin: 0; accent-color: var(--green); flex-shrink: 0; }
-.lerntag.erledigt { border-color: #ccebd8; border-left-color: var(--green); background: #f2fbf5; }
-.lerntag.erledigt .day-number { background: #d9f5e4; color: #146c43; }
-.lerntag.erledigt .task-text { color: #46745b; text-decoration: line-through; }
-.pdf-button { width: 100%; margin-top: 16px; border-color: #cdd4ff; background: #f4f5ff; color: #4338ca; }
-.message { margin-top: 15px; padding: 12px; border: 1px solid #fed7aa; border-radius: 10px; color: #9a3412; font-size: 13px; line-height: 1.6; }
-.message.success { background: #ecfdf3; border-color: #abefc6; color: #067647; }
-.message.error { background: #fff7ed; border-color: #fed7aa; color: #9a3412; }
-footer { padding: 24px 15px; border-top: 1px solid var(--border); color: var(--muted); text-align: center; font-size: 12px; line-height: 1.8; }
+.day-number { display: grid; place-items: center; width: 35px; height: 35px; flex-shrink: 0; border-radius: 11px; background: #edf1ff; color: var(--primary-dark); font-size: 12px; font-weight: 800; }
+.day-date { font-size: 12px; font-weight: 800; }
+.day-time { display: block; margin-top: 4px; color: var(--muted); font-size: 10px; }
+.task-text { margin: 13px 0 0; color: #535e73; font-size: 12px; line-height: 1.85; white-space: pre-line; overflow-wrap: anywhere; }
+.task-check { display: flex; align-items: center; gap: 9px; margin-top: 14px; padding-top: 13px; border-top: 1px solid #edf0f5; color: #69748a; font-size: 11px; cursor: pointer; }
+.task-check input { width: 18px; height: 18px; margin: 0; flex-shrink: 0; accent-color: var(--primary); }
+.lerntag.erledigt { border-color: #cfe9d8; border-left-color: var(--green); background: #f7fcf8; }
+.lerntag.erledigt .day-number { background: #e0f4e6; color: #267347; }
+.lerntag.erledigt .task-text { color: #748b7a; text-decoration: line-through; }
+
+.pdf-button { width: 100%; margin-top: 16px; border-color: #dce4ff; background: #f4f6ff; color: var(--primary-dark); }
+.pdf-button:hover { background: #eaf0ff; }
+.message { margin-top: 15px; padding: 12px; border: 1px solid #fed7aa; border-radius: 11px; color: #9a3412; font-size: 12px; line-height: 1.7; overflow-wrap: anywhere; }
+.message.success { border-color: #abefc6; background: #ecfdf3; color: #067647; }
+.message.error { border-color: #fed7aa; background: #fff7ed; color: #9a3412; }
+
+.tip { margin-top: 22px; padding: 17px; border: 1px solid var(--border); border-radius: 13px; background: white; color: var(--muted); font-size: 11px; line-height: 1.7; }
+footer { padding: 28px 15px; border-top: 1px solid var(--border); background: white; color: var(--muted); text-align: center; font-size: 11px; line-height: 1.8; }
 [hidden] { display: none !important; }
 
 @media (max-width: 760px) {
   .topbar { padding: 12px 4%; }
   .brand { font-size: 16px; }
   .brand-icon { width: 38px; height: 38px; }
-  main { padding-top: 28px; }
-  .layout { grid-template-columns: 1fr; }
-  .card { padding: 18px; }
-  .hero h1 { letter-spacing: -1px; }
+  main { width: 92%; padding-top: 30px; }
+  .hero { margin-bottom: 26px; }
+  .hero h1 { font-size: clamp(32px,8vw,42px); letter-spacing: -1.5px; }
+  .hero p { font-size: 13px; }
+  .layout { grid-template-columns: minmax(0,1fr); gap: 16px; }
+  .card { padding: 19px; border-radius: 16px; }
+  .subjects-card { margin-top: 16px; }
+  .result-title { font-size: 23px; }
 }
 @media (max-width: 400px) {
-  .fach-kacheln { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .fach-kacheln { grid-template-columns: repeat(2,minmax(0,1fr)); }
   .backup-actions { grid-template-columns: 1fr; }
+  .badge { padding: 7px 9px; font-size: 10px; }
 }
 @media print {
-  @page { margin: 14mm; }
+  @page { margin: 12mm; }
   body { background: white !important; color: black; }
   .topbar { position: static; padding: 0 0 12px; background: white; }
   .brand-icon, .badge, .hero, #formular-card, #facher-card, footer,
-  .pdf-button, .task-check, .tip, .backup-actions { display: none !important; }
+  .pdf-button, .task-check, .tip { display: none !important; }
   main { width: 100%; padding: 10px 0; margin: 0; }
   .layout { display: block; }
   .card { padding: 0; border: none; box-shadow: none; }
-  .lerntag { break-inside: avoid; background: white !important; border: 1px solid #ccc; }
+  .lerntag { break-inside: avoid; border: 1px solid #ddd; background: white !important; }
   .stat, .progress-box { background: white !important; border-color: #ccc; }
 }
 </style>
@@ -341,7 +448,7 @@ footer { padding: 24px 15px; border-top: 1px solid var(--border); color: var(--m
   <section class="hero">
     <span class="eyebrow">✦ Dein smarter Lernassistent</span>
     <h1>Alle Fächer im Blick.<br><span class="gradient">Besser vorbereitet.</span></h1>
-    <p>Verwalte deine Prüfungen, plane deine Lerntage und behalte deinen Fortschritt in jedem Fach im Blick.</p>
+    <p>Plane deine Lerntage, organisiere deine Prüfungen und behalte deinen Fortschritt in allen Fächern im Blick.</p>
   </section>
 
   <div class="layout">
@@ -357,6 +464,7 @@ footer { padding: 24px 15px; border-top: 1px solid var(--border); color: var(--m
 
         <form id="fachformular">
           <label class="field-label">Schulfach auswählen</label>
+
           <div class="fach-kacheln" id="fachKacheln">
             <button type="button" class="fach-kachel" data-fach="Deutsch"><span class="fach-symbol">📚</span>Deutsch</button>
             <button type="button" class="fach-kachel" data-fach="Mathematik"><span class="fach-symbol">➗</span>Mathematik</button>
@@ -370,6 +478,23 @@ footer { padding: 24px 15px; border-top: 1px solid var(--border); color: var(--m
             <button type="button" class="fach-kachel" data-fach="Wirtschaft"><span class="fach-symbol">📈</span>Wirtschaft</button>
             <button type="button" class="fach-kachel" data-fach="Französisch"><span class="fach-symbol">🇫🇷</span>Französisch</button>
             <button type="button" class="fach-kachel" data-fach="Sport"><span class="fach-symbol">⚽</span>Sport</button>
+            <button type="button" class="fach-kachel" data-fach="Religion"><span class="fach-symbol">⛪</span>Religion</button>
+            <button type="button" class="fach-kachel" data-fach="Ethik"><span class="fach-symbol">⚖️</span>Ethik</button>
+            <button type="button" class="fach-kachel" data-fach="Politik"><span class="fach-symbol">🏛️</span>Politik</button>
+            <button type="button" class="fach-kachel" data-fach="Kunst"><span class="fach-symbol">🎨</span>Kunst</button>
+            <button type="button" class="fach-kachel" data-fach="Musik"><span class="fach-symbol">🎵</span>Musik</button>
+            <button type="button" class="fach-kachel" data-fach="Latein"><span class="fach-symbol">🏺</span>Latein</button>
+            <button type="button" class="fach-kachel" data-fach="Spanisch"><span class="fach-symbol">🇪🇸</span>Spanisch</button>
+            <button type="button" class="fach-kachel" data-fach="Russisch"><span class="fach-symbol">🇷🇺</span>Russisch</button>
+            <button type="button" class="fach-kachel" data-fach="Niederländisch"><span class="fach-symbol">🇳🇱</span>Niederländisch</button>
+            <button type="button" class="fach-kachel" data-fach="Türkisch"><span class="fach-symbol">🇹🇷</span>Türkisch</button>
+            <button type="button" class="fach-kachel" data-fach="Technik"><span class="fach-symbol">⚙️</span>Technik</button>
+            <button type="button" class="fach-kachel" data-fach="Hauswirtschaft"><span class="fach-symbol">🍳</span>Hauswirtschaft</button>
+            <button type="button" class="fach-kachel" data-fach="Medienbildung"><span class="fach-symbol">📱</span>Medienbildung</button>
+            <button type="button" class="fach-kachel" data-fach="Philosophie"><span class="fach-symbol">💭</span>Philosophie</button>
+            <button type="button" class="fach-kachel" data-fach="Astronomie"><span class="fach-symbol">🔭</span>Astronomie</button>
+            <button type="button" class="fach-kachel" data-fach="Darstellendes Spiel"><span class="fach-symbol">🎭</span>Darstellendes Spiel</button>
+            <button type="button" class="fach-kachel" data-fach="Arbeit-Wirtschaft-Technik"><span class="fach-symbol">🛠️</span>Arbeit-Wirtschaft-Technik</button>
           </div>
 
           <select id="fach" hidden>
@@ -378,6 +503,12 @@ footer { padding: 24px 15px; border-top: 1px solid var(--border); color: var(--m
             <option>Biologie</option><option>Chemie</option><option>Physik</option>
             <option>Geschichte</option><option>Geografie</option><option>Informatik</option>
             <option>Wirtschaft</option><option>Französisch</option><option>Sport</option>
+            <option>Religion</option><option>Ethik</option><option>Politik</option>
+            <option>Kunst</option><option>Musik</option><option>Latein</option>
+            <option>Spanisch</option><option>Russisch</option><option>Niederländisch</option>
+            <option>Türkisch</option><option>Technik</option><option>Hauswirtschaft</option>
+            <option>Medienbildung</option><option>Philosophie</option><option>Astronomie</option>
+            <option>Darstellendes Spiel</option><option>Arbeit-Wirtschaft-Technik</option>
           </select>
 
           <label class="field-label" for="datum">Prüfungsdatum</label>
@@ -394,7 +525,7 @@ footer { padding: 24px 15px; border-top: 1px solid var(--border); color: var(--m
 
           <label class="field-label" for="themen">Deine Lernthemen</label>
           <textarea id="themen" maxlength="5000" placeholder="Zellatmung&#10;Fotosynthese&#10;Genetik" required></textarea>
-          <p class="hint">Schreibe jedes Thema in eine neue Zeile.</p>
+          <p class="hint">Schreibe jedes Thema in eine neue Zeile. Die Vorschläge sind Startpunkte und können angepasst werden.</p>
 
           <button class="button button-primary" type="submit" id="fachSpeichernButton">＋ Fach speichern</button>
           <button class="button button-secondary" type="button" id="bearbeitenAbbrechen" hidden>Bearbeiten abbrechen</button>
@@ -418,7 +549,7 @@ footer { padding: 24px 15px; border-top: 1px solid var(--border); color: var(--m
           <button type="button" class="button" id="importButton">⬆️ Backup importieren</button>
         </div>
         <input type="file" id="backupFile" accept=".json,application/json" hidden>
-        <p class="hint">Exportiere deine Fächer und Lernfortschritte als JSON-Datei. Diese Datei kannst du später hier wieder importieren.</p>
+        <p class="hint">Sichere deine Fächer und Fortschritte in einer JSON-Datei. Beim Import werden die aktuellen Fächer durch das Backup ersetzt.</p>
       </section>
     </div>
 
@@ -426,20 +557,20 @@ footer { padding: 24px 15px; border-top: 1px solid var(--border); color: var(--m
       <div id="leerzustand" class="result-empty">
         <div class="empty-icon">📅</div>
         <h3>Dein Lernbereich</h3>
-        <p class="muted">Füge links dein erstes Fach hinzu. Dein Lernplan und dein Fortschritt erscheinen hier.</p>
+        <p class="muted">Füge links dein erstes Fach hinzu. Dein Lernplan und Fortschritt erscheinen hier.</p>
       </div>
       <div id="ergebnis" aria-live="polite"></div>
       <button id="pdfButton" class="button pdf-button" type="button" hidden>📄 Lernplan drucken oder als PDF speichern</button>
     </section>
   </div>
 
-  <div class="tip">💡 Tipp: Sichere deine Daten regelmäßig. Deine Fächer werden im Browser gespeichert und nicht automatisch zwischen verschiedenen Geräten synchronisiert.</div>
+  <div class="tip">💡 Tipp: Kurze, regelmäßige Lerneinheiten und Wiederholungen helfen dir, Inhalte langfristig zu behalten. Deine Daten bleiben in diesem Browser, bis du sie exportierst oder löschst.</div>
 </main>
 
 <footer>
   <strong>✦ Lernplan</strong><br>
   Kostenloser Helfer für deine Prüfungsvorbereitung.<br>
-  Deine Daten bleiben in deinem Browser, bis du sie exportierst oder löschst.
+  Deine Fächer werden lokal im Browser gespeichert.
 </footer>
 
 <script>
@@ -448,6 +579,7 @@ footer { padding: 24px 15px; border-top: 1px solid var(--border); color: var(--m
 const STORAGE_KEY = "lernplanMehrfachFaecherV1";
 const BACKUP_FORMAT = "lernplan-generator-backup";
 const BACKUP_VERSION = 1;
+const erlaubteLernzeiten = [30, 60, 90, 120, 180];
 
 const formular = document.getElementById("fachformular");
 const fachFeld = document.getElementById("fach");
@@ -467,9 +599,13 @@ const exportButton = document.getElementById("exportButton");
 const importButton = document.getElementById("importButton");
 const backupFile = document.getElementById("backupFile");
 
-const erlaubteLernzeiten = [30, 60, 90, 120, 180];
-const HEUTE = lokalesDatum();
+function lokalesDatum() {
+  const jetzt = new Date();
+  return new Date(jetzt.getTime() - jetzt.getTimezoneOffset() * 60000)
+    .toISOString().slice(0, 10);
+}
 
+const HEUTE = lokalesDatum();
 datumFeld.min = HEUTE;
 datumFeld.value = HEUTE;
 
@@ -477,11 +613,37 @@ let faecher = ladeFaecher();
 let ausgewaehlteId = faecher.length ? faecher[0].id : null;
 let bearbeiteId = null;
 
-function lokalesDatum() {
-  const jetzt = new Date();
-  return new Date(jetzt.getTime() - jetzt.getTimezoneOffset() * 60000)
-    .toISOString().split("T")[0];
-}
+const standardThemen = {
+  "Deutsch": "Rechtschreibung\nGrammatik\nTextanalyse\nErörterung",
+  "Mathematik": "Bruchrechnung\nProzentrechnung\nGleichungen\nGeometrie",
+  "Englisch": "Vokabeln\nGrammatik\nZeiten\nTextverständnis",
+  "Biologie": "Zellaufbau\nFotosynthese\nGenetik\nÖkologie",
+  "Chemie": "Periodensystem\nAtome\nMoleküle\nChemische Reaktionen",
+  "Physik": "Kräfte\nEnergie\nElektrizität\nGeschwindigkeit",
+  "Geschichte": "Wichtige Ereignisse\nUrsachen\nFolgen\nJahreszahlen",
+  "Geografie": "Klimazonen\nKontinente\nBevölkerung\nWirtschaft",
+  "Informatik": "Algorithmen\nProgrammierung\nDaten\nNetzwerke",
+  "Wirtschaft": "Angebot und Nachfrage\nUnternehmen\nGeld\nMarkt",
+  "Französisch": "Vokabeln\nGrammatik\nZeiten\nTextverständnis",
+  "Sport": "Ausdauer\nKraft\nKoordination\nTrainingslehre",
+  "Religion": "Weltreligionen\nBibel\nEthische Fragen\nGlaubensrichtungen",
+  "Ethik": "Moral\nWerte\nVerantwortung\nMenschenrechte",
+  "Politik": "Demokratie\nWahlen\nGrundgesetz\nPolitische Systeme",
+  "Kunst": "Farbenlehre\nPerspektive\nKunstepochen\nBildanalyse",
+  "Musik": "Notenlehre\nInstrumente\nMusikgeschichte\nKomponisten",
+  "Latein": "Vokabeln\nGrammatik\nDeklinationen\nÜbersetzungen",
+  "Spanisch": "Vokabeln\nGrammatik\nZeitformen\nTextverständnis",
+  "Russisch": "Vokabeln\nGrammatik\nKyrillische Schrift\nZeitformen",
+  "Niederländisch": "Vokabeln\nGrammatik\nSatzbau\nTextverständnis",
+  "Türkisch": "Vokabeln\nGrammatik\nSatzbau\nTextverständnis",
+  "Technik": "Werkstoffe\nTechnische Zeichnungen\nKonstruktion\nWerkzeuge",
+  "Hauswirtschaft": "Ernährung\nHygiene\nHaushaltsplanung\nNachhaltigkeit",
+  "Medienbildung": "Datenschutz\nMedienkompetenz\nFake News\nDigitale Sicherheit",
+  "Philosophie": "Erkenntnis\nFreiheit\nGerechtigkeit\nPhilosophische Positionen",
+  "Astronomie": "Sonnensystem\nSterne\nGalaxien\nPlaneten",
+  "Darstellendes Spiel": "Schauspiel\nKörpersprache\nImprovisation\nBühnenarbeit",
+  "Arbeit-Wirtschaft-Technik": "Berufswahl\nWirtschaft\nArbeitswelt\nTechnik"
+};
 
 function ladeFaecher() {
   try {
@@ -501,6 +663,7 @@ function istGueltigesFach(fach) {
     typeof fach.datum === "string" &&
     /^\d{4}-\d{2}-\d{2}$/.test(fach.datum) &&
     Number.isFinite(Number(fach.lernzeit)) &&
+    erlaubteLernzeiten.includes(Number(fach.lernzeit)) &&
     Array.isArray(fach.themen) &&
     fach.themen.every(thema => typeof thema === "string") &&
     Array.isArray(fach.erledigteTage) &&
@@ -513,7 +676,7 @@ function speichereFaecher() {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(faecher));
     return true;
   } catch (fehler) {
-    zeigeMeldung("Speichern fehlgeschlagen. Prüfe, ob dein Browser Speicherplatz freigibt.", true);
+    zeigeMeldung("Speichern fehlgeschlagen. Prüfe den verfügbaren Speicherplatz deines Browsers.", true);
     return false;
   }
 }
@@ -549,7 +712,7 @@ function anzahlTage(fach) {
 
 function fortschritt(fach) {
   const gesamt = anzahlTage(fach);
-  const erledigt = fach.erledigteTage.filter(tag => tag >= 0 && tag < gesamt).length;
+  const erledigt = fach.erledigteTage.filter(tag => tag < gesamt).length;
   return { gesamt, erledigt, prozent: Math.round(erledigt / gesamt * 100) };
 }
 
@@ -561,6 +724,14 @@ function zeigeMeldung(text, fehler = false) {
 function loescheMeldung() {
   formularmeldung.textContent = "";
   formularmeldung.className = "";
+}
+
+function markiereFachkachel(name) {
+  fachKacheln.querySelectorAll(".fach-kachel").forEach(button => {
+    const aktiv = button.dataset.fach === name;
+    button.classList.toggle("ausgewaehlt", aktiv);
+    button.setAttribute("aria-pressed", String(aktiv));
+  });
 }
 
 function renderFaecher() {
@@ -576,6 +747,7 @@ function renderFaecher() {
   facherliste.innerHTML = faecher.map(fach => {
     const stats = fortschritt(fach);
     const aktiv = fach.id === ausgewaehlteId ? "active" : "";
+
     return `
       <div class="subject-item ${aktiv}">
         <button class="subject-select" type="button"
@@ -592,12 +764,12 @@ function renderFaecher() {
             </span>
           </span>
         </button>
-        <button class="icon-button" type="button"
-          data-action="edit" data-id="${escapeHTML(fach.id)}"
-          aria-label="${escapeHTML(fach.name)} bearbeiten" title="Bearbeiten">✎</button>
-        <button class="icon-button delete" type="button"
-          data-action="delete" data-id="${escapeHTML(fach.id)}"
-          aria-label="${escapeHTML(fach.name)} löschen" title="Löschen">×</button>
+        <button class="icon-button" type="button" data-action="edit"
+          data-id="${escapeHTML(fach.id)}" title="Bearbeiten"
+          aria-label="${escapeHTML(fach.name)} bearbeiten">✎</button>
+        <button class="icon-button delete" type="button" data-action="delete"
+          data-id="${escapeHTML(fach.id)}" title="Löschen"
+          aria-label="${escapeHTML(fach.name)} löschen">×</button>
       </div>`;
   }).join("");
 }
@@ -608,15 +780,21 @@ function erstelleIntelligentenPlan(fach, gesamtTage) {
 
   const probeTag = gesamtTage >= 3 ? gesamtTage - 1 : -1;
   const wiederholungsTag = gesamtTage >= 5 ? gesamtTage - 2 : -1;
+
   const inhaltstage = Math.max(
     1,
-    gesamtTage - (probeTag >= 0 ? 1 : 0) - (wiederholungsTag >= 0 ? 1 : 0)
+    gesamtTage -
+    (probeTag >= 0 ? 1 : 0) -
+    (wiederholungsTag >= 0 ? 1 : 0)
   );
 
   const themenProTag = Array.from({ length: gesamtTage }, () => []);
 
   sichereThemen.forEach((thema, index) => {
-    const tagIndex = Math.min(inhaltstage - 1, Math.floor(index * inhaltstage / sichereThemen.length));
+    const tagIndex = Math.min(
+      inhaltstage - 1,
+      Math.floor(index * inhaltstage / sichereThemen.length)
+    );
     themenProTag[tagIndex].push(thema);
   });
 
@@ -626,18 +804,23 @@ function erstelleIntelligentenPlan(fach, gesamtTage) {
     }
 
     if (tag === wiederholungsTag) {
-      return "🔁 GROẞE WIEDERHOLUNG\nWiederhole alle Themen: " + sichereThemen.join(", ") +
-        ".\nErkläre die Inhalte aus dem Kopf, nutze Karteikarten und markiere letzte Wissenslücken.";
+      return "🔁 GROẞE WIEDERHOLUNG\nWiederhole alle Themen: " +
+        sichereThemen.join(", ") +
+        ".\nErkläre die Inhalte aus dem Kopf, nutze Karteikarten und markiere deine letzten Wissenslücken.";
     }
 
     const teile = [];
     const heutigeThemen = themenProTag[tag];
 
     if (heutigeThemen.length) {
-      teile.push("📚 NEUE THEMEN\n" + heutigeThemen.join(" · ") +
-        "\nLerne aktiv: Erkläre die Inhalte in eigenen Worten und bearbeite passende Aufgaben.");
+      teile.push(
+        "📚 NEUE THEMEN\n" + heutigeThemen.join(" · ") +
+        "\nLerne aktiv: Erkläre die Inhalte in eigenen Worten und bearbeite passende Aufgaben."
+      );
     } else {
-      teile.push("🧠 FESTIGEN\nWiederhole die bereits gelernten Inhalte und übe Aufgaben ohne deine Unterlagen.");
+      teile.push(
+        "🧠 FESTIGEN\nWiederhole bereits gelernte Inhalte und übe Aufgaben, ohne direkt in deine Unterlagen zu schauen."
+      );
     }
 
     const wiederholungen = [];
@@ -652,12 +835,17 @@ function erstelleIntelligentenPlan(fach, gesamtTage) {
     });
 
     if (wiederholungen.length) {
-      teile.push("🔁 ABSTANDS-WIEDERHOLUNG\n" + wiederholungen.join("\n") +
-        "\nTeste dich zuerst ohne Hilfsmittel.");
+      teile.push(
+        "🔁 ABSTANDS-WIEDERHOLUNG\n" +
+        wiederholungen.join("\n") +
+        "\nTeste dich zuerst ohne Hilfsmittel."
+      );
     }
 
     if (tag === inhaltstage - 1 && probeTag < 0 && wiederholungsTag < 0) {
-      teile.push("✅ ABSCHLUSS-CHECK\nNenne die wichtigsten Punkte aus dem Kopf und prüfe deine Wissenslücken.");
+      teile.push(
+        "✅ ABSCHLUSS-CHECK\nNenne die wichtigsten Punkte aus dem Kopf und überprüfe, welche Themen noch unsicher sind."
+      );
     }
 
     return teile.join("\n\n");
@@ -692,33 +880,54 @@ function renderPlan() {
     <h3 class="result-title">${escapeHTML(fach.name)}</h3>
     <p class="result-meta">
       📅 Prüfung: ${datumDeutsch(fach.datum)}<br>
-      ${bisPruefung === 0 ? "Deine Prüfung ist heute." : "Noch " + bisPruefung + " Tag(e) bis zur Prüfung."}
+      ${bisPruefung === 0
+        ? "Deine Prüfung ist heute."
+        : bisPruefung > 0
+          ? "Noch " + bisPruefung + " Tag(e) bis zur Prüfung."
+          : "Das Prüfungsdatum liegt in der Vergangenheit."}
     </p>
+
     <div class="stats-grid">
-      <div class="stat"><span>📚</span><span class="stat-number">${tage}</span><span class="stat-label">Geplante Lerntage</span></div>
-      <div class="stat"><span>⏱️</span><span class="stat-number">${Number(fach.lernzeit)} Min.</span><span class="stat-label">Lernzeit pro Tag</span></div>
+      <div class="stat">
+        <span>📚</span>
+        <span class="stat-number">${tage}</span>
+        <span class="stat-label">Geplante Lerntage</span>
+      </div>
+      <div class="stat">
+        <span>⏱️</span>
+        <span class="stat-number">${Number(fach.lernzeit)} Min.</span>
+        <span class="stat-label">Lernzeit pro Tag</span>
+      </div>
     </div>
+
     <div class="progress-box">
       <div class="progress-header">
         <strong>Dein Fortschritt</strong>
         <span class="progress-percent" id="fortschritt-prozent">${stats.prozent}%</span>
       </div>
-      <div class="progress-track" id="fortschritt-anzeige" role="progressbar"
-        aria-label="Erledigte Lerntage" aria-valuemin="0" aria-valuemax="${tage}" aria-valuenow="${stats.erledigt}">
-        <div class="progress-fill" id="fortschritt-fuellung" style="width:${stats.prozent}%"></div>
+      <div class="progress-track" id="fortschritt-anzeige"
+        role="progressbar" aria-label="Erledigte Lerntage"
+        aria-valuemin="0" aria-valuemax="${tage}" aria-valuenow="${stats.erledigt}">
+        <div class="progress-fill" id="fortschritt-fuellung"
+          style="width:${stats.prozent}%"></div>
       </div>
       <p class="progress-note" id="fortschritt-zahl">
-        ${stats.erledigt} von ${tage} Lerntagen erledigt. ${stats.prozent === 100 ? "Geschafft! 🎉" : "Du schaffst das!"}
+        ${stats.erledigt} von ${tage} Lerntagen erledigt.
+        ${stats.prozent === 100 ? "Geschafft! 🎉" : "Du schaffst das!"}
       </p>
     </div>
+
     <div class="schedule-heading">
-      <h3>📋 Tagesaufgaben</h3><span class="schedule-count">${tage} Tage</span>
+      <h3>📋 Tagesaufgaben</h3>
+      <span class="schedule-count">${tage} Tage</span>
     </div>
+
     <div class="smart-plan-note">
       <strong>🧠 Dein intelligenter Lernplan</strong>
-      Themen werden über die verfügbaren Lerntage verteilt.
+      Themen werden auf die verfügbaren Lerntage verteilt.
       Wiederholungen sind nach 1, 3 und 7 Tagen vorgesehen.
-      Ab 5 Tagen ist ein Wiederholungstag eingeplant; ab 3 Tagen ist der letzte Tag für die Probeprüfung vorgesehen.
+      Ab 5 Tagen gibt es einen eigenen Wiederholungstag.
+      Ab 3 Tagen wird der letzte Tag als Probeprüfung reserviert.
     </div>`;
 
   const aufgaben = erstelleIntelligentenPlan(fach, tage);
@@ -729,7 +938,10 @@ function renderPlan() {
     tagDatum.setDate(tagDatum.getDate() + tag);
 
     const datumText = tagDatum.toLocaleDateString("de-DE", {
-      weekday: "short", day: "2-digit", month: "2-digit", year: "numeric"
+      weekday: "short",
+      day: "2-digit",
+      month: "2-digit",
+      year: "numeric"
     });
 
     const erledigt = fach.erledigteTage.includes(tag);
@@ -738,41 +950,21 @@ function renderPlan() {
       <article class="lerntag ${erledigt ? "erledigt" : ""}" data-tag="${tag}">
         <div class="day-header">
           <div class="day-number">${tag + 1}</div>
-          <div><span class="day-date">${datumText}</span>
-          <span class="day-time">⏱️ ${Number(fach.lernzeit)} Minuten</span></div>
+          <div>
+            <span class="day-date">${datumText}</span>
+            <span class="day-time">⏱️ ${Number(fach.lernzeit)} Minuten</span>
+          </div>
         </div>
         <p class="task-text">${escapeHTML(aufgaben[tag])}</p>
         <label class="task-check">
-          <input type="checkbox" class="lerntag-checkbox" data-tag="${tag}" ${erledigt ? "checked" : ""}>
+          <input type="checkbox" class="lerntag-checkbox"
+            data-tag="${tag}" ${erledigt ? "checked" : ""}>
           <span>Als erledigt markieren</span>
         </label>
       </article>`;
   }
 
   ergebnis.innerHTML = html;
-}
-
-const standardThemen = {
-  "Deutsch": "Rechtschreibung, Grammatik, Textanalyse, Erörterung",
-  "Mathematik": "Bruchrechnung, Prozentrechnung, Gleichungen, Geometrie",
-  "Englisch": "Vokabeln, Grammatik, Zeiten, Textverständnis",
-  "Biologie": "Zellaufbau, Fotosynthese, Genetik, Ökologie",
-  "Chemie": "Periodensystem, Atome, Moleküle, chemische Reaktionen",
-  "Physik": "Kräfte, Energie, Elektrizität, Geschwindigkeit",
-  "Geschichte": "Wichtige Ereignisse, Ursachen, Folgen, Jahreszahlen",
-  "Geografie": "Klimazonen, Kontinente, Bevölkerung, Wirtschaft",
-  "Informatik": "Algorithmen, Programmierung, Daten, Netzwerke",
-  "Wirtschaft": "Angebot und Nachfrage, Unternehmen, Geld, Markt",
-  "Französisch": "Vokabeln, Grammatik, Zeiten, Textverständnis",
-  "Sport": "Ausdauer, Kraft, Koordination, Trainingslehre"
-};
-
-function markiereFachkachel(name) {
-  fachKacheln.querySelectorAll(".fach-kachel").forEach(button => {
-    const aktiv = button.dataset.fach === name;
-    button.classList.toggle("ausgewaehlt", aktiv);
-    button.setAttribute("aria-pressed", String(aktiv));
-  });
 }
 
 function beendeBearbeiten() {
@@ -783,17 +975,18 @@ function beendeBearbeiten() {
 }
 
 function starteBearbeiten(id) {
-  const fach = faecher.find(eintrag => eintrag.id === id);
+  const fach = faecher.find(f => f.id === id);
   if (!fach) return;
 
   bearbeiteId = fach.id;
   ausgewaehlteId = fach.id;
+
   fachFeld.value = fach.name;
   datumFeld.value = fach.datum;
   lernzeitFeld.value = String(fach.lernzeit);
   themenFeld.value = fach.themen.join("\n");
-  markiereFachkachel(fach.name);
 
+  markiereFachkachel(fach.name);
   formularTitel.textContent = "Fach bearbeiten";
   fachSpeichernButton.textContent = "✓ Änderungen speichern";
   bearbeitenAbbrechen.hidden = false;
@@ -801,15 +994,39 @@ function starteBearbeiten(id) {
   loescheMeldung();
   renderFaecher();
   renderPlan();
-  document.getElementById("formular-card").scrollIntoView({ behavior: "smooth", block: "start" });
+
+  document.getElementById("formular-card").scrollIntoView({
+    behavior: "smooth",
+    block: "start"
+  });
 }
 
+function markiereFachkachel(name) {
+  fachKacheln.querySelectorAll(".fach-kachel").forEach(button => {
+    const aktiv = button.dataset.fach === name;
+    button.classList.toggle("ausgewaehlt", aktiv);
+    button.setAttribute("aria-pressed", String(aktiv));
+  });
+}
+
+/* Fach auswählen und passende Beispielthemen einsetzen */
 fachKacheln.addEventListener("click", event => {
   const kachel = event.target.closest(".fach-kachel");
   if (!kachel) return;
+
   fachFeld.value = kachel.dataset.fach;
   markiereFachkachel(fachFeld.value);
-  themenFeld.value = (standardThemen[fachFeld.value] || "").replace(/, /g, "\n");
+
+  // Beim Bearbeiten nicht versehentlich alle eingegebenen Themen ersetzen.
+  if (bearbeiteId) {
+    const bereitsGespeichert = faecher.find(f => f.id === bearbeiteId);
+    if (bereitsGespeichert && bereitsGespeichert.name === fachFeld.value) {
+      themenFeld.value = bereitsGespeichert.themen.join("\n");
+      return;
+    }
+  }
+
+  themenFeld.value = standardThemen[fachFeld.value] || "";
 });
 
 formular.addEventListener("reset", () => {
@@ -828,6 +1045,7 @@ bearbeitenAbbrechen.addEventListener("click", () => {
   loescheMeldung();
 });
 
+/* Fach hinzufügen oder bestehendes Fach aktualisieren */
 formular.addEventListener("submit", event => {
   event.preventDefault();
   loescheMeldung();
@@ -841,10 +1059,12 @@ formular.addEventListener("submit", event => {
     zeigeMeldung("Bitte wähle ein Fach aus und fülle alle Felder aus.", true);
     return;
   }
+
   if (tageBis(datum) < 0) {
     zeigeMeldung("Das Prüfungsdatum darf nicht in der Vergangenheit liegen.", true);
     return;
   }
+
   if (!erlaubteLernzeiten.includes(lernzeit)) {
     zeigeMeldung("Bitte wähle eine gültige Lernzeit aus.", true);
     return;
@@ -854,6 +1074,7 @@ formular.addEventListener("submit", event => {
 
   if (bearbeiteId) {
     const index = faecher.findIndex(f => f.id === bearbeiteId);
+
     if (index < 0) {
       beendeBearbeiten();
       zeigeMeldung("Das Fach wurde nicht gefunden. Bitte wähle es erneut aus.", true);
@@ -865,12 +1086,16 @@ formular.addEventListener("submit", event => {
       themen: [...faecher[index].themen],
       erledigteTage: [...faecher[index].erledigteTage]
     };
-    const neueTage = Math.max(1, tageBis(datum));
+
+    const neueGesamtzahlTage = Math.max(1, tageBis(datum));
 
     faecher[index] = {
       ...faecher[index],
-      name, datum, lernzeit, themen,
-      erledigteTage: faecher[index].erledigteTage.filter(tag => tag < neueTage)
+      name,
+      datum,
+      lernzeit,
+      themen,
+      erledigteTage: faecher[index].erledigteTage.filter(tag => tag < neueGesamtzahlTage)
     };
     ausgewaehlteId = faecher[index].id;
 
@@ -880,12 +1105,18 @@ formular.addEventListener("submit", event => {
       renderPlan();
       return;
     }
+
     erfolgsmeldung = "Änderungen für „" + name + "“ wurden gespeichert.";
   } else {
     const neu = {
       id: "fach-" + Date.now() + "-" + Math.random().toString(36).slice(2, 8),
-      name, datum, lernzeit, themen, erledigteTage: []
+      name,
+      datum,
+      lernzeit,
+      themen,
+      erledigteTage: []
     };
+
     faecher.push(neu);
     ausgewaehlteId = neu.id;
 
@@ -896,6 +1127,7 @@ formular.addEventListener("submit", event => {
       renderPlan();
       return;
     }
+
     erfolgsmeldung = "Fach „" + name + "“ wurde gespeichert.";
   }
 
@@ -903,11 +1135,13 @@ formular.addEventListener("submit", event => {
   formular.reset();
   datumFeld.value = HEUTE;
   lernzeitFeld.value = "60";
+
   renderFaecher();
   renderPlan();
   zeigeMeldung(erfolgsmeldung);
 });
 
+/* Gespeicherte Fächer auswählen, bearbeiten oder löschen */
 facherliste.addEventListener("click", event => {
   const button = event.target.closest("button[data-action]");
   if (!button) return;
@@ -921,10 +1155,12 @@ facherliste.addEventListener("click", event => {
     renderPlan();
     return;
   }
+
   if (aktion === "edit") {
     starteBearbeiten(id);
     return;
   }
+
   if (aktion === "delete") {
     const fach = faecher.find(f => f.id === id);
     if (!fach) return;
@@ -932,7 +1168,7 @@ facherliste.addEventListener("click", event => {
     if (!confirm("Möchtest du das Fach „" + fach.name +
       "“ und seinen gespeicherten Lernfortschritt wirklich löschen?")) return;
 
-    const alteFaecher = faecher;
+    const vorherigeFaecher = faecher;
     faecher = faecher.filter(f => f.id !== id);
 
     if (bearbeiteId === id) {
@@ -941,23 +1177,28 @@ facherliste.addEventListener("click", event => {
       datumFeld.value = HEUTE;
       lernzeitFeld.value = "60";
     }
+
     if (ausgewaehlteId === id) {
       ausgewaehlteId = faecher.length ? faecher[0].id : null;
     }
+
     if (!speichereFaecher()) {
-      faecher = alteFaecher;
+      faecher = vorherigeFaecher;
       renderFaecher();
       renderPlan();
       return;
     }
+
     renderFaecher();
     renderPlan();
     zeigeMeldung("Fach wurde gelöscht.");
   }
 });
 
+/* Lerntage abhaken und Fortschritt aktualisieren */
 ergebnis.addEventListener("change", event => {
   if (!event.target.matches(".lerntag-checkbox")) return;
+
   const fach = faecher.find(f => f.id === ausgewaehlteId);
   if (!fach) return;
 
@@ -985,18 +1226,21 @@ ergebnis.addEventListener("change", event => {
   document.getElementById("fortschritt-zahl").textContent =
     `${stats.erledigt} von ${stats.gesamt} Lerntagen erledigt. ` +
     (stats.prozent === 100 ? "Geschafft! 🎉" : "Du schaffst das!");
-  document.getElementById("fortschritt-anzeige").setAttribute("aria-valuenow", stats.erledigt);
+
+  document.getElementById("fortschritt-anzeige")
+    .setAttribute("aria-valuenow", stats.erledigt);
 });
 
+/* Lernplan drucken oder als PDF speichern */
 pdfButton.addEventListener("click", () => window.print());
 
-/* DATENSICHERUNG: EXPORT */
+/* Datensicherung: Export aller Fächer und Fortschritte */
 exportButton.addEventListener("click", () => {
   const backup = {
     format: BACKUP_FORMAT,
     version: BACKUP_VERSION,
     exportiertAm: new Date().toISOString(),
-    faecher: faecher
+    faecher
   };
 
   const blob = new Blob([JSON.stringify(backup, null, 2)], {
@@ -1004,8 +1248,9 @@ exportButton.addEventListener("click", () => {
   });
   const url = URL.createObjectURL(blob);
   const link = document.createElement("a");
+
   link.href = url;
-  link.download = "lernplan-backup-" + lokalesDatum() + ".json";
+  link.download = "lernplan-backup-" + HEUTE + ".json";
   document.body.appendChild(link);
   link.click();
   link.remove();
@@ -1014,11 +1259,10 @@ exportButton.addEventListener("click", () => {
   zeigeMeldung("Backup wurde erstellt. Bewahre die JSON-Datei sicher auf.");
 });
 
-/* DATENSICHERUNG: IMPORT */
-importButton.addEventListener("click", () => {
-  backupFile.click();
-});
+/* Datensicherung: Backup-Datei auswählen */
+importButton.addEventListener("click", () => backupFile.click());
 
+/* Backup validieren, Import bestätigen und Daten wiederherstellen */
 backupFile.addEventListener("change", async () => {
   const datei = backupFile.files && backupFile.files[0];
   if (!datei) return;
@@ -1028,40 +1272,37 @@ backupFile.addEventListener("change", async () => {
       throw new Error("Die Datei ist größer als 10 MB.");
     }
 
-    const text = await datei.text();
-    const daten = JSON.parse(text);
-
+    const daten = JSON.parse(await datei.text());
     let importFaecher;
 
-    /* Unterstützt das aktuelle Backupformat und ältere Backups,
-       die direkt als Array gespeichert wurden. */
+    // Unterstützt Backups aus dieser Version und ältere Array-Backups.
     if (Array.isArray(daten)) {
       importFaecher = daten;
     } else if (
       daten &&
       daten.format === BACKUP_FORMAT &&
+      daten.version === BACKUP_VERSION &&
       Array.isArray(daten.faecher)
     ) {
       importFaecher = daten.faecher;
     } else {
-      throw new Error("Das ist keine gültige Lernplan-Backup-Datei.");
+      throw new Error("Das ist keine gültige Lernplan-Backup-Datei oder die Version wird nicht unterstützt.");
     }
 
     if (!importFaecher.every(istGueltigesFach)) {
-      throw new Error("Die Backup-Datei enthält ungültige oder unvollständige Fachdaten.");
+      throw new Error("Das Backup enthält ungültige oder unvollständige Fachdaten.");
     }
 
     const ids = importFaecher.map(fach => fach.id);
     if (new Set(ids).size !== ids.length) {
-      throw new Error("Die Backup-Datei enthält doppelte Fach-IDs.");
+      throw new Error("Das Backup enthält doppelte Fach-IDs.");
     }
 
     const sicher = confirm(
       "Möchtest du dieses Backup importieren?\n\n" +
-      "Deine aktuell gespeicherten Fächer werden dadurch ersetzt.\n" +
-      "Aktuelle Fächer, die nicht im Backup enthalten sind, werden entfernt."
+      "Deine aktuell gespeicherten Fächer werden ersetzt.\n" +
+      "Fächer, die nicht im Backup enthalten sind, werden entfernt."
     );
-
     if (!sicher) return;
 
     const vorherigeFaecher = faecher;
@@ -1103,6 +1344,7 @@ backupFile.addEventListener("change", async () => {
   }
 });
 
+/* Beim Öffnen gespeicherte Fächer anzeigen */
 renderFaecher();
 renderPlan();
 </script>
